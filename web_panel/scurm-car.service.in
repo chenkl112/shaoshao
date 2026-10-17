@@ -1,0 +1,20 @@
+# 填写占位符后再安装。需要已完成 configure.py 和 colcon 编译。
+[Unit]
+Description=麦轮车 MID360 yaw 与 Web 基础链路
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=@CAR_USER@
+WorkingDirectory=@REPO@
+Environment=ROS_DOMAIN_ID=0
+ExecStart=/bin/bash -lc 'source /opt/ros/humble/setup.bash && source @WORKSPACE@/install/setup.bash && exec python3 @REPO@/web_panel/bringup.py'
+Restart=on-failure
+RestartSec=5
+KillSignal=SIGINT
+KillMode=mixed
+TimeoutStopSec=180
+
+[Install]
+WantedBy=multi-user.target

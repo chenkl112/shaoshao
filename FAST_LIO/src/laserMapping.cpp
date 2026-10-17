@@ -977,7 +977,10 @@ private:
             geometry_msgs::msg::TransformStamped base_to_sensor_msg;
             try
             { // lookupTransform(to_frame, from_frame, ...)
-                base_to_sensor_msg = tf_buffer_->lookupTransform(sensor_frame, base_frame, tf2::TimePointZero);
+                // The sensor is on a yaw joint: use encoder TF at this LiDAR frame's time.
+                base_to_sensor_msg = tf_buffer_->lookupTransform(
+                    sensor_frame, base_frame, rclcpp::Time(odomAftMapped.header.stamp),
+                    rclcpp::Duration::from_seconds(0.05));
             }
             catch (tf2::TransformException &ex)
             {
@@ -1260,8 +1263,7 @@ int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
 
-    signal(SIGINT, SigHandle);
-
+    // Keep the ROS 2 signal handler: it cancels the executor on mode shutdown.
     rclcpp::spin(std::make_shared<LaserMappingNode>());
     /**************** save map ****************/
     /* 1. make sure you have enough memories

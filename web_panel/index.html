@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>哨哨</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eeede8;color:#30332f;font:15px system-ui,sans-serif}
+header{padding:20px 26px;background:#f8f7f3;border-bottom:1px solid #cfcec6;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+h1{font-size:20px;font-weight:600;margin:0 0 4px}small{color:#74766d}main{padding:22px;max-width:1450px;margin:auto}
+.bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+button{padding:11px 26px;border-radius:3px;border:1px solid #b7baaf;background:#f8f7f3;color:#40463a;font:inherit;cursor:pointer;transition:background .15s,border-color .15s}
+button:hover:not(:disabled){background:#e0e2d8;border-color:#858c77}button.active,button.active:hover:not(:disabled){background:#566447;border-color:#566447;color:#fff}button:focus-visible{outline:2px solid #566447;outline-offset:3px}button:disabled{opacity:.5;cursor:wait}
+#status{margin-left:auto;color:#4e5e40}.view{position:relative;border:1px solid #575b52;border-radius:3px;overflow:hidden;background:#252923}
+canvas{width:100%;height:64vh;min-height:350px;display:block;touch-action:none}.hint{position:absolute;bottom:14px;left:18px;color:#c0c5b8;background:#252923e8;padding:4px 7px;font-size:12px;pointer-events:none}
+.stats{display:flex;gap:24px;flex-wrap:wrap;padding:16px 0;border-bottom:1px solid #cfcec6;color:#5e6356;font-variant-numeric:tabular-nums}#error{color:#a13e2e;white-space:pre-wrap}
+#demo{color:#7a5a25;font-size:13px}.note{color:#707268;font-size:13px;line-height:1.8}
+</style>
+<header><div><h1>哨哨</h1><small>实时点云与运行模式</small></div><span id="demo"></span></header>
+<main>
+<div class="bar"><button data-mode="mapping">建图</button><button data-mode="navigation">导航</button><button data-mode="idle">待机</button><span id="status">正在连接…</span></div>
+<div class="view"><canvas id="cloud"></canvas><div class="hint">拖动旋转 · 滚轮缩放 · 双击回到车的位置</div></div>
+<div class="stats"><span id="frame">坐标系 —</span><span id="count">点数 —</span><span id="fresh">点云 —</span><span id="pose">位置 —</span><span id="yaw">yaw 等待反馈</span></div>
+<div id="error" role="alert"></div>
+<p class="note">建图期间使用原有遥控器或键盘移动车辆。离开建图模式会保存地图。导航目标由 RViz 或任务程序提供。待机会停止模式节点，雷达驱动继续运行。</p>
+</main>
+<script>
+'use strict';
+const params=new URLSearchParams(location.search);
+const token=params.get('token')||sessionStorage.getItem('scurmToken')||'';
+if(token)sessionStorage.setItem('scurmToken',token);
+history.replaceState(null,'',location.pathname);
+const $=id=>document.getElementById(id), names={idle:'待机',mapping:'建图',navigation:'导航'};
+const canvas=$('cloud'),ctx=canvas.getContext('2d');
+let points=[],sequence=-1,yaw=-.7,pitch=.85,scale=35,center=[0,0,0],robot=null,connected=false,requesting=false,lastState=null,requestError='';
+async function api(path,body){
+ const response=await fetch(path,{method:body?'POST':'GET',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(4000)});
+ const data=await response.json();if(!response.ok)throw Error(data.error||response.statusText);return data;
+}
+function buttons(){document.querySelectorAll('button').forEach(b=>{b.disabled=!connected||requesting||!!lastState?.switching;b.classList.toggle('active',b.dataset.mode===lastState?.mode)})}
+document.querySelectorAll('button').forEach(button=>button.onclick=async()=>{
+ requesting=true;requestError='';buttons();$('error').textContent='';
+ try{await api('/api/mode',{mode:button.dataset.mode})}catch(e){requestError=e.message;$('error').textContent=requestError}
+ finally{requesting=false;buttons()}
+});
+async function poll(){
+ try{
+  const [s,c]=await Promise.all([api('/api/state'),api('/api/cloud')]);connected=true;lastState=s;
+  $('status').textContent=s.switching?'正在切换并保存地图…':names[s.mode]+' · 节点模式';
+  $('demo').textContent=s.demo?'演示数据 · 未连接车辆':s.mock_hardware?'模拟底盘 · 无电机输出':'';
+  $('yaw').textContent=s.yaw.ready?'yaw 已锁定 · '+(s.yaw.angle_rad*180/Math.PI).toFixed(2)+'°':s.yaw.reason;
+  $('error').textContent=s.error||requestError;
+  $('fresh').textContent=s.cloud_age===null?'尚无有效点云':s.cloud_age>1?'点云已停止 · '+s.cloud_age+' 秒前':'实时 · '+s.cloud_age+' 秒前';
+  $('frame').textContent='坐标系 '+(c.frame||'—');$('count').textContent='点数 '+c.points.length;
+  if(c.sequence!==sequence){points=c.points;sequence=c.sequence}
+  robot=s.pose&&s.pose.frame===c.frame?s.pose:null;
+  $('pose').textContent=s.pose?'位置 '+s.pose.x.toFixed(2)+', '+s.pose.y.toFixed(2)+' m · '+(s.odom_age===null||s.odom_age>1?'定位无效或已停止':s.pose.frame):'位置 —';
+ }catch(e){connected=false;$('status').textContent='连接断开';$('error').textContent=e.message}
+ buttons();setTimeout(poll,200);
+}
+function project(x,y,z){
+ x-=center[0];y-=center[1];z-=center[2];
+ const a=x*Math.cos(yaw)-y*Math.sin(yaw),b=x*Math.sin(yaw)+y*Math.cos(yaw);
+ return [canvas.clientWidth/2+a*scale,canvas.clientHeight/2+(b*Math.cos(pitch)-z*Math.sin(pitch))*scale];
+}
+function draw(){
+ const dpr=window.devicePixelRatio||1,w=canvas.clientWidth,h=canvas.clientHeight;
+ if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr)}
+ ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);ctx.strokeStyle='#363c32';ctx.lineWidth=1;
+ const gx=Math.round(center[0]),gy=Math.round(center[1]);
+ for(let i=-10;i<=10;i++){
+  for(const ends of [[[gx+i,gy-10,0],[gx+i,gy+10,0]],[[gx-10,gy+i,0],[gx+10,gy+i,0]]]){
+   const a=project(...ends[0]),b=project(...ends[1]);ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.stroke();
+  }
+ }
+ for(const p of points){const [x,y]=project(...p);if(x<0||y<0||x>w||y>h)continue;
+  ctx.fillStyle='hsl('+Math.max(32,Math.min(58,52-p[2]*8))+',38%,'+Math.max(58,Math.min(78,62+p[2]*5))+'%)';ctx.fillRect(x,y,2,2)}
+ if(robot){const a=project(robot.x,robot.y,robot.z),b=project(robot.x+.5*Math.cos(robot.yaw),robot.y+.5*Math.sin(robot.yaw),robot.z);
+  ctx.fillStyle='#e88c60';ctx.beginPath();ctx.arc(...a,6,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#e88c60';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.stroke()}
+ requestAnimationFrame(draw);
+}
+let drag=null;
+canvas.onpointerdown=e=>{drag=[e.clientX,e.clientY];canvas.setPointerCapture(e.pointerId)};
+canvas.onpointermove=e=>{if(!drag)return;yaw+=(e.clientX-drag[0])*.008;pitch=Math.max(.05,Math.min(1.55,pitch+(e.clientY-drag[1])*.008));drag=[e.clientX,e.clientY]};
+canvas.onpointerup=canvas.onpointercancel=()=>drag=null;
+canvas.addEventListener('wheel',e=>{e.preventDefault();scale=Math.max(3,Math.min(500,scale*Math.exp(-e.deltaY*.001)))},{passive:false});
+canvas.ondblclick=()=>{center=robot?[robot.x,robot.y,0]:points.length?points[Math.floor(points.length/2)].slice():[0,0,0];yaw=-.7;pitch=.85;scale=35};
+buttons();poll();draw();
+</script>
+</html>

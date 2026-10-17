@@ -9,6 +9,7 @@ find_package(laser_geometry REQUIRED)
 find_package(map_msgs REQUIRED)
 find_package(message_filters REQUIRED)
 find_package(nav2_common REQUIRED)
+find_package(nav2_costmap_2d REQUIRED)
 find_package(nav2_msgs REQUIRED)
 find_package(nav2_util)
 find_package(nav2_voxel_grid REQUIRED)
@@ -32,6 +33,7 @@ set(dependencies
   laser_geometry
   map_msgs
   message_filters
+  nav2_costmap_2d
   nav2_msgs
   nav2_util
   nav2_voxel_grid

@@ -1,109 +1,60 @@
-# SCURM火锅战队 24赛季哨兵导航
+# 哨哨：麦轮车 + yaw 云台 + MID360 导航与 Web 面板
 
-## 包说明
+基于 SCURM 火锅战队 24 赛季哨兵导航，适配目标为 i7-12800HX、麦轮底盘与安装在 yaw 云台上的 MID360。网页提供实时点云、车辆位置、yaw 状态，以及 **建图 / 导航 / 待机** 三个模式按钮。
 
-| Package Name | Description |
-|--------------|-------------|
-| ✅auto_aim_interfaces |  |
-| ✅[autonomous_exploration_development_environment](https://github.com/HongbiaoZ/autonomous_exploration_development_environment) | <span style="color:red">**MODIFIED**</span> development env for cmu-series planner |
-| ✅[BehaviourTree.CPP](https://github.com/BehaviorTree/BehaviorTree.CPP) | <span style="color:red">**MODIFIED**</span> BehaviourTree lib |
-| ✅cmd_chassis | - cmd_vel to chassis_cmd for communication and motion type of the chassis <br> - exexute rotation command in chassis_link since the true value is unavailable |
-| ✅control_panel | a simple Qt GUI for simulating referee system |
-| ✅FAST_LIO | fastlio mapping |
-| ✅livox_ros_driver2 | Driver for livox lidar |
-| ✅nav2_plugins <br> - behavior_ext_plugins <br> - costmap_intensity <br> - nav2_mppi_controller_ext <br> - velocity_smoother_ext | self defined nav2 plugins <br> - an enhenced back_up action that move toward free space <br> - 2 costmap_2d layer that use intensity filed of pointcloud msg rather than height (use with terrain analysis in autonomous_exploration_development_environment) <br> - an enhenced mppi controller that is able to adjust pose before some complex terrain(use with terrain analysis-pathNorm) <br> - an enhenced velocity smoother that increase the speed on slope automatically (use with terrain analysis-pathNorm) |
-| ✅rm_decision_cpp | sentry desicion module based on BehaviourTree.CPP |
-| ✅sentry_description | urdf of the robot model, publish tf from sensor frame to base_link |
-| rm_simulation | an rm version of autonomous_exploration_development_environment |
+## 从这里开始
 
-## Quick Start
+- [详细中文上车部署指南](web_panel/README.md)：系统安装、测量、网络、编译、闭环 yaw、启动、三个模式、分层验收、调参与日志。
+- [待测参数模板](web_panel/robot.example.yaml)：未知值保留 null/待测，实车必填项未填完不会生成可启动配置。
+- [底盘与 yaw 硬件接口](web_panel/硬件接口.md)：ROS 接口、参考串口协议、编码器标定、下位机职责与麦轮公式。
+- [给底盘负责人的串口对接约定](web_panel/串口对接约定.md)：已选 JSONL 协议、双向报文、单位、频率和分工。
+- [原项目说明](README_原项目.md)：上游比赛/仿真环境与相关项目来源。
 
-1. prepare workspace
-
-**FOR DOCKER USER:(HIGHLY RECOMMENDED)**
-
-pull the image from dockerhub and run it:
+## 无硬件先看网页
 
 ```bash
-docker pull polarisxq/scurm:nav_tutorial
-
-# for windows user
-docker run --gpus all -dit --ipc=host --net=host --privileged -e DISPLAY=host.docker.internal:0.0 -e NVIDIA_DRIVER_CAPABILITIES=all polarisxq/scurm:nav_tutorial
-# use XLaunch to open the GUI
-
-# for linux user
-sudo xhost + && sudo docker run -dit --network=host --pid=host --privileged -v /dev:/dev -e DISPLAY=${DISPLAY} polarisxq/scurm:nav_tutorial
+python web_panel/server.py --demo --port 8080
 ```
 
-Code inside the image is not always the latest version, please run `git pull` inside the container under the folder `\home\sentry_ws\src` to update, then re-complie the workspace.
+打开终端打印的链接。演示使用合成点云，不连接车辆。
 
-**BUILD FROM SOURCE:(NOTE THAT SOME FILE PATH MUST BE CHANGED)**
+## 实车路径
 
-clone this repo to your workspace:
+建议 Ubuntu 22.04 + ROS 2 Humble。先按详细指南安装 ROS、Livox-SDK2 和依赖，再在车上执行：
 
 ```bash
-mkdir -p ~/nav_tutorial_ws/src
-cd ~/nav_tutorial_ws/src
-git clone
+cp web_panel/robot.example.yaml web_panel/robot.yaml
+python3 web_panel/preflight.py --offline --config web_panel/robot.yaml
+# 填写实测几何、yaw 参考/目标、IP、串口和波特率后：
+python3 web_panel/configure.py --config web_panel/robot.yaml --maps-dir "$HOME/scurm_maps"
+# 按详细指南重新 colcon 编译，并 source 工作区后：
+python3 web_panel/bringup.py
 ```
 
-build the workspace
+本版使用 **相对底盘的固定 yaw 关节角闭环**，读取实际编码器角发布动态 TF。实际需求已确认为“云台保持世界方向”，该控制方式尚未实现，不能仅修改配置启用。锁角闭环由下位机实现，上位机提供目标、反馈检查和底盘速度门控。
+
+底盘由另一位负责人实现；你这边只负责上位机和串口接口。双方采用 `serial_jsonl_v1`，轮径、减速比、四轮 PID 等留给下位机。车体尺寸暂未测量时，可以先按对接约定使用 `serial.example.yaml` 单独联调串口。
+
+## 新增内容
+
+- Web 点云查看与三个模式按钮，局域网令牌接入。
+- 模式进程管理、离开建图自动保存 PCD 与二维地图、命令/传感器/yaw 超时门控。
+- `base_link → yaw_link → imu_link` 实测安装链，按真实 yaw 反馈发布 TF。
+- 参考串口桥与模拟硬件入口；已有 ROS 驱动可按统一接口接入。
+- 中文待测配置、实测参数生成、一键基础链路启动、只读链路检查。
+- 实车低速 DWB/footprint 初始配置，FAST-LIO 按点云时间查询安装 TF，ICP 输出正确的初始 IMU 位姿。
+
+## 验证与尚未完成的实车事项
+
+本地可执行测试：
 
 ```bash
-cd ~/nav_tutorial_ws
-rosdep install --from-paths src --ignore-src -r -y
-colcon build --symlink-install
+cd web_panel
+python -m unittest discover -v
 ```
 
-install groot2
+已在隔离 Ubuntu 22.04 / ROS 2 Humble 容器编译所需 9 个 ROS 包，并用合成 MID360/IMU 与模拟底盘验证建图、地图保存、ICP 重定位、Nav2 到点、yaw 异常阻断速度及待机。另已检查浏览器点云和三个按钮，详情见 [验收状态](web_panel/验收状态.md) 与 [复现方法](web_panel/validation/README.md)。
 
-2. run the simulation
+本次没有连接你的车辆和传感器。上位机车载版本、几何、实际串口连接、MID360 网络、定位精度和实际行驶仍待验收；下位机按已选协议实现和验证电机闭环由底盘负责人负责。待测参数不代表已标定。
 
-```bash
-ros2 launch pb_rm_simulation rm_simulation.launch.py
-```
-
-3. start mapping
-
-```bash
-ros2 launch sentry_bringup mapping.launch.py 
-```
-
-4. use the keyboard to control the robot
-
-```bash
-ros2 run teleop_twist_keyboard teleop_twist_keyboard
-```
-
-5. save the map
-
-```bash
-ros2 run nav2_map_server map_saver_cli -t /projected_map -f test_map --fmt png
-ros2 service call /map_save std_srvs/srv/Trigger
-```
-
-6. close all the nodes and then, restart the simulation
-
-```bash
-ros2 launch pb_rm_simulation rm_simulation.launch.py
-```
-
-7. start localization
-
-```bash
-ros2 launch sentry_bringup bringup_all_in_one.launch.py
-```
-
-8. start decision module
-    
-```bash
-ros2 run control_panel control_panel
-```
-
-```bash
-ros2 launch rm_decision_cpp run.launch.py
-```
-
-## Acknowledgment
-
-rm_simulation packages is from [pb_rm_simulation](https://github.com/LihanChen2004/pb_rm_simulation), big thanks to [LihanChen2004](https://github.com/LihanChen2004)
+上游项目来源与致谢见原项目说明；本次交付的修改以当前目录和增量补丁为准，重新从上游克隆不会自动获得新增功能。

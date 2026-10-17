@@ -1,4 +1,5 @@
 import os
+import yaml
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -6,11 +7,15 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, Time
 from launch.launch_description_sources import PythonLaunchDescriptionSource, FrontendLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration 
+from launch.conditions import IfCondition
 
 def generate_launch_description():
 
   config_path = os.path.join(
       get_package_share_directory('sentry_bringup'), 'params') 
+  fast_lio_param = os.path.join(config_path, 'fast_lio_relocalization_param.yaml')
+  with open(fast_lio_param, encoding='utf-8') as stream:
+    lio_mapping = yaml.safe_load(stream)['/**']['ros__parameters']['mapping']
 
   # icp relocalization
   map_odom_trans = Node(
@@ -39,6 +44,8 @@ def generate_launch_description():
           {'solver_max_iter':75},
           {'map_path':'/home/sentry_ws/src/sentry_bringup/maps/test.pcd'},
           {'fitness_score_thre':0.2}, # 是最近点距离的平均值，越小越严格
+          {'lidar_to_imu_translation': lio_mapping['extrinsic_T']},
+          {'lidar_to_imu_rotation': lio_mapping['extrinsic_R']},
       ],
   )
   
@@ -58,6 +65,7 @@ def generate_launch_description():
   rviz_config_file = os.path.join(
     get_package_share_directory('sentry_bringup'), 'rviz', 'loam_livox.rviz')
   start_rviz = Node(
+    condition=IfCondition(LaunchConfiguration('use_rviz')),
     package='rviz2',
     executable='rviz2',
     arguments=['-d', rviz_config_file],
@@ -72,6 +80,7 @@ def generate_launch_description():
   )
 
   ld = LaunchDescription()
+  ld.add_action(DeclareLaunchArgument('use_rviz', default_value='true'))
 
   ld.add_action(map_odom_trans)
   ld.add_action(icp_node)

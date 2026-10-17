@@ -8,6 +8,9 @@
 #include <pcl/registration/icp.h>
 #include <pcl/filters/voxel_grid.h>
 #include <Eigen/Geometry>
+#include <vector>
+#include <stdexcept>
+#include <cmath>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2/LinearMath/Matrix3x3.h>
 #include <tf2/LinearMath/Transform.h>
@@ -37,6 +40,25 @@ public:
         this->declare_parameter("cloud_voxel_leaf_size", 0.1);
         this->declare_parameter("converged_count_thre", 20);
         this->declare_parameter("pcl_type","livox");
+        const auto translation = this->declare_parameter<std::vector<double>>(
+            "lidar_to_imu_translation", {0.0, 0.0, 0.0});
+        const auto rotation = this->declare_parameter<std::vector<double>>(
+            "lidar_to_imu_rotation", {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0});
+        if (translation.size() != 3 || rotation.size() != 9) {
+            throw std::invalid_argument("LiDAR-to-IMU extrinsic dimensions are invalid");
+        }
+        for (int row = 0; row < 3; ++row) {
+            if (!std::isfinite(translation[row])) {
+                throw std::invalid_argument("LiDAR-to-IMU translation must be finite");
+            }
+            imu_lidar_(row, 3) = translation[row];
+            for (int col = 0; col < 3; ++col) {
+                if (!std::isfinite(rotation[3 * row + col])) {
+                    throw std::invalid_argument("LiDAR-to-IMU rotation must be finite");
+                }
+                imu_lidar_(row, col) = rotation[3 * row + col];
+            }
+        }
 
         this->get_parameter("initial_x", initial_x);
         this->get_parameter("initial_y", initial_y);
@@ -113,6 +135,24 @@ public:
     }
 
 private:
+    void publish_initial_imu_pose(const Eigen::Matrix4f &map_lidar)
+    {
+        // ICP matches raw LiDAR points. FAST-LIO's odom origin is the IMU frame.
+        const Eigen::Matrix4f map_imu = map_lidar * imu_lidar_.inverse();
+        geometry_msgs::msg::PoseWithCovarianceStamped msg;
+        msg.header.stamp = this->now();
+        msg.header.frame_id = map_frame;
+        msg.pose.pose.position.x = map_imu(0, 3);
+        msg.pose.pose.position.y = map_imu(1, 3);
+        msg.pose.pose.position.z = map_imu(2, 3);
+        const Eigen::Quaternionf q(map_imu.block<3, 3>(0, 0));
+        msg.pose.pose.orientation.x = q.x();
+        msg.pose.pose.orientation.y = q.y();
+        msg.pose.pose.orientation.z = q.z();
+        msg.pose.pose.orientation.w = q.w();
+        publisher_->publish(msg);
+    }
+
     void cloud_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
     {
         // Convert the incoming point cloud to PCL format
@@ -159,20 +199,7 @@ private:
             }
             // Convert the transformation_result result to a PoseWithCovarianceStamped message and publish it
             Eigen::Matrix4f transformation_result = icp.getFinalTransformation();
-            geometry_msgs::msg::PoseWithCovarianceStamped pose_msg;
-            pose_msg.header.stamp = this->now();
-            pose_msg.header.frame_id = map_frame;
-            pose_msg.pose.pose.position.x = transformation_result(0, 3);
-            pose_msg.pose.pose.position.y = transformation_result(1, 3);
-            pose_msg.pose.pose.position.z = transformation_result(2, 3);
-            // set orientation
-            Eigen::Matrix3f rotation = transformation_result.block<3, 3>(0, 0);
-            Eigen::Quaternionf q(rotation);
-            pose_msg.pose.pose.orientation.x = q.x();
-            pose_msg.pose.pose.orientation.y = q.y();
-            pose_msg.pose.pose.orientation.z = q.z();
-            pose_msg.pose.pose.orientation.w = q.w();
-            publisher_->publish(pose_msg);
+            publish_initial_imu_pose(transformation_result);
 
             // Transform the input cloud using the ICP result
             pcl::transformPointCloud(*input_cloud, *input_cloud, transformation_result);
@@ -251,20 +278,7 @@ private:
             RCLCPP_INFO(this->get_logger(), "ICP converged!!!");
             Eigen::Matrix4f transformation_result = icp.getFinalTransformation();
             // Convert the transformation_result result to a PoseWithCovarianceStamped message and publish it
-            geometry_msgs::msg::PoseWithCovarianceStamped pose_msg;
-            pose_msg.header.stamp = this->now();
-            pose_msg.header.frame_id = map_frame;
-            pose_msg.pose.pose.position.x = transformation_result(0, 3);
-            pose_msg.pose.pose.position.y = transformation_result(1, 3);
-            pose_msg.pose.pose.position.z = transformation_result(2, 3);
-            // set orientation
-            Eigen::Matrix3f rotation = transformation_result.block<3, 3>(0, 0);
-            Eigen::Quaternionf q(rotation);
-            pose_msg.pose.pose.orientation.x = q.x();
-            pose_msg.pose.pose.orientation.y = q.y();
-            pose_msg.pose.pose.orientation.z = q.z();
-            pose_msg.pose.pose.orientation.w = q.w();
-            publisher_->publish(pose_msg);
+            publish_initial_imu_pose(transformation_result);
 
             // Transform the input cloud using ICP result
             pcl::transformPointCloud(*input_cloud, *input_cloud, transformation_result);
@@ -343,6 +357,7 @@ private:
     pcl::PointCloud<pcl::PointXYZ>::Ptr target_cloud_{new pcl::PointCloud<pcl::PointXYZ>};
 
     Eigen::Matrix4f initGuess;
+    Eigen::Matrix4f imu_lidar_ = Eigen::Matrix4f::Identity();
     double initial_x, initial_y, initial_z, initial_a;
     int solver_max_iter;
     double max_correspondence_distance, RANSAC_outlier_rejection_threshold;

@@ -142,6 +142,12 @@ int main(int argc, char** argv)
   pubLaserCloud = nh->create_publisher<sensor_msgs::msg::PointCloud2>("/sensor_scan", 2);
 
   rclcpp::spin(nh);
-
+  sync_.reset();
+  subOdometry.unsubscribe();
+  subLaserCloud.unsubscribe();
+  tfBroadcasterPointer.reset();
+  pubOdometryPointer.reset();
+  pubLaserCloud.reset();
+  nh.reset();
   return 0;
 }

@@ -306,10 +306,11 @@ int main(int argc, char** argv)
   std::vector<float> pointNKNSquaredDistance;
 
   rclcpp::Rate rate(100);
-  bool status = rclcpp::ok();
-  while (status)
+  rclcpp::executors::SingleThreadedExecutor executor;
+  executor.add_node(nh);
+  while (rclcpp::ok())
   {
-    rclcpp::spin_some(nh);
+    executor.spin_some();
 
     if (newlaserCloud)
     {
@@ -633,9 +634,10 @@ int main(int argc, char** argv)
       pubTerrainCloud->publish(terrainCloud2);
     }
 
-    status = rclcpp::ok();
     rate.sleep();
   }
   
+  executor.remove_node(nh);
+  nh.reset();  // Destroy ROS objects before process-wide context teardown.
   return 0;
 }

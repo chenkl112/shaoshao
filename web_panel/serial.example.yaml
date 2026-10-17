@@ -1,0 +1,13 @@
+# 单独联调串口时复制为 serial.yaml；不需要车体尺寸、雷达 IP 或安装 TF。
+version: 1
+yaw:
+  target_rad: null            # 相对底盘的保持角，待测；须由双方确认可达且在限位内
+  joint_name: yaw_joint
+  feedback_timeout_s: 0.3
+hardware:
+  transport: serial_jsonl_v1
+  serial_port: null           # Linux /dev/serial/by-id/...，待测
+  baud: null                  # 建议双方约定 460800；实际支持情况待确认
+  yaw_encoder_sign: null     # 原始编码器到关节角的正方向，+1/-1，待测
+  yaw_encoder_zero_rad: null  # 关节零位对应的原始编码器角，rad，待测
+  command_timeout_s: 0.3

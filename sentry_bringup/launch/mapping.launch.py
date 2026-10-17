@@ -6,6 +6,7 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, Time
 from launch.launch_description_sources import PythonLaunchDescriptionSource, FrontendLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration 
+from launch.conditions import IfCondition
 
 def generate_launch_description():
 
@@ -14,7 +15,7 @@ def generate_launch_description():
 
   
   # fast-lio localization   
-  fast_lio_param = '/home/sentry_ws/src/sentry_bringup/params/fast_lio_mapping_param.yaml'
+  fast_lio_param = os.path.join(config_path, 'fast_lio_mapping_param.yaml')
   fast_lio_node = Node(
         package='fast_lio',
         executable='fastlio_mapping',
@@ -33,6 +34,7 @@ def generate_launch_description():
   rviz_config_file = os.path.join(
     get_package_share_directory('sentry_bringup'), 'rviz', 'loam_livox.rviz')
   start_rviz = Node(
+    condition=IfCondition(LaunchConfiguration('use_rviz')),
     package='rviz2',
     executable='rviz2',
     arguments=['-d', rviz_config_file,'--ros-args', '--log-level', 'warn'],
@@ -48,6 +50,7 @@ def generate_launch_description():
   )
 
   ld = LaunchDescription()
+  ld.add_action(DeclareLaunchArgument('use_rviz', default_value='true'))
 
   ld.add_action(start_rviz)
   ld.add_action(delayed_start_mapping)
