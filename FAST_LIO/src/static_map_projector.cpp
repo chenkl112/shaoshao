@@ -13,9 +13,13 @@ class StaticMapProjector:public rclcpp::Node {
     rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr map_sub_,terrain_sub_;
     rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr pub_;
     rclcpp::TimerBase::SharedPtr timer_;
+    double resolution_;
     bool dirty_=false;
 public:
     StaticMapProjector():Node("static_map_projector") {
+        resolution_=declare_parameter<double>("resolution",.05);
+        if(!std::isfinite(resolution_)||resolution_<.05||resolution_>1.)
+            throw std::invalid_argument("Static projected map resolution must be in [0.05, 1.0] m");
         pub_=create_publisher<nav_msgs::msg::OccupancyGrid>("/projected_map",rclcpp::QoS(1).transient_local().reliable());
         map_sub_=create_subscription<sensor_msgs::msg::PointCloud2>("/Laser_map",rclcpp::QoS(1).reliable(),
             [this](sensor_msgs::msg::PointCloud2::ConstSharedPtr msg){
@@ -33,12 +37,13 @@ public:
     void publish() {
         if(!dirty_)return;
         StaticMapProjection::Grid grid;
+        grid.resolution=resolution_;
         try {
             if(!projection_.project(map_,grid)) {
                 // Clear the latched map as well when the last static voxel disappears.
                 if(map_.empty()) {
                     nav_msgs::msg::OccupancyGrid msg;msg.header=header_;msg.header.frame_id="map";
-                    msg.info.resolution=.15;msg.info.width=msg.info.height=1;
+                    msg.info.resolution=resolution_;msg.info.width=msg.info.height=1;
                     msg.info.origin.orientation.w=1.;msg.data={-1};pub_->publish(msg);
                 }
                 return;

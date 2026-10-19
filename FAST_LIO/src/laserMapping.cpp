@@ -340,6 +340,7 @@ public:
         this->declare_parameter<bool>("pcd_save.pcd_save_en", false);
         this->declare_parameter<int>("pcd_save.interval", -1);
         this->declare_parameter<bool>("map_filter.dynamic_enabled", false);
+        this->declare_parameter<double>("map_filter.static_resolution", 0.05);
         this->declare_parameter<bool>("map_filter.enabled", false);
         this->declare_parameter<double>("map_filter.max_height", 1.5);
         this->declare_parameter<vector<double>>("mapping.extrinsic_T", vector<double>());
@@ -386,6 +387,12 @@ public:
         this->get_parameter_or<bool>("pcd_save.pcd_save_en", pcd_save_en, false);
         this->get_parameter_or<int>("pcd_save.interval", pcd_save_interval, -1);
         dynamic_map_filter_enabled = this->get_parameter("map_filter.dynamic_enabled").as_bool();
+        if (dynamic_map_filter_enabled) {
+            // Keep the exported cloud as fine as the occupancy projection. A
+            // finer 2D grid alone cannot recover points discarded in 15 cm voxels.
+            static_map_filter = StaticMapFilter<PointType>(
+                this->get_parameter("map_filter.static_resolution").as_double());
+        }
         map_ceiling_filter.configure(this->get_parameter("map_filter.enabled").as_bool(),
                                     this->get_parameter("map_filter.max_height").as_double());
         this->get_parameter_or<vector<double>>("mapping.extrinsic_T", extrinT, vector<double>());

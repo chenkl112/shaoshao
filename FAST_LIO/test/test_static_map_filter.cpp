@@ -69,6 +69,48 @@ int main(int argc,char **argv) {
     assert(projection.project(scan,grid));assert(cell(3.03,.03)==0);assert(cell(2.03,.03)==100);
     // No observed floor: preserve obstacles conservatively, no invented free space.
     scan.push_back(p(5.03,.03,1.03));assert(projection.project(scan,grid));assert(cell(5.03,.03)==100);
+    // A physically identical 82 cm passage loses less width on a 5 cm grid.
+    // Dense floor observations are supplied explicitly; unobserved cells must
+    // stay unknown rather than being filled to make the passage passable.
+    StaticMapProjection passage;
+    Cloud passage_points;
+    for(int i=0;i<=30;++i)passage_points.push_back(p(.025f,-.375f+i*.025f,.03f));
+    passage.terrain(passage_points);
+    passage_points.push_back(p(.025f,-.41f,.5f));
+    passage_points.push_back(p(.025f,.41f,.5f));
+    auto free_width=[&](double resolution){
+        StaticMapProjection::Grid output;output.resolution=resolution;
+        assert(passage.project(passage_points,output));
+        auto at=[&](double y){
+            auto x=size_t(std::floor((.025-output.x)/resolution));
+            auto row=size_t(std::floor((y-output.y)/resolution));
+            return output.data.at(row*output.width+x);
+        };
+        assert(at(-.41)==100&&at(.41)==100); // neither wall may disappear
+        assert(at(0)==0);
+        size_t free_cells=0;
+        const auto x=size_t(std::floor((.025-output.x)/resolution));
+        for(unsigned y=0;y<output.height;++y)if(output.data[y*output.width+x]==0)++free_cells;
+        assert(std::count(output.data.begin(),output.data.end(),int8_t(-1))>0);
+        return free_cells*resolution;
+    };
+    assert(free_width(.05)>free_width(.15)+.1);
+    for(double bad:{0.,-.05,.049,2.,std::numeric_limits<double>::infinity(),
+                    std::numeric_limits<double>::quiet_NaN()}) {
+        StaticMapProjection::Grid invalid;invalid.resolution=bad;
+        bool rejected=false;
+        try{passage.project(passage_points,invalid);}catch(const std::invalid_argument&){rejected=true;}
+        assert(rejected);
+    }
+    // Fine static export retains two distinct surfaces in the same old voxel.
+    StaticMapFilter<Point> fine(.05),coarse(.15);
+    auto fine_scan=cloud({p(4.06),p(4.11)});
+    for(int i=0;i<10;++i){
+        fine.update(fine_scan,origin,30.+i*.2);
+        coarse.update(fine_scan,origin,30.+i*.2);
+    }
+    fine.snapshot(out);assert(out.size()==2);
+    coarse.snapshot(out);assert(out.size()==1);
 #ifdef SCURM_TEST_PCL
     assert(argc==2);
     moving.snapshot(out);
@@ -76,5 +118,5 @@ int main(int argc,char **argv) {
     Cloud loaded;assert(pcl::io::loadPCDFile(argv[1],loaded)==0);
     assert(loaded.size()==1&&contains(loaded,10.03));
 #endif
-    std::cout<<"PASS: temporal confirmation, duplicate/out-of-order timestamps, moving returns, occlusion, free-ray clearing, negative coordinates, bounds, fresh 2D projection, conservative unknown floor"<<std::endl;
+    std::cout<<"PASS: temporal confirmation, duplicate/out-of-order timestamps, moving returns, occlusion, free-ray clearing, negative coordinates, bounds, fresh 2D projection, conservative unknown floor, narrow passage resolution, fine static export"<<std::endl;
 }

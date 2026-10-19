@@ -19,6 +19,15 @@ def encode_grid(msg):
     return b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',w,h,8,0,0,0,0))+chunk(b'IDAT',zlib.compress(rows))+chunk(b'IEND',b'')
 
 
+def grid_metadata(msg,filename):
+    q=msg.info.origin.orientation;o=msg.info.origin.position
+    yaw=math.atan2(2*(q.w*q.z+q.x*q.y),1-2*(q.y*q.y+q.z*q.z))
+    # encode_grid writes unknown as gray 205, whose occupancy is 50/255.
+    # A free threshold of .25 loads that unknown gray as FREE in Nav2.
+    return {'image':filename,'resolution':msg.info.resolution,'origin':[o.x,o.y,yaw],
+            'negate':0,'occupied_thresh':.65,'free_thresh':.196,'mode':'trinary'}
+
+
 def main():
     import rclpy
     from rclpy.executors import ExternalShutdownException
@@ -101,9 +110,7 @@ def main():
             if image is None:return
             filename='live-grid-'+str(time.time_ns())+'.png'
             target=maps_dir/filename;target.write_bytes(image)
-            q=msg.info.origin.orientation;o=msg.info.origin.position
-            yaw=math.atan2(2*(q.w*q.z+q.x*q.y),1-2*(q.y*q.y+q.z*q.z))
-            metadata={'image':filename,'resolution':msg.info.resolution,'origin':[o.x,o.y,yaw],'negate':0,'occupied_thresh':.65,'free_thresh':.25,'mode':'trinary'}
+            metadata=grid_metadata(msg,filename)
             tmp=maps_dir/'site.yaml.tmp';tmp.write_text(yaml.safe_dump(metadata,sort_keys=False));tmp.replace(maps_dir/'site.yaml')
             for old in sorted(maps_dir.glob('live-grid-*.png'))[:-8]:old.unlink(missing_ok=True)
         except Exception as e:node.get_logger().error('Cannot write live map: '+str(e))

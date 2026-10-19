@@ -1,0 +1,22 @@
+# 当前 Navcar 雷达坐标平移导航模板。复制为 robot.yaml 后填写实测几何。
+# 不用于 configure.py / bringup.py 的旧 JSONL 入口。
+version: 1
+robot:
+  length_m: null             # 含轮子、突出支架的实际碰撞长度，m，待测
+  width_m: null              # 实际碰撞宽度，m，待测
+  lidar_height_m: 0.32       # 用户已确认实车雷达离地高度 32 cm；换车时按实际高度修改
+yaw:
+  axis_xyz_m: [null, null, null]  # yaw 轴相对车中心的安装位置，m，待测
+  imu_xyz_m: [null, null, null]   # 内置 IMU 相对 yaw 轴的安装位置，m，待测
+  imu_rpy_rad: [null, null, null] # 内置 IMU 相对云台的安装角，rad，待测；当前要求水平
+# yaw 目标在 serial.navcar.yaml 的 yaw_target_deg 中配置，单位为度。
+# 下位机回显的 yaw 目标不是实际关节角；当前使用整车包围圆，不构造假的关节 TF。
+pending:
+  measured_collision_height_m: null
+  yaw_lock_accuracy_deg: null
+  yaw_mechanical_limits_rad: null
+  measured_yaw_or_chassis_heading_feedback: 待定
+  narrowest_passage_width_m: null
+  near_field_self_points: 待测
+  stopping_distance_m: null
+  localization_error_m: null

@@ -22,7 +22,7 @@ class StaticMapProjection {
         return false;
     }
 public:
-    struct Grid {double x=0,y=0,resolution=.15;unsigned width=0,height=0;std::vector<int8_t> data;};
+    struct Grid {double x=0,y=0,resolution=.05;unsigned width=0,height=0;std::vector<int8_t> data;};
     template<class Cloud> void terrain(const Cloud &cloud) {
         std::unordered_map<StaticVoxelKey,Ground,StaticVoxelHash> frame;
         for(const auto &p:cloud) {
@@ -37,6 +37,8 @@ public:
         for(const auto &v:frame)if(ground_.size()<2000000||ground_.count(v.first))ground_[v.first]=v.second;
     }
     template<class Cloud> bool project(const Cloud &cloud,Grid &grid) const {
+        if(!std::isfinite(grid.resolution)||grid.resolution<.05||grid.resolution>1.)
+            throw std::invalid_argument("Static projected map resolution must be in [0.05, 1.0] m");
         if(cloud.empty()||ground_.empty())return false;
         double minx=1e100,miny=1e100,maxx=-1e100,maxy=-1e100;
         for(const auto &p:cloud) {

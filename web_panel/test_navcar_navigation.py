@@ -78,7 +78,8 @@ class NavigationTests(unittest.TestCase):
             root=Path(temp);repo=root/'shaoshao/web_panel';repo.mkdir(parents=True)
             (repo/'robot.yaml').write_text(yaml.safe_dump(config))
             runtime=root/'mapping_runtime';runtime.mkdir()
-            lio={'/**':{'ros__parameters':{'common':{},'pcd_save':{},'publish':{},'mapping':{'extrinsic_T':[0,0,.04412]}}}}
+            lio={'/**':{'ros__parameters':{'common':{},'pcd_save':{},'publish':{},
+                 'map_filter':{'dynamic_enabled':True},'mapping':{'extrinsic_T':[0,0,.04412]}}}}
             (runtime/'fast_lio.yaml').write_text(yaml.safe_dump(lio))
             maps=root/'maps';maps.mkdir();(maps/'site.yaml').write_text('image: saved.png')
             out=build_navigation_config(root,maps,{'x':1.,'y':2.,'yaw':.3})
@@ -104,9 +105,11 @@ class NavigationTests(unittest.TestCase):
             self.assertEqual(ctrl['critics'][0],'BaseObstacle')
             self.assertEqual(params['amcl']['ros__parameters']['initial_pose']['x'],1.)
             cost=params['global_costmap']['global_costmap']['ros__parameters']
+            self.assertEqual(cost['resolution'],.05)
             self.assertAlmostEqual(cost['robot_radius'],radius)
             self.assertEqual(cost['robot_base_frame'],'navcar_imu')
             self.assertFalse(yaml.safe_load((out/'fast_lio.yaml').read_text())['/**']['ros__parameters']['pcd_save']['pcd_save_en'])
+            self.assertFalse(yaml.safe_load((out/'fast_lio.yaml').read_text())['/**']['ros__parameters']['map_filter']['dynamic_enabled'])
         config['robot']['width_m']=None
         with self.assertRaises(ValueError):navigation_geometry(config)
 

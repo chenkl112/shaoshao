@@ -12,6 +12,6 @@ def generate_launch_description():
         'lowerBoundZ':-3.,'upperBoundZ':1.,'disRatioZ':.1,'checkTerrainConn':False,'localTerrainMapRadius':0.,
         'vehicleLength':.7,'vehicleWidth':.7}],remappings=[('/registered_scan','/cloud_registered')]),
       Node(package='tf2_ros',executable='static_transform_publisher',name='mapping_map_odom',arguments=['--frame-id','map','--child-frame-id','odom','--qx','0','--qw','1']),
-      Node(package='fast_lio',executable='static_map_projector',output='screen'),
+      Node(package='fast_lio',executable='static_map_projector',output='screen',parameters=[{'resolution':.05}]),
     ]
     return LaunchDescription(nodes)

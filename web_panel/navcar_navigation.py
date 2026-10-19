@@ -59,6 +59,9 @@ def build_navigation_config(root, maps, initial_pose=None):
     p=lio['/**']['ros__parameters']
     p['common'].update(odom_frame_id='navcar_odom',sensor_frame_id='navcar_imu',send_odom_base_tf=False)
     p['pcd_save']['pcd_save_en']=False
+    # Static export is only needed while mapping. Keep live scans/obstacle
+    # detection, but do not maintain the finer export voxels during navigation.
+    p.setdefault('map_filter',{})['dynamic_enabled']=False
     p['locate_in_prior_map']=False
     p['publish'].update(scan_bodyframe_pub_en=True,map_en=False)
     p['map_file_path']=str(output/'navigation-unused.pcd')
@@ -74,7 +77,7 @@ def build_navigation_config(root, maps, initial_pose=None):
            'publish_frequency':2.,'rolling_window':True,'width':6,'height':6,'resolution':.05,
            'robot_radius':radius,'footprint_padding':.02,'transform_tolerance':.3,
            'plugins':['obstacle_layer','inflation_layer'],'obstacle_layer':obstacle,'inflation_layer':inflation}
-    glob={**local,'global_frame':'map','rolling_window':False,'update_frequency':2.,'resolution':.15,
+    glob={**local,'global_frame':'map','rolling_window':False,'update_frequency':2.,'resolution':.05,
           'track_unknown_space':True,'plugins':['static_layer','obstacle_layer','inflation_layer'],
           'static_layer':{'plugin':'nav2_costmap_2d::StaticLayer','map_subscribe_transient_local':True}}
     params={

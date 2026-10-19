@@ -54,7 +54,8 @@ c['common']['send_odom_base_tf']=False
 c['mapping']['extrinsic_est_en']=False
 c['mapping']['extrinsic_T']=[-.011,-.02329,.04412]
 c['mapping']['extrinsic_R']=[1.,0.,0.,0.,1.,0.,0.,0.,1.]
-c['map_filter']={'enabled':settings['enabled'],'max_height':float(settings['height_m']),'dynamic_enabled':True}
+c['map_filter']={'enabled':settings['enabled'],'max_height':float(settings['height_m']),
+                 'dynamic_enabled':True,'static_resolution':.05}
 (root/'mapping_runtime/fast_lio.yaml').write_text(yaml.safe_dump(config,sort_keys=False))
 token=None
 for f in ['web.log','web.previous.log']:
