@@ -6,56 +6,158 @@
 <style>
 *{box-sizing:border-box}body{margin:0;background:#eeede8;color:#30332f;font:15px system-ui,sans-serif}
 header{padding:20px 26px;background:#f8f7f3;border-bottom:1px solid #cfcec6;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-h1{font-size:20px;font-weight:600;margin:0 0 4px}small{color:#74766d}main{padding:22px;max-width:1450px;margin:auto}
+h1{font-size:20px;font-weight:600;margin:0 0 4px}small{color:#74766d}main{padding:22px;min-width:0;flex:1;max-width:1450px}
 .bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
 button{padding:11px 26px;border-radius:3px;border:1px solid #b7baaf;background:#f8f7f3;color:#40463a;font:inherit;cursor:pointer;transition:background .15s,border-color .15s}
 button:hover:not(:disabled){background:#e0e2d8;border-color:#858c77}button.active,button.active:hover:not(:disabled){background:#566447;border-color:#566447;color:#fff}button:focus-visible{outline:2px solid #566447;outline-offset:3px}button:disabled{opacity:.5;cursor:wait}
+label{display:flex;align-items:center;gap:6px;font-size:13px}input[type=number]{width:76px;padding:9px;border:1px solid #b7baaf;border-radius:3px;background:#f8f7f3;color:inherit;font:inherit}
 #status{margin-left:auto;color:#4e5e40}.view{position:relative;border:1px solid #575b52;border-radius:3px;overflow:hidden;background:#252923}
 canvas{width:100%;height:64vh;min-height:350px;display:block;touch-action:none}.hint{position:absolute;bottom:14px;left:18px;color:#c0c5b8;background:#252923e8;padding:4px 7px;font-size:12px;pointer-events:none}
 .stats{display:flex;gap:24px;flex-wrap:wrap;padding:16px 0;border-bottom:1px solid #cfcec6;color:#5e6356;font-variant-numeric:tabular-nums}#error{color:#a13e2e;white-space:pre-wrap}
 #demo{color:#7a5a25;font-size:13px}.note{color:#707268;font-size:13px;line-height:1.8}
+[hidden]{display:none!important}.layout{display:flex;min-height:calc(100vh - 85px)}
+.sidebar{width:190px;flex-shrink:0;padding:24px 14px;background:#f8f7f3;border-right:1px solid #cfcec6}.sidebar p{margin:0 12px 14px;color:#74766d;font-size:12px;letter-spacing:2px}.sidebar nav{display:flex;flex-direction:column;gap:9px}.sidebar button{text-align:left;padding:14px 16px;border-color:transparent;background:transparent}.sidebar button.active{background:#566447}.sidebar button span{display:block;font-size:11px;opacity:.7;margin-top:5px}
+.cloud-tools{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:14px;color:#5e6356}.cloud-tools small{font-size:12px}.cloud-tools input[type=number]{width:84px}.cloud-tools input:invalid{border-color:#a13e2e}
+.view-heading{display:flex;align-items:center;gap:12px;margin-bottom:14px}.view-heading h2{font-size:17px;font-weight:600;margin:0}.view-heading small{flex:1}.view-heading button{padding:8px 14px}
+.empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#c0c5b8;padding:28px;line-height:1.8;background:#252923}.goal-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 0}.goal-bar button{padding:10px 20px}#goGoal{background:#566447;color:#fff;border-color:#566447}#cancelGoal{color:#a13e2e}#navStatus{flex-basis:100%;color:#707268;font-size:13px;line-height:1.7}.map-note{color:#707268;font-size:13px;line-height:1.8}
+@media(max-width:900px){.layout{display:block}.sidebar{width:auto;border-right:0;border-bottom:1px solid #cfcec6;padding:12px 18px}.sidebar p{display:none}.sidebar nav{flex-direction:row}.sidebar button{flex:1;padding:10px 14px}.sidebar button span{display:none}main{padding:16px}.view-heading{flex-wrap:wrap}canvas{height:58vh;min-height:300px}header{padding:16px 18px}}
 </style>
-<header><div><h1>哨哨</h1><small>实时点云与运行模式</small></div><span id="demo"></span></header>
+<header><div><h1>哨哨</h1><small>实时点云 · 建图地图</small></div><span id="demo"></span></header>
+<div class="layout">
+<aside class="sidebar"><p>工作空间</p><nav aria-label="视图切换">
+<button data-view="live" class="active" aria-current="page" aria-controls="liveView">实时点云<span>MID-360 · LIVE</span></button>
+<button data-view="map" aria-controls="mapView">建图地图<span>已保存的地图</span></button>
+</nav></aside>
 <main>
-<div class="bar"><button data-mode="mapping">建图</button><button data-mode="navigation">导航</button><button data-mode="idle">待机</button><span id="status">正在连接…</span></div>
+<div class="bar"><button data-mode="mapping">开始建图</button><button data-mode="navigation">导航</button><button data-mode="idle">待机</button><button id="stopMapping" hidden disabled>停止建图并保存</button><button id="spin" aria-pressed="false" disabled>小陀螺：关</button><label>旋转速度 <input id="spinRate" type="number" value="0.5" min="-0.5" max="0.5" step="0.1" aria-label="小陀螺角速度，rad/s"> rad/s</label><span id="status">正在连接…</span></div>
+<section id="liveView" aria-label="实时点云"><div class="view-heading"><h2>实时点云</h2><small>雷达当前采集的点云</small></div>
+<div class="cloud-tools"><label><input id="ceilingFilter" type="checkbox" checked>点云去顶</label><label>高度上限 <input id="ceilingHeight" type="number" step="0.1" value="1.5" aria-label="去顶高度上限，米"> m</label><small id="heightReference">参考：当前点云原点</small><label title="仅过滤保存的静态地图，实时点云仍显示移动障碍物"><input id="dynamicMapFilter" type="checkbox" checked>建图动态过滤</label><button id="applyMappingFilter" disabled>应用到建图</button><small id="mappingFilterStatus" role="status">正在读取建图去顶设置…</small></div>
 <div class="view"><canvas id="cloud"></canvas><div class="hint">拖动旋转 · 滚轮缩放 · 双击回到车的位置</div></div>
 <div class="stats"><span id="frame">坐标系 —</span><span id="count">点数 —</span><span id="fresh">点云 —</span><span id="pose">位置 —</span><span id="yaw">yaw 等待反馈</span></div>
+<p class="note">默认只平移，yaw 电机保持固定关节角。小陀螺默认关闭，仅手动/建图模式可开启；正速度为逆时针，负速度为顺时针，可同时平移。网页失联、切换模式或传感器异常时关闭小陀螺。离开建图模式会保存地图，导航目标在“建图地图”页点选后，通过“前往目标”提交。</p>
+</section>
+<section id="mapView" aria-label="建图地图" hidden>
+<div class="view-heading"><h2>建图地图</h2><small id="mapStatus" role="status">等待读取地图</small><button id="refreshMap">刷新地图</button><button id="fitMap">适应窗口</button></div>
+<div class="goal-bar"><span id="selectedGoal">未选择目标 · 请单击地图</span><button id="goGoal" disabled>前往目标</button><button id="cancelGoal" disabled>取消导航</button><span id="navStatus" role="status">请先启动导航模式</span></div>
+<div class="view"><canvas id="savedMap" aria-label="已保存的二维栅格地图"></canvas><div class="empty" id="mapEmpty" role="status">正在读取地图…</div><div class="hint">单击选择目标 · 拖动平移 · 滚轮缩放 · 双击适应窗口</div></div>
+<div class="stats"><span id="mapSize">地图尺寸 —</span><span id="mapResolution">分辨率 —</span><span id="mapOrigin">原点 —</span></div>
+<p class="map-note">点击顶部“导航”，定位就绪后单击地图自动预览路径，再点“前往目标”出发。蓝线为计算路线；绿色箭头为已确认定位，橙色箭头为待确认位置，黄色标记为选点。红色为障碍物，橙色区域为车体所需避障范围。无可行路径时会显示原因，请选择通路更宽的位置。</p>
+</section>
 <div id="error" role="alert"></div>
-<p class="note">建图期间使用原有遥控器或键盘移动车辆。离开建图模式会保存地图。导航目标由 RViz 或任务程序提供。待机会停止模式节点，雷达驱动继续运行。</p>
-</main>
+</main></div>
 <script>
 'use strict';
 const params=new URLSearchParams(location.search);
-const token=params.get('token')||sessionStorage.getItem('scurmToken')||'';
-if(token)sessionStorage.setItem('scurmToken',token);
-history.replaceState(null,'',location.pathname);
+let storedToken='';
+try{storedToken=sessionStorage.getItem('scurmToken')||''}catch{}
+const token=params.get('token')||storedToken;
+try{if(token)sessionStorage.setItem('scurmToken',token)}catch{}
 const $=id=>document.getElementById(id), names={idle:'待机',mapping:'建图',navigation:'导航'};
 const canvas=$('cloud'),ctx=canvas.getContext('2d');
+let activeView='live';
+let dynamicFilterDraft=null;
+let displayPoints=[],cloudFrame='',ceilingEnabled=true,ceilingHeight=1.5;
 let points=[],sequence=-1,yaw=-.7,pitch=.85,scale=35,center=[0,0,0],robot=null,connected=false,requesting=false,lastState=null,requestError='';
-async function api(path,body){
- const response=await fetch(path,{method:body?'POST':'GET',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(4000)});
- const data=await response.json();if(!response.ok)throw Error(data.error||response.statusText);return data;
+try{
+ const saved=JSON.parse(sessionStorage.getItem('scurmCloudCeiling')||'null');
+ if(saved&&typeof saved.enabled==='boolean'&&Number.isFinite(saved.height)){
+  ceilingEnabled=saved.enabled;ceilingHeight=saved.height;
+ }
+}catch{}
+$('ceilingFilter').checked=ceilingEnabled;$('ceilingHeight').value=ceilingHeight;
+function updateCloudFilter(){
+ const base=robot?robot.z:0,cutoff=base+ceilingHeight;
+ displayPoints=ceilingEnabled?points.filter(p=>p[2]<=cutoff):points;
+ $('count').textContent='显示 '+displayPoints.length+' / 原始 '+points.length+' 点';
+ $('heightReference').textContent=robot?'参考：底盘高度':cloudFrame==='livox_frame'?'参考：雷达高度':'参考：当前点云原点';
+ $('ceilingHeight').disabled=!ceilingEnabled;mappingFilterControls();
 }
-function buttons(){document.querySelectorAll('button').forEach(b=>{b.disabled=!connected||requesting||!!lastState?.switching;b.classList.toggle('active',b.dataset.mode===lastState?.mode)})}
-document.querySelectorAll('button').forEach(button=>button.onclick=async()=>{
+function saveCloudFilter(){
+ try{sessionStorage.setItem('scurmCloudCeiling',JSON.stringify({enabled:ceilingEnabled,height:ceilingHeight}))}catch{}
+ updateCloudFilter();
+}
+$('ceilingFilter').onchange=()=>{ceilingEnabled=$('ceilingFilter').checked;saveCloudFilter()};
+$('ceilingHeight').oninput=()=>{
+ const input=$('ceilingHeight'),next=Number(input.value);
+ if(input.value.trim()===''||!Number.isFinite(next)){input.setCustomValidity('请输入有效高度');return}
+ input.setCustomValidity('');ceilingHeight=next;saveCloudFilter();
+};
+$('dynamicMapFilter').onchange=()=>{dynamicFilterDraft=$('dynamicMapFilter').checked;mappingFilterControls()};
+function mappingFilterControls(){
+ const setting=lastState?.mapping_filter,valid=Number.isFinite(ceilingHeight)&&ceilingHeight>0&&ceilingHeight<=50;
+ if(setting&&dynamicFilterDraft===null){dynamicFilterDraft=setting.dynamic_enabled;$('dynamicMapFilter').checked=dynamicFilterDraft}
+ $('dynamicMapFilter').disabled=!connected||!setting||setting.locked||requesting;
+ $('applyMappingFilter').disabled=!connected||!setting||setting.locked||requesting||!valid;
+ $('mappingFilterStatus').textContent=setting?
+  '建图去顶：'+(setting.enabled?'开 · '+setting.height_m+' m':'关')+' · 动态过滤：'+(setting.dynamic_enabled?'开':'关')+' · 参考：起始雷达高度 · '+(setting.locked?'修改前先待机':'下次建图生效'):
+  '正在读取建图去顶设置…';
+ if(!valid)$('mappingFilterStatus').textContent+=' · 建图高度须大于 0 且不超过 50 m';
+}
+$('applyMappingFilter').onclick=async()=>{
+ if($('applyMappingFilter').disabled)return;
+ const input=$('ceilingHeight');if(!input.checkValidity()){input.reportValidity();return}
+ requesting=true;requestError='';buttons();mappingFilterControls();
+ try{lastState=await api('/api/mapping/filter',{enabled:ceilingEnabled,height_m:ceilingHeight,dynamic_enabled:dynamicFilterDraft})}
+ catch(e){requestError=e.message;$('error').textContent=requestError}
+ finally{requesting=false;buttons();mappingFilterControls()}
+};
+async function timedFetch(url,options,ms){
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),ms);
+ try{return await fetch(url,{...options,signal:controller.signal})}finally{clearTimeout(timer)}
+}
+async function api(path,body){
+ const response=await timedFetch(path,{method:body?'POST':'GET',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined},4000);
+ const data=await response.json();if(response.status===401)throw Error('访问令牌无效，请用带 token 的完整链接重新打开');if(!response.ok)throw Error(data.error||response.statusText);return data;
+}
+function buttons(){
+ document.querySelectorAll('[data-mode]').forEach(b=>{const lidarAllowed=lastState?.mapping_only&&((b.dataset.mode==='idle'&&lastState?.mode==='mapping')||(b.dataset.mode==='mapping'&&lastState?.mapping_control?.can_start));b.disabled=(!!lastState?.preview&&b.dataset.mode!=='navigation'&&!lidarAllowed)||!connected||requesting||!!lastState?.switching;b.classList.toggle('active',b.dataset.mode===lastState?.mode);if(b.dataset.mode==='mapping'&&lastState?.mapping_only)b.textContent=lastState?.mapping_control?.starting?'正在启动…':lastState?.mode==='mapping'?'正在建图':'开始建图'});
+ const stop=$('stopMapping'),control=lastState?.mapping_control;
+ stop.hidden=!lastState?.mapping_only&&lastState?.mode!=='mapping';
+ stop.disabled=!connected||requesting||!!lastState?.switching||lastState?.mode!=='mapping'||(control&&!control.can_stop);
+ stop.textContent=control?.starting?'正在启动建图…':lastState?.switching?'正在保存并停止…':lastState?.mapping_only&&lastState?.mode==='idle'?'建图已停止':'停止建图并保存';
+ const enabled=!!lastState?.spin?.enabled;
+ $('spin').disabled=!connected||requesting||!!lastState?.switching||!!lastState?.preview||lastState?.mode!=='mapping';
+ $('spin').classList.toggle('active',enabled);$('spin').textContent='小陀螺：'+(enabled?'开':'关');$('spin').setAttribute('aria-pressed',String(enabled));
+ $('spinRate').disabled=enabled||!!lastState?.preview||requesting;mappingFilterControls();
+}
+document.querySelectorAll('[data-mode]').forEach(button=>button.onclick=async()=>{
+ if(button.dataset.mode==='navigation'){switchView('map');if(lastState?.preview&&!lastState?.navigation_available){requestError=lastState?.navigation?.reason||'当前仅可查看地图，自动导航尚未启动';$('error').textContent=requestError;navigationControls();return}}
  requesting=true;requestError='';buttons();$('error').textContent='';
  try{await api('/api/mode',{mode:button.dataset.mode})}catch(e){requestError=e.message;$('error').textContent=requestError}
  finally{requesting=false;buttons()}
 });
+$('stopMapping').onclick=async()=>{
+ if($('stopMapping').disabled)return;
+ requesting=true;requestError='';buttons();$('error').textContent='';
+ try{lastState=await api('/api/mode',{mode:'idle'})}
+ catch(e){requestError=e.message;$('error').textContent=requestError}
+ finally{requesting=false;buttons()}
+};
+$('spin').onclick=async()=>{
+ requesting=true;requestError='';buttons();$('error').textContent='';
+ try{lastState=await api('/api/spin',{enabled:!lastState?.spin?.enabled,rate_rad_s:Number($('spinRate').value)})}
+ catch(e){requestError=e.message;$('error').textContent=requestError}
+ finally{requesting=false;buttons()}
+};
 async function poll(){
  try{
-  const [s,c]=await Promise.all([api('/api/state'),api('/api/cloud')]);connected=true;lastState=s;
+  const [s,c]=await Promise.all([api('/api/state'),api('/api/cloud')]);const previousMode=lastState?.mode;connected=true;lastState=s;
+  if(s.mode==='navigation'&&previousMode!=='navigation')switchView('map');
+  if(s.spin?.enabled&&!requesting)await api('/api/spin/heartbeat',{});
+  if(s.spin&&document.activeElement!==$('spinRate')){
+   $('spinRate').value=s.spin.rate_rad_s;$('spinRate').max=s.spin.max_rate_rad_s;$('spinRate').min=-s.spin.max_rate_rad_s;
+  }
   $('status').textContent=s.switching?'正在切换并保存地图…':names[s.mode]+' · 节点模式';
   $('demo').textContent=s.demo?'演示数据 · 未连接车辆':s.mock_hardware?'模拟底盘 · 无电机输出':'';
   $('yaw').textContent=s.yaw.ready?'yaw 已锁定 · '+(s.yaw.angle_rad*180/Math.PI).toFixed(2)+'°':s.yaw.reason;
   $('error').textContent=s.error||requestError;
   $('fresh').textContent=s.cloud_age===null?'尚无有效点云':s.cloud_age>1?'点云已停止 · '+s.cloud_age+' 秒前':'实时 · '+s.cloud_age+' 秒前';
-  $('frame').textContent='坐标系 '+(c.frame||'—');$('count').textContent='点数 '+c.points.length;
+  $('frame').textContent='坐标系 '+(c.frame||'—');cloudFrame=c.frame||'';
   if(c.sequence!==sequence){points=c.points;sequence=c.sequence}
-  robot=s.pose&&s.pose.frame===c.frame?s.pose:null;
+  robot=s.pose&&s.pose.frame===c.frame?s.pose:null;updateCloudFilter();
   $('pose').textContent=s.pose?'位置 '+s.pose.x.toFixed(2)+', '+s.pose.y.toFixed(2)+' m · '+(s.odom_age===null||s.odom_age>1?'定位无效或已停止':s.pose.frame):'位置 —';
  }catch(e){connected=false;$('status').textContent='连接断开';$('error').textContent=e.message}
- buttons();setTimeout(poll,200);
+ buttons();navigationControls();drawMap();if(activeView==='map')refreshCostmap();setTimeout(poll,200);
 }
 function project(x,y,z){
  x-=center[0];y-=center[1];z-=center[2];
@@ -63,6 +165,7 @@ function project(x,y,z){
  return [canvas.clientWidth/2+a*scale,canvas.clientHeight/2+(b*Math.cos(pitch)-z*Math.sin(pitch))*scale];
 }
 function draw(){
+ if(activeView!=='live'){requestAnimationFrame(draw);return}
  const dpr=window.devicePixelRatio||1,w=canvas.clientWidth,h=canvas.clientHeight;
  if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr)}
  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);ctx.strokeStyle='#363c32';ctx.lineWidth=1;
@@ -72,7 +175,7 @@ function draw(){
    const a=project(...ends[0]),b=project(...ends[1]);ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.stroke();
   }
  }
- for(const p of points){const [x,y]=project(...p);if(x<0||y<0||x>w||y>h)continue;
+ for(const p of displayPoints){const [x,y]=project(...p);if(x<0||y<0||x>w||y>h)continue;
   ctx.fillStyle='hsl('+Math.max(32,Math.min(58,52-p[2]*8))+',38%,'+Math.max(58,Math.min(78,62+p[2]*5))+'%)';ctx.fillRect(x,y,2,2)}
  if(robot){const a=project(robot.x,robot.y,robot.z),b=project(robot.x+.5*Math.cos(robot.yaw),robot.y+.5*Math.sin(robot.yaw),robot.z);
   ctx.fillStyle='#e88c60';ctx.beginPath();ctx.arc(...a,6,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#e88c60';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.stroke()}
@@ -80,10 +183,188 @@ function draw(){
 }
 let drag=null;
 canvas.onpointerdown=e=>{drag=[e.clientX,e.clientY];canvas.setPointerCapture(e.pointerId)};
-canvas.onpointermove=e=>{if(!drag)return;yaw+=(e.clientX-drag[0])*.008;pitch=Math.max(.05,Math.min(1.55,pitch+(e.clientY-drag[1])*.008));drag=[e.clientX,e.clientY]};
+canvas.onpointermove=e=>{if(!drag)return;yaw-=(e.clientX-drag[0])*.008;pitch=Math.max(.05,Math.min(1.55,pitch-(e.clientY-drag[1])*.008));drag=[e.clientX,e.clientY]};
 canvas.onpointerup=canvas.onpointercancel=()=>drag=null;
 canvas.addEventListener('wheel',e=>{e.preventDefault();scale=Math.max(3,Math.min(500,scale*Math.exp(-e.deltaY*.001)))},{passive:false});
-canvas.ondblclick=()=>{center=robot?[robot.x,robot.y,0]:points.length?points[Math.floor(points.length/2)].slice():[0,0,0];yaw=-.7;pitch=.85;scale=35};
-buttons();poll();draw();
+canvas.ondblclick=()=>{center=robot?[robot.x,robot.y,0]:displayPoints.length?displayPoints[Math.floor(displayPoints.length/2)].slice():[0,0,0];yaw=-.7;pitch=.85;scale=35};
+const mapCanvas=$('savedMap'),mapCtx=mapCanvas.getContext('2d');
+let mapImage=null,mapInfo=null,selectedGoal=null,mapRevision='',mapLoading=false,mapZoom=1,mapX=0,mapY=0,mapDrag=null,goalRequest=false,mapManualView=false;
+let planRequest=0,planError='',costmap=null,costmapLoading=false,costmapChecked=0;
+function matchingPlan(){
+ const plan=lastState?.navigation?.plan,g=plan?.goal;
+ return selectedGoal&&g&&g.map_revision===selectedGoal.map_revision&&Math.hypot(g.x-selectedGoal.x,g.y-selectedGoal.y)<.001?plan:null;
+}
+async function refreshCostmap(){
+ if(costmapLoading||Date.now()-costmapChecked<1000)return;
+ if(lastState?.mode!=='navigation'){costmap=null;return}
+ costmapLoading=true;costmapChecked=Date.now();
+ try{costmap=await api('/api/navigation/costmap')}catch{costmap=null}
+ finally{costmapLoading=false;drawMap()}
+}
+function drawNavigationOverlay(){
+ if(costmap?.available&&lastState?.mode==='navigation'){
+  const c=costmap,[ox,oy,a]=c.origin,r=c.resolution;
+  for(const [cells,color] of [[c.blocked,'#f59d4666'],[c.lethal,'#e4515266']]){
+   mapCtx.fillStyle=color;
+   for(const index of cells){
+    const mx=index%c.width*r,my=Math.floor(index/c.width)*r;
+    mapCtx.beginPath();
+    for(const [i,[dx,dy]] of [[0,0],[r,0],[r,r],[0,r]].entries()){
+     const point=worldToScreen(ox+Math.cos(a)*(mx+dx)-Math.sin(a)*(my+dy),oy+Math.sin(a)*(mx+dx)+Math.cos(a)*(my+dy));
+     if(i===0)mapCtx.moveTo(...point);else mapCtx.lineTo(...point);
+    }
+    mapCtx.closePath();mapCtx.fill();
+   }
+  }
+ }
+ const nav=lastState?.navigation,active=['sending','active','canceling'].includes(nav?.status);
+ const plan=matchingPlan(),path=active?nav.path:plan?.status==='ready'?plan.path:[];
+ if(path?.length){
+  mapCtx.strokeStyle='#168de2';mapCtx.lineWidth=3;mapCtx.lineJoin='round';mapCtx.beginPath();
+  path.forEach(([x,y],i)=>{const v=worldToScreen(x,y);if(i===0)mapCtx.moveTo(...v);else mapCtx.lineTo(...v)});
+  mapCtx.stroke();
+ }
+}
+function drawMap(){
+ if(activeView!=='map')return;
+ const dpr=window.devicePixelRatio||1,w=mapCanvas.clientWidth,h=mapCanvas.clientHeight;
+ mapCanvas.width=Math.round(w*dpr);mapCanvas.height=Math.round(h*dpr);
+ mapCtx.setTransform(dpr,0,0,dpr,0,0);mapCtx.clearRect(0,0,w,h);
+ if(mapImage){
+  mapCtx.imageSmoothingEnabled=false;mapCtx.drawImage(mapImage,mapX,mapY,mapImage.width*mapZoom,mapImage.height*mapZoom);
+  drawNavigationOverlay();
+  const pose=lastState?.navigation?.pose;
+  if(pose&&mapInfo){
+   const [x,y]=worldToScreen(pose.x,pose.y),heading=-(pose.yaw-mapInfo.origin[2]);
+   const localized=lastState?.navigation?.localized===true;
+   mapCtx.save();mapCtx.translate(x,y);mapCtx.rotate(heading);mapCtx.fillStyle=localized?'#64d4a0':'#f3aa52';mapCtx.strokeStyle='#182e25';mapCtx.lineWidth=2;
+   mapCtx.beginPath();mapCtx.moveTo(13,0);mapCtx.lineTo(-8,-7);mapCtx.lineTo(-4,0);mapCtx.lineTo(-8,7);mapCtx.closePath();mapCtx.fill();mapCtx.stroke();mapCtx.restore();
+   if(!localized){mapCtx.fillStyle='#f3aa52';mapCtx.font='12px system-ui';mapCtx.fillText('位置待确认',x+16,y+18)}
+  }
+  const active=lastState?.navigation;
+  if(active?.goal&&['sending','active','canceling'].includes(active.status))goalMarker(active.goal,'#f48c70','导航目标');
+  if(selectedGoal)goalMarker(selectedGoal,'#f2d36e','选定位置');
+ }
+}
+function worldToScreen(x,y){
+ const [ox,oy,angle]=mapInfo.origin,dx=x-ox,dy=y-oy;
+ return [mapX+(Math.cos(angle)*dx+Math.sin(angle)*dy)/mapInfo.resolution*mapZoom,
+         mapY+(mapImage.height-(-Math.sin(angle)*dx+Math.cos(angle)*dy)/mapInfo.resolution)*mapZoom];
+}
+function goalMarker(goal,color,label){
+ const [x,y]=worldToScreen(goal.x,goal.y);mapCtx.strokeStyle=color;mapCtx.fillStyle=color;mapCtx.lineWidth=2;
+ mapCtx.beginPath();mapCtx.arc(x,y,8,0,Math.PI*2);mapCtx.moveTo(x-13,y);mapCtx.lineTo(x+13,y);mapCtx.moveTo(x,y-13);mapCtx.lineTo(x,y+13);mapCtx.stroke();
+ mapCtx.font='12px system-ui';mapCtx.fillText(label,x+15,y-10);
+}
+function selectGoal(e){
+ if(!mapImage||!mapInfo)return;
+ const rect=mapCanvas.getBoundingClientRect(),u=(e.clientX-rect.left-mapX)/mapZoom,v=(e.clientY-rect.top-mapY)/mapZoom;
+ if(u<0||v<0||u>=mapImage.width||v>=mapImage.height)return;
+ const mx=(Math.floor(u)+.5)*mapInfo.resolution,my=(mapImage.height-Math.floor(v)-.5)*mapInfo.resolution;
+ const [ox,oy,angle]=mapInfo.origin;
+ selectedGoal={x:ox+Math.cos(angle)*mx-Math.sin(angle)*my,y:oy+Math.sin(angle)*mx+Math.cos(angle)*my,map_revision:mapRevision};
+ planError='';previewGoal();
+ navigationControls();drawMap();
+}
+async function previewGoal(){
+ const request=++planRequest,goal=selectedGoal;
+ if(!goal||!lastState?.navigation?.ready)return;
+ try{
+  const state=await api('/api/navigation/plan',{...goal});
+  if(request===planRequest){lastState=state;planError=''}
+ }catch(e){if(request===planRequest)planError=e.message}
+ finally{if(request===planRequest){navigationControls();drawMap()}}
+}
+function navigationControls(){
+ const nav=lastState?.navigation,busy=['sending','active','canceling'].includes(nav?.status);
+ const plan=matchingPlan();
+ $('selectedGoal').textContent=selectedGoal?'目标：'+selectedGoal.x.toFixed(2)+', '+selectedGoal.y.toFixed(2)+' m':'未选择目标 · 请单击地图';
+ $('goGoal').disabled=!connected||!!lastState?.preview||!nav?.ready||!selectedGoal||!mapImage||plan?.status!=='ready'||!!planError||goalRequest||busy||requesting;
+ $('cancelGoal').disabled=!connected||goalRequest||!busy||nav?.status==='canceling';
+ let message=!connected?'网页连接断开':nav?.reason||(lastState?.preview?'当前仅可查看地图，自动导航尚未启动':'导航就绪 · 选择目标后点击“前往目标”');
+ if(nav&&nav.status!=='idle')message+=' · '+nav.message;
+ if(selectedGoal&&!busy)message+=' · '+(planError||plan?.message||'正在请求路径预览…');
+ if(nav?.status==='active'&&Number.isFinite(nav.distance_remaining))message+=' · 剩余 '+nav.distance_remaining.toFixed(2)+' m';
+ $('navStatus').textContent=message;
+}
+async function navigationRequest(path,body){
+ goalRequest=true;requestError='';navigationControls();
+ try{lastState=await api(path,body)}catch(e){requestError=e.message;$('error').textContent=requestError}
+ finally{goalRequest=false;navigationControls();drawMap()}
+}
+$('goGoal').onclick=()=>{if(!$('goGoal').disabled&&selectedGoal)navigationRequest('/api/navigation/goal',{...selectedGoal})};
+$('cancelGoal').onclick=()=>{if(!$('cancelGoal').disabled)navigationRequest('/api/navigation/cancel',{})};
+function fitMap(){
+ mapManualView=false;
+ if(mapImage&&activeView==='map'){
+  mapZoom=Math.min((mapCanvas.clientWidth-32)/mapImage.width,(mapCanvas.clientHeight-32)/mapImage.height);
+  mapX=(mapCanvas.clientWidth-mapImage.width*mapZoom)/2;mapY=(mapCanvas.clientHeight-mapImage.height*mapZoom)/2;
+ }
+ drawMap();
+}
+function emptyMap(message){
+ mapImage=null;mapInfo=null;selectedGoal=null;mapRevision='';++planRequest;planError='';navigationControls();$('mapEmpty').hidden=false;$('mapEmpty').textContent=message;
+ $('mapSize').textContent='地图尺寸 —';$('mapResolution').textContent='分辨率 —';$('mapOrigin').textContent='原点 —';drawMap();
+}
+async function refreshMap(){
+ if(mapLoading)return;mapLoading=true;$('refreshMap').disabled=true;
+ try{
+  const info=await api('/api/map');
+  if(!info.available){emptyMap(info.message||'暂无建图地图');$('mapStatus').textContent='暂无已保存地图';return}
+  if(info.revision!==mapRevision){
+   const response=await timedFetch(info.image_url,{headers:{Authorization:'Bearer '+token}},8000);
+   if(!response.ok)throw Error('地图图像读取失败，请刷新重试');
+   const url=URL.createObjectURL(await response.blob()),image=new Image();
+   try{image.src=url;await image.decode()}finally{URL.revokeObjectURL(url)}
+   let priorView=null;
+   if(mapManualView&&mapImage&&mapInfo){
+    const mx=(mapCanvas.clientWidth/2-mapX)/mapZoom*mapInfo.resolution;
+    const my=(mapImage.height-(mapCanvas.clientHeight/2-mapY)/mapZoom)*mapInfo.resolution;
+    const [ox,oy,a]=mapInfo.origin;
+    priorView={x:ox+Math.cos(a)*mx-Math.sin(a)*my,y:oy+Math.sin(a)*mx+Math.cos(a)*my,pixelsPerMetre:mapZoom/mapInfo.resolution};
+   }
+   mapImage=image;mapInfo=info;mapRevision=info.revision;selectedGoal=null;++planRequest;planError='';navigationControls();$('mapEmpty').hidden=true;
+   $('mapSize').textContent='地图尺寸 '+(image.width*info.resolution).toFixed(2)+' × '+(image.height*info.resolution).toFixed(2)+' m';
+   $('mapResolution').textContent='分辨率 '+info.resolution+' m/像素';
+   $('mapOrigin').textContent='原点 '+info.origin[0].toFixed(2)+', '+info.origin[1].toFixed(2)+' m · '+(info.origin[2]*180/Math.PI).toFixed(1)+'°';
+   if(priorView){
+    mapZoom=priorView.pixelsPerMetre*mapInfo.resolution;mapX=0;mapY=0;
+    const [x,y]=worldToScreen(priorView.x,priorView.y);
+    mapX=mapCanvas.clientWidth/2-x;mapY=mapCanvas.clientHeight/2-y;drawMap();
+   }else fitMap();
+  }
+  $('mapStatus').textContent='已保存地图 · 自动刷新';
+ }catch(e){emptyMap('地图读取失败：'+e.message);$('mapStatus').textContent='读取失败'}
+ finally{mapLoading=false;$('refreshMap').disabled=false}
+}
+function switchView(view){
+ activeView=view;
+ document.querySelectorAll('[data-view]').forEach(b=>{
+  b.classList.toggle('active',b.dataset.view===view);if(b.dataset.view===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
+ });
+ $('liveView').hidden=activeView!=='live';$('mapView').hidden=activeView!=='map';
+ if(activeView==='map'){fitMap();refreshMap()}
+}
+document.querySelectorAll('[data-view]').forEach(button=>button.onclick=()=>switchView(button.dataset.view));
+$('refreshMap').onclick=refreshMap;$('fitMap').onclick=fitMap;mapCanvas.ondblclick=fitMap;
+mapCanvas.onpointerdown=e=>{if(e.button!==0)return;mapDrag={startX:e.clientX,startY:e.clientY,x:e.clientX,y:e.clientY,moved:false};mapCanvas.setPointerCapture(e.pointerId)};
+mapCanvas.onpointermove=e=>{
+ if(!mapDrag)return;
+ if(Math.hypot(e.clientX-mapDrag.startX,e.clientY-mapDrag.startY)>6)mapDrag.moved=true;
+ if(mapDrag.moved){mapManualView=true;mapX+=e.clientX-mapDrag.x;mapY+=e.clientY-mapDrag.y;drawMap()}
+ mapDrag.x=e.clientX;mapDrag.y=e.clientY;
+};
+mapCanvas.onpointerup=e=>{if(mapDrag&&!mapDrag.moved)selectGoal(e);mapDrag=null};
+mapCanvas.onpointercancel=()=>mapDrag=null;
+mapCanvas.addEventListener('wheel',e=>{
+ e.preventDefault();if(!mapImage)return;mapManualView=true;
+ const rect=mapCanvas.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;
+ const next=Math.max(.001,Math.min(100,mapZoom*Math.exp(-e.deltaY*.001))),ratio=next/mapZoom;
+ mapX=x-(x-mapX)*ratio;mapY=y-(y-mapY)*ratio;mapZoom=next;drawMap();
+},{passive:false});
+if(typeof ResizeObserver==='function')new ResizeObserver(()=>{if(activeView==='map')fitMap()}).observe(mapCanvas);
+else window.addEventListener('resize',()=>{if(activeView==='map')fitMap()});
+setInterval(()=>{if(activeView==='map')refreshMap()},2000);
+updateCloudFilter();buttons();navigationControls();poll();draw();
 </script>
 </html>

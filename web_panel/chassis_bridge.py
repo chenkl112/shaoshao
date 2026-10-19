@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ROS interfaces for the documented JSONL reference MCU protocol or mock hardware."""
+"""ROS interfaces for legacy JSONL/mock hardware or the Navcar UART1 V1 adapter."""
 import argparse
 import math
 from pathlib import Path
@@ -12,7 +12,23 @@ def main():
     p.add_argument('--config', type=Path, default=Path(__file__).with_name('runtime.json'))
     p.add_argument('--mock', action='store_true', help='模拟下位机，不打开串口、不驱动电机')
     p.add_argument('--check-config', action='store_true', help='只检查串口/yaw 参数，不连接串口或 ROS')
+    p.add_argument('--enable-control', action='store_true', help='Navcar：显式启用控制，默认只读')
+    p.add_argument('--no-ros', action='store_true', help='Navcar：不依赖ROS的只读串口监视')
     args = p.parse_args()
+    # Navcar has different units and target-only feedback; never route it through JSONL/yaw odometry.
+    if args.config.exists():
+        import json
+        import yaml
+        raw = (yaml.safe_load(args.config.read_text()) if args.config.suffix.lower() in ('.yaml', '.yml')
+               else json.loads(args.config.read_text()))
+        if isinstance(raw, dict) and raw.get('transport') == 'navcar_uart1_v1':
+            if args.mock:p.error('Navcar does not use the legacy JSONL mock')
+            from navcar_bridge import main as navcar_main
+            return navcar_main(['--config',str(args.config)] +
+                               [flag for flag, enabled in [('--check-config',args.check_config),
+                                ('--enable-control',args.enable_control),('--no-ros',args.no_ros)] if enabled])
+    if args.enable_control or args.no_ros:
+        p.error('--enable-control / --no-ros require a Navcar configuration')
     try:
         config = load_io_config(args.config, serial=not args.mock)
     except (OSError, ValueError) as exc:

@@ -5,17 +5,17 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-ADD_COMPILE_OPTIONS(-std=c++14)
-ADD_COMPILE_OPTIONS(-std=c++14)
-set(CMAKE_CXX_FLAGS "-std=c++14 -O3")
+ADD_COMPILE_OPTIONS(-std=c++17)
+ADD_COMPILE_OPTIONS(-std=c++17)
+set(CMAKE_CXX_FLAGS "-std=c++17 -O3")
 
 add_definitions(-DROOT_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fexceptions")
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -std=c++0x -std=c++14 -fexceptions")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -std=c++17 -std=c++17 -fexceptions")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 message("Current CPU archtecture: ${CMAKE_SYSTEM_PROCESSOR}")
@@ -115,8 +115,13 @@ endif()
 
 ament_target_dependencies(fastlio_mapping ${dependencies})
 
+add_executable(static_map_projector src/static_map_projector.cpp)
+target_include_directories(static_map_projector PRIVATE include ${PCL_INCLUDE_DIRS})
+target_link_libraries(static_map_projector ${PCL_LIBRARIES})
+ament_target_dependencies(static_map_projector rclcpp nav_msgs sensor_msgs pcl_conversions)
+
 # ---------------- Install --------------- #
-install(TARGETS fastlio_mapping
+install(TARGETS fastlio_mapping static_map_projector
   DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -4,6 +4,8 @@ from launch.launch_description import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource, FrontendLaunchDescriptionSource
+from launch.conditions import IfCondition, UnlessCondition
+from launch.substitutions import LaunchConfiguration, PythonExpression
 from ament_index_python.packages import get_package_share_directory
 
 
@@ -24,6 +26,10 @@ def generate_launch_description():
         FrontendLaunchDescriptionSource(os.path.join(
         get_package_share_directory('terrain_analysis_ext'), 'launch', 'terrain_analysis_ext.launch')
         ),
+        # Include floor returns for the static projection. This is a crop range,
+        # not an assumed LiDAR installation height or chassis dimension.
+        launch_arguments={'lowerBoundZ': PythonExpression([
+            "'-3.0' if '", LaunchConfiguration('map_dynamic_enabled'), "'.lower() == 'true' else '0.0'"])}.items(),
     )
     
     # exchange intensity and height filed of terrain analysis
@@ -46,6 +52,7 @@ def generate_launch_description():
     
     # build octomap use terrain analysis result, that is, intensity field is used as height field
     octomap_server_node = Node(
+    condition=UnlessCondition(LaunchConfiguration('map_dynamic_enabled')),
     package='octomap_server',
         executable='octomap_server_node',
         output='screen',
@@ -85,11 +92,16 @@ def generate_launch_description():
             remappings=[('/cloud_in', '/terrain_map_at_scan')]
     )
             
+    static_projector = Node(
+        condition=IfCondition(LaunchConfiguration('map_dynamic_enabled')),
+        package='fast_lio', executable='static_map_projector', output='screen')
     ld = LaunchDescription()
+    ld.add_action(DeclareLaunchArgument('map_dynamic_enabled', default_value='false'))
     ld.add_action(odom_map_trans)
     ld.add_action(terrain_analysis_ext)
     ld.add_action(exchange_filed)
     ld.add_action(sensor_scan_generation)
     ld.add_action(octomap_server_node)
+    ld.add_action(static_projector)
 
     return ld

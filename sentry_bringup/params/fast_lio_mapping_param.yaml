@@ -10,6 +10,14 @@
         runtime_pos_log_enable: false
         map_file_path: "./test.pcd"
 
+        # Exported PCD and /cloud_registered -> terrain -> 2D map.
+        # Height above the first initialized LiDAR origin, along gravity-up.
+        map_filter:
+            enabled: true
+            max_height: 1.5
+            # Static exported PCD + rebuilt 2D map; live avoidance remains unfiltered.
+            dynamic_enabled: true
+
         common:
             odom_frame_id: "odom"
             sensor_frame_id: "imu_link"

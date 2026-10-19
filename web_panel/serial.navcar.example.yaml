@@ -1,0 +1,11 @@
+# 复制为 serial.navcar.yaml，填写实际串口；Navcar UART1 V1 默认只读。
+transport: navcar_uart1_v1
+serial_port: null  # 通过 ls -l /dev/serial/by-id/ 获取，禁止猜测。
+baud: 2000000
+yaw_target_deg: 0.0  # 相对 MCU 启动航向，不是相对底盘的关节角。
+# 车端一次实测得到的初始倍率；横移暂沿用，仍需复测。
+forward_units_per_mps: 10.0
+left_units_per_mps: 10.0
+rot_units_per_radps: 1.0
+max_translation_units: 30.0
+max_rot_units: 6.0

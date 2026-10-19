@@ -4,7 +4,7 @@
 #include <pcl/io/pcd_io.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <Eigen/Geometry>
-#include <pcl-1.12/pcl/common/transforms.h>
+#include <pcl/common/transforms.h>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2/LinearMath/Matrix3x3.h>
 #include <math.h>

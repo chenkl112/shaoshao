@@ -66,6 +66,8 @@
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <livox_ros_driver2/msg/custom_msg.hpp>
 #include "preprocess.h"
+#include "map_ceiling_filter.hpp"
+#include "static_map_filter.hpp"
 #include <ikd-Tree/ikd_Tree.h>
 
 #define INIT_TIME (0.1)
@@ -130,6 +132,10 @@ pcl::VoxelGrid<PointType> downSizeFilterMap;
 
 
 PointCloudXYZI::Ptr pcl_wait_pub(new PointCloudXYZI());
+MapCeilingFilter map_ceiling_filter;
+StaticMapFilter<PointType> static_map_filter;
+bool dynamic_map_filter_enabled = false;
+double last_export_stamp = -1.;
 
 KD_TREE<PointType> ikdtree;
 
@@ -333,6 +339,9 @@ public:
         this->declare_parameter<bool>("mapping.extrinsic_est_en", true);
         this->declare_parameter<bool>("pcd_save.pcd_save_en", false);
         this->declare_parameter<int>("pcd_save.interval", -1);
+        this->declare_parameter<bool>("map_filter.dynamic_enabled", false);
+        this->declare_parameter<bool>("map_filter.enabled", false);
+        this->declare_parameter<double>("map_filter.max_height", 1.5);
         this->declare_parameter<vector<double>>("mapping.extrinsic_T", vector<double>());
         this->declare_parameter<vector<double>>("mapping.extrinsic_R", vector<double>());
         this->declare_parameter<bool>("locate_in_prior_map", false);
@@ -376,6 +385,9 @@ public:
         this->get_parameter_or<bool>("mapping.extrinsic_est_en", extrinsic_est_en, true);
         this->get_parameter_or<bool>("pcd_save.pcd_save_en", pcd_save_en, false);
         this->get_parameter_or<int>("pcd_save.interval", pcd_save_interval, -1);
+        dynamic_map_filter_enabled = this->get_parameter("map_filter.dynamic_enabled").as_bool();
+        map_ceiling_filter.configure(this->get_parameter("map_filter.enabled").as_bool(),
+                                    this->get_parameter("map_filter.max_height").as_double());
         this->get_parameter_or<vector<double>>("mapping.extrinsic_T", extrinT, vector<double>());
         this->get_parameter_or<vector<double>>("mapping.extrinsic_R", extrinR, vector<double>());
         this->get_parameter_or<bool>("locate_in_prior_map", locate_in_prior_map, false);
@@ -868,6 +880,8 @@ private:
                                     &laserCloudWorld->points[i]);
             }
 
+            // Terrain analysis and the 2D map receive this same clipped world cloud.
+            map_ceiling_filter.filter(*laserCloudWorld);
             sensor_msgs::msg::PointCloud2 laserCloudmsg;
             pcl::toROSMsg(*laserCloudWorld, laserCloudmsg);
             // laserCloudmsg.header.stamp = ros::Time().fromSec(lidar_end_time);
@@ -920,17 +934,18 @@ private:
 
     void publish_map(rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pubLaserCloudMap)
     {
-        PointCloudXYZI::Ptr laserCloudFullRes(dense_pub_en ? feats_undistort : feats_down_body);
-        int size = laserCloudFullRes->points.size();
-        PointCloudXYZI::Ptr laserCloudWorld(
-            new PointCloudXYZI(size, 1));
-
-        for (int i = 0; i < size; i++)
-        {
-            RGBpointBodyToWorld(&laserCloudFullRes->points[i],
-                                &laserCloudWorld->points[i]);
+        if (dynamic_map_filter_enabled) {
+            static_map_filter.snapshot(*pcl_wait_pub);
+        } else if (lidar_end_time > last_export_stamp) {
+            PointCloudXYZI::Ptr source(dense_pub_en ? feats_undistort : feats_down_body);
+            PointCloudXYZI world;
+            world.resize(source->size());
+            for (size_t i = 0; i < source->size(); ++i)
+                RGBpointBodyToWorld(&source->points[i], &world.points[i]);
+            map_ceiling_filter.filter(world);
+            *pcl_wait_pub += world;
+            last_export_stamp = lidar_end_time;
         }
-        *pcl_wait_pub += *laserCloudWorld;
 
         sensor_msgs::msg::PointCloud2 laserCloudmsg;
         pcl::toROSMsg(*pcl_wait_pub, laserCloudmsg);
@@ -948,10 +963,17 @@ private:
         pubLaserCloudMap->publish(laserCloudMap);
     }
 
-    void save_to_pcd()
+    bool save_to_pcd()
     {
+        if (dynamic_map_filter_enabled) static_map_filter.snapshot(*pcl_wait_pub);
+        if (pcl_wait_pub->empty()) return false;
         pcl::PCDWriter pcd_writer;
-        pcd_writer.writeBinary(map_file_path, *pcl_wait_pub);
+        try {
+            return pcd_writer.writeBinary(map_file_path, *pcl_wait_pub) == 0;
+        } catch (const std::exception &error) {
+            RCLCPP_ERROR(this->get_logger(), "Map save failed: %s", error.what());
+            return false;
+        }
     }
 
     template <typename T>
@@ -1083,6 +1105,18 @@ private:
             }
 
             flg_EKF_inited = (Measures.lidar_beg_time - first_lidar_time) < INIT_TIME ? false : true;
+            if (map_ceiling_filter.enabled() && !map_ceiling_filter.ready())
+            {
+                const auto gravity = state_point.grav.get_vect();
+                if (!map_ceiling_filter.initialize({{pos_lid(0), pos_lid(1), pos_lid(2)}},
+                                                  {{gravity(0), gravity(1), gravity(2)}}))
+                {
+                    RCLCPP_WARN(this->get_logger(), "Waiting for a valid gravity/position reference for map clipping");
+                    return;
+                }
+                RCLCPP_INFO(this->get_logger(), "Map ceiling filter anchored at initial LiDAR position; height %.2f m",
+                            this->get_parameter("map_filter.max_height").as_double());
+            }
             /*** Segment the map in lidar FOV ***/
             lasermap_fov_segment();
 
@@ -1190,6 +1224,21 @@ private:
             }
             t5 = omp_get_wtime();
 
+            // Update once per sensor scan, independently of the 1 Hz map publisher.
+            // Keep the LIO estimator and /cloud_registered live obstacle path intact.
+            if (map_pub_en && dynamic_map_filter_enabled) {
+                PointCloudXYZI world;
+                world.resize(feats_undistort->size());
+                for (size_t i = 0; i < feats_undistort->size(); ++i)
+                    RGBpointBodyToWorld(&feats_undistort->points[i], &world.points[i]);
+                map_ceiling_filter.filter(world);
+                const auto lidar = state_point.pos + state_point.rot * state_point.offset_T_L_I;
+                static_map_filter.update(world, {{lidar(0), lidar(1), lidar(2)}}, lidar_end_time);
+                if (static_map_filter.full())
+                    RCLCPP_WARN_THROTTLE(this->get_logger(), *this->get_clock(), 10000,
+                                        "Static export map capacity reached; finish mapping before extending the area");
+            }
+
             /******* Publish points *******/
             if (path_en)
                 publish_path(pubPath_);
@@ -1241,9 +1290,8 @@ private:
         RCLCPP_INFO(this->get_logger(), "Saving map to %s...", map_file_path.c_str());
         if (pcd_save_en)
         {
-            save_to_pcd();
-            res->success = true;
-            res->message = "Map saved.";
+            res->success = save_to_pcd();
+            res->message = res->success ? "Map saved." : "Map empty after filtering or PCD write failed.";
         }
         else
         {
@@ -1268,6 +1316,7 @@ int main(int argc, char **argv)
     /**************** save map ****************/
     /* 1. make sure you have enough memories
     /* 2. pcd save will largely influence the real-time performences **/
+    if (dynamic_map_filter_enabled) static_map_filter.snapshot(*pcl_wait_pub);
     if (pcl_wait_pub->size() > 0 && pcd_save_en)
     {
         string file_name = string("scans.pcd");
@@ -1279,7 +1328,7 @@ int main(int argc, char **argv)
     fout_out.close();
     fout_pre.close();
     fout_dbg.close();
-    fclose(fp);
+    if (fp) fclose(fp);
 
     if (runtime_pos_log)
     {

@@ -97,13 +97,17 @@ def main():
         controller.update(controller_frequency=15.0, min_x_velocity_threshold=0.01,
                           min_y_velocity_threshold=0.01, min_theta_velocity_threshold=0.01)
         controller['progress_checker'].update(required_movement_radius=0.1, movement_time_allowance=10.0)
-        controller['general_goal_checker'].update(xy_goal_tolerance=0.15, yaw_goal_tolerance=0.25)
+        controller['general_goal_checker'].update(xy_goal_tolerance=0.15, yaw_goal_tolerance=math.pi)
         controller['FollowPath'].update(min_vel_x=-0.3, max_vel_x=0.3, min_vel_y=-0.3,
-            max_vel_y=0.3, max_vel_theta=0.5, min_speed_xy=0.0, max_speed_xy=0.3,
+            max_vel_y=0.3, max_vel_theta=0.0, min_speed_xy=0.0, max_speed_xy=0.3,
             min_speed_theta=0.0, acc_lim_x=0.3, acc_lim_y=0.3, acc_lim_theta=0.5,
             decel_lim_x=-0.3, decel_lim_y=-0.3, decel_lim_theta=-0.5,
-            vx_samples=10, vy_samples=10, vtheta_samples=16, sim_time=1.5,
+            vx_samples=10, vy_samples=10, vtheta_samples=1, sim_time=1.5,
             trans_stopped_velocity=0.03)
+        controller['FollowPath']['critics'] = ['Oscillation', 'BaseObstacle', 'PathDist', 'GoalDist']
+        behaviors = data['behavior_server']['ros__parameters']
+        behaviors['behavior_plugins'] = [name for name in behaviors['behavior_plugins'] if name != 'spin']
+        behaviors.pop('spin', None)
         x, y = args.length / 2, args.width / 2
         footprint = str([[x, y], [x, -y], [-x, -y], [-x, y]])
         for name in ('local_costmap', 'global_costmap'):
