@@ -43,6 +43,7 @@ def main():
     root=Path(__file__).resolve().parent
     sys.path.insert(0,str(root/'shaoshao/web_panel'))
     import server as upstream
+    from navcar_settings import load_navigation_speed
     from lidar_mapping_control import MappingControl,LidarMappingPanelMixin
     control=MappingControl(root,a.maps_dir)
     class Panel(LidarMappingPanelMixin,upstream.Panel):
@@ -131,7 +132,8 @@ def main():
     html=html.replace('b.disabled=!connected','b.disabled=!!lastState?.preview||!connected')
     replacements={"  $('status').textContent=":"  $('status').textContent='真实雷达 · '+(s.mode==='navigation'?(s.navigation?.reason||s.navigation?.message||'导航就绪'):s.mapping_control?.message||'待机');","  $('demo').textContent=":"  $('demo').textContent='MID-360 · 建图 / 导航';","  $('yaw').textContent=":"  $('yaw').textContent='雷达坐标平移 · 小陀螺关闭';"}
     html='\n'.join(next((value for prefix,value in replacements.items() if line.startswith(prefix)),line) for line in html.splitlines())
-    html=re.sub(r'<p class="note">.*?</p>','<p class="note">默认待机，只看实时点云。点击“开始建图”创建地图，结束时点击“停止建图并保存”。点击“导航”启动已保存地图的定位，等待定位就绪后在地图空白区域选点并点击“前往目标”。导航仅平移，指令上限 0.10，小陀螺关闭；8081 手动控制可接管并取消导航。</p>',html)
+    navigation_speed=load_navigation_speed(root/'shaoshao/web_panel/robot.yaml')
+    html=re.sub(r'<p class="note">.*?</p>',f'<p class="note">默认待机，只看实时点云。点击“开始建图”创建地图，结束时点击“停止建图并保存”。点击“导航”启动已保存地图的定位，等待定位就绪后在地图空白区域选点并点击“前往目标”。导航仅平移，配置移速上限 {navigation_speed:.2f} m/s，小陀螺关闭；8081 手动控制可接管并取消导航。</p>',html)
     page=html.encode();token=os.getenv('SCURM_WEB_TOKEN') or secrets.token_urlsafe(24)
     class Handler(upstream.handler_class(panel,token)):
         def do_GET(self):

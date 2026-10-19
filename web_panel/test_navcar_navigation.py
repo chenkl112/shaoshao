@@ -8,9 +8,62 @@ import yaml
 from navcar_move_web import Controller
 from navcar_navigation import navigation_geometry,build_navigation_config,localization_quality
 from navcar_protocol import STATE,frame
+from navcar_settings import navigation_speed,load_navigation_speed,limit_translation
 
 
 class NavigationTests(unittest.TestCase):
+    def test_shared_speed_limits_diagonal_and_uart_conversion_once(self):
+        config={'navigation':{'max_speed_mps':.5}}
+        with tempfile.TemporaryDirectory() as temp:
+            path=Path(temp)/'robot.yaml'
+            self.assertEqual(load_navigation_speed(path),.1)
+            path.write_text(yaml.safe_dump(config),encoding='utf-8')
+            speed=load_navigation_speed(path)
+        controller=Controller(dict(forward_units_per_mps=10,left_units_per_mps=10,rot_units_per_radps=1,
+                                   max_translation_units=30,max_rot_units=6),clock=lambda:10.,
+                              navigation_max_speed_mps=speed)
+        controller.session.receive(frame(STATE,1,struct.pack('<4f',0,0,0,17)),10.)
+        controller.yaw=17
+        lease=controller.acquire_navigation()
+        vx,vy=limit_translation(.5,.5,speed)
+        self.assertAlmostEqual(math.hypot(vx,vy),.5)
+        controller.navigation_command(dict(lease=lease,seq=1,forward=vx,left=vy))
+        forward,right,rot,yaw=controller.desired()
+        self.assertAlmostEqual(math.hypot(forward,right),5.)
+        self.assertEqual((rot,yaw),(0,17))
+        self.assertEqual(controller.state()['navigation_max_speed_mps'],.5)
+        with self.assertRaises(ValueError):
+            controller.navigation_command(dict(lease=lease,seq=2,forward=.5,left=.5))
+        controller.navigation_command(dict(lease=lease,seq=2,forward=.5,left=0))
+        self.assertEqual(controller.desired(),(5.,0.,0.,17))
+        limited=Controller(dict(forward_units_per_mps=10,left_units_per_mps=20,rot_units_per_radps=1,
+                                max_translation_units=3,max_rot_units=6),navigation_max_speed_mps=.5)
+        self.assertEqual(limited.navigation_max_speed,.15)
+        for invalid in (0,-1,True,None,float('nan'),float('inf'),3.01):
+            with self.assertRaises(ValueError):navigation_speed({'navigation':{'max_speed_mps':invalid}})
+        with self.assertRaises(ValueError):navigation_speed({'navigation':None})
+
+    def test_measured_octagon_encloses_all_yaws_about_actual_imu_origin(self):
+        config={'robot':{'circumscribed_radius_m':.29,'lidar_height_m':.32},
+                'yaw':{'axis_xyz_m':[0,0,.31],'lidar_offset_radius_m':.01,'imu_rpy_rad':[0,0,0]}}
+        extrinsic=[-.011,-.02329,.04412]
+        radius,height=navigation_geometry(config,extrinsic)
+        self.assertAlmostEqual(radius,.30+math.hypot(*extrinsic[:2]))
+        self.assertEqual(height,.32)
+        # All octagon vertices under independent chassis/sensor angles and
+        # every sampled direction of the measured 1 cm optical eccentricity.
+        for chassis in range(0,360,15):
+            for sensor in range(0,360,30):
+                for eccentric in range(0,360,30):
+                    offset=math.radians(eccentric)
+                    ox,oy=.01*math.cos(offset)+extrinsic[0],.01*math.sin(offset)+extrinsic[1]
+                    for vertex in range(8):
+                        angle=math.radians(chassis-sensor+45*vertex)
+                        self.assertLessEqual(math.hypot(.29*math.cos(angle)-ox,.29*math.sin(angle)-oy),radius+1e-12)
+        with self.assertRaises(ValueError):navigation_geometry(config)
+        config['robot']['circumscribed_radius_m']=0
+        with self.assertRaises(ValueError):navigation_geometry(config,extrinsic)
+
     def test_amcl_zero_variance_roundoff_is_valid_but_real_invalid_variances_are_not(self):
         covariance=[0.]*36
         covariance[0]=-4.0332320816460765e-17
@@ -70,7 +123,8 @@ class NavigationTests(unittest.TestCase):
 
     def test_geometry_encloses_chassis_and_uses_measured_pose_frame(self):
         config={'robot':{'length_m':.55,'width_m':.55,'lidar_height_m':.32},
-                'yaw':{'axis_xyz_m':[0,0,.3],'imu_xyz_m':[.02,0,None],'imu_rpy_rad':[0,0,0]}}
+                'yaw':{'axis_xyz_m':[0,0,.3],'imu_xyz_m':[.02,0,None],'imu_rpy_rad':[0,0,0]},
+                'navigation':{'max_speed_mps':.5}}
         radius,height=navigation_geometry(config)
         self.assertAlmostEqual(radius,math.hypot(.275,.275)+.02)
         self.assertEqual(height,.32)
@@ -87,7 +141,9 @@ class NavigationTests(unittest.TestCase):
             self.assertNotIn('&id',(out/'nav2.yaml').read_text(),'ROS parameter files cannot contain YAML aliases')
             ctrl=params['controller_server']['ros__parameters']['FollowPath']
             self.assertEqual(ctrl['max_vel_theta'],0.)
-            self.assertEqual(ctrl['max_speed_xy'],.1)
+            self.assertEqual(ctrl['max_speed_xy'],.5)
+            self.assertEqual(ctrl['max_vel_x'],.5)
+            self.assertEqual(ctrl['min_vel_y'],-.5)
             # Complete DWB scores recorded at an actual 105 stall (2026-10-18).
             # Moving toward the goal was legal but entered cost 100 inflation;
             # the old .1 weight preferred stopping indefinitely at cost zero.
@@ -110,7 +166,18 @@ class NavigationTests(unittest.TestCase):
             self.assertEqual(cost['robot_base_frame'],'navcar_imu')
             self.assertFalse(yaml.safe_load((out/'fast_lio.yaml').read_text())['/**']['ros__parameters']['pcd_save']['pcd_save_en'])
             self.assertFalse(yaml.safe_load((out/'fast_lio.yaml').read_text())['/**']['ros__parameters']['map_filter']['dynamic_enabled'])
+            config['robot']['circumscribed_radius_m']=.29
+            config['yaw']['lidar_offset_radius_m']=.01
+            config['yaw']['axis_xyz_m']=[0,0,.31]
+            config['robot']['length_m']=config['robot']['width_m']=None
+            config['yaw']['imu_xyz_m']=[None,None,None]
+            (repo/'robot.yaml').write_text(yaml.safe_dump(config))
+            params=yaml.safe_load((build_navigation_config(root,maps)/'nav2.yaml').read_text())
+            measured=params['global_costmap']['global_costmap']['ros__parameters']
+            self.assertAlmostEqual(measured['robot_radius'],.30) # zero XY extrinsic in this fixture
+            self.assertEqual(measured['footprint_padding'],.02)
         config['robot']['width_m']=None
+        config['robot'].pop('circumscribed_radius_m')
         with self.assertRaises(ValueError):navigation_geometry(config)
 
 

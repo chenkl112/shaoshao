@@ -16,11 +16,13 @@ from urllib.parse import urlparse
 
 from navcar_bridge import load_config, targets
 from navcar_protocol import Session
+from navcar_settings import load_navigation_speed, navigation_speed
 
 
 class Controller:
-    def __init__(self, config, clock=time.monotonic):
+    def __init__(self, config, clock=time.monotonic, navigation_max_speed_mps=.1):
         self.config, self.clock = config, clock
+        self.navigation_max_speed=min(navigation_speed({'navigation':{'max_speed_mps':navigation_max_speed_mps}}),self.max_speed())
         self.lock = threading.RLock()
         self.session = Session()
         self.action, self.strength, self.updated = 'stop', .1, 0.
@@ -70,6 +72,7 @@ class Controller:
             return {'connected': fresh, 'error': s.error, 'active': active if self.armed else 'stop',
                     'control_started': self.armed, 'strength': self.strength, 'max_strength': self.max_speed(),
                     'speed_unit': 'm/s',
+                    'navigation_max_speed_mps': self.navigation_max_speed,
                     'translation_scale': {'forward': self.config['forward_units_per_mps'], 'left': self.config['left_units_per_mps']},
                     'control_source': 'navigation' if self.navigation_lease else 'manual',
                     'control_client': self.owner,
@@ -137,8 +140,8 @@ class Controller:
         forward,left,seq=(data.get(k) for k in ('forward','left','seq'))
         if any(type(v) not in (int,float) or not math.isfinite(v) for v in (forward,left)):
             raise ValueError('导航速度必须为有限数值')
-        if math.hypot(forward,left) > min(.1,self.max_speed())+1e-9:
-            raise ValueError('导航速度上限为0.10米/秒')
+        if math.hypot(forward,left) > self.navigation_max_speed+1e-9:
+            raise ValueError(f'导航速度上限为{self.navigation_max_speed:g}米/秒')
         if type(seq) is not int or not 0 <= seq <= 2**53:raise ValueError('无效导航序号')
         with self.lock:
             if not self.navigation_lease or data.get('lease') != self.navigation_lease:
@@ -248,10 +251,11 @@ def handler(controller, token):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--config',type=Path,default=Path(__file__).with_name('serial.navcar.yaml'))
+    p.add_argument('--robot-config',type=Path,default=Path(__file__).with_name('robot.yaml'))
     p.add_argument('--bind',default='0.0.0.0');p.add_argument('--port',type=int,default=8081)
     args=p.parse_args();config=load_config(args.config,control=True)
     import serial
-    controller=Controller(config)
+    controller=Controller(config,navigation_max_speed_mps=load_navigation_speed(args.robot_config))
     token_path=Path.home()/'ccc/navcar_move.token'
     if token_path.exists():token=token_path.read_text().strip()
     else:

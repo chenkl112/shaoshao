@@ -2,13 +2,17 @@
 # 不用于 configure.py / bringup.py 的旧 JSONL 入口。
 version: 1
 robot:
+  circumscribed_radius_m: 0.29 # 车体中心到最外侧实测半径，含四轮及突出物；优先于长宽
   length_m: null             # 含轮子、突出支架的实际碰撞长度，m，待测
   width_m: null              # 实际碰撞宽度，m，待测
   lidar_height_m: 0.32       # 用户已确认实车雷达离地高度 32 cm；换车时按实际高度修改
 yaw:
-  axis_xyz_m: [null, null, null]  # yaw 轴相对车中心的安装位置，m，待测
-  imu_xyz_m: [null, null, null]   # 内置 IMU 相对 yaw 轴的安装位置，m，待测
+  axis_xyz_m: [0.0, 0.0, 0.31]  # yaw 轴位于车体中心，离地 31 cm
+  lidar_offset_radius_m: 0.01   # 雷达光学中心到 yaw 轴的水平偏心；方向未测，使用包络
+  imu_xyz_m: [null, null, null]   # 旧模式字段；光学偏心模式使用 LIO 内部外参，不填假值
   imu_rpy_rad: [null, null, null] # 内置 IMU 相对云台的安装角，rad，待测；当前要求水平
+navigation:
+  max_speed_mps: 0.5         # 导航合成移速上限，Nav2 / 转发 / 8081 共用
 # yaw 目标在 serial.navcar.yaml 的 yaw_target_deg 中配置，单位为度。
 # 下位机回显的 yaw 目标不是实际关节角；当前使用整车包围圆，不构造假的关节 TF。
 pending:

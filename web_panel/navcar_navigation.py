@@ -14,6 +14,7 @@ from urllib.request import Request, urlopen
 
 import yaml
 from robot_io import finite_number, sample_monotonic_time
+from navcar_settings import navigation_speed, limit_translation
 
 
 def localization_quality(frame, covariance):
@@ -31,12 +32,24 @@ def localization_quality(frame, covariance):
     return {'ready':ready,'message':message,'position_std_m':max(deviations[:2]),'yaw_std_rad':deviations[2]}
 
 
-def navigation_geometry(config):
+def navigation_geometry(config,lidar_to_imu_xyz=None):
     robot,yaw=config['robot'],config['yaw']
-    for key in ('length_m','width_m','lidar_height_m'):
+    for key in ('lidar_height_m',):
         if not finite_number(robot.get(key)) or not 0 < robot[key] <= 10:
             raise ValueError('请填写有效的 robot.'+key)
-    for key in ('axis_xyz_m','imu_xyz_m','imu_rpy_rad'):
+    measured_radius=robot.get('circumscribed_radius_m')
+    if measured_radius is not None:
+        if not finite_number(measured_radius) or not 0 < measured_radius <= 10:
+            raise ValueError('请填写有效的 robot.circumscribed_radius_m')
+        chassis_radius=measured_radius
+    else:
+        for key in ('length_m','width_m'):
+            if not finite_number(robot.get(key)) or not 0 < robot[key] <= 10:
+                raise ValueError('请填写有效的 robot.'+key)
+        chassis_radius=math.hypot(robot['length_m']/2,robot['width_m']/2)
+    optical_offset=yaw.get('lidar_offset_radius_m')
+    keys=('axis_xyz_m','imu_rpy_rad') if optical_offset is not None else ('axis_xyz_m','imu_xyz_m','imu_rpy_rad')
+    for key in keys:
         values=yaw.get(key)
         count=2 if key!='imu_rpy_rad' else 3
         if not isinstance(values,list) or len(values)!=3 or not all(finite_number(v) for v in values[:count]):
@@ -44,7 +57,17 @@ def navigation_geometry(config):
     if max(abs(v) for v in yaw['imu_rpy_rad'][:2])>.05:
         raise ValueError('当前二维导航要求雷达水平安装')
     # Any chassis yaw and sensor yaw joint angle fit in this enclosing circle.
-    radius=math.hypot(robot['length_m']/2,robot['width_m']/2)+math.hypot(*yaw['axis_xyz_m'][:2])+math.hypot(*yaw['imu_xyz_m'][:2])
+    if optical_offset is not None:
+        if not finite_number(optical_offset) or not 0 <= optical_offset <= 10:
+            raise ValueError('请填写有效的 yaw.lidar_offset_radius_m')
+        if not isinstance(lidar_to_imu_xyz,(list,tuple)) or len(lidar_to_imu_xyz)!=3 or not all(finite_number(v) for v in lidar_to_imu_xyz):
+            raise ValueError('雷达光学中心偏心模式需要有效的 mapping.extrinsic_T')
+        # Offset direction is not measured. Triangle bounds enclose every
+        # chassis/joint angle about the actual FAST-LIO IMU pose origin.
+        sensor_offset=optical_offset+math.hypot(*lidar_to_imu_xyz[:2])
+    else:
+        sensor_offset=math.hypot(*yaw['imu_xyz_m'][:2])
+    radius=chassis_radius+math.hypot(*yaw['axis_xyz_m'][:2])+sensor_offset
     return radius,robot['lidar_height_m']
 
 
@@ -52,11 +75,12 @@ def build_navigation_config(root, maps, initial_pose=None):
     root,maps=Path(root),Path(maps)
     repo=root/'shaoshao/web_panel'
     config=yaml.safe_load((repo/'robot.yaml').read_text())
-    radius,height=navigation_geometry(config)
+    speed=navigation_speed(config)
     if not (maps/'site.yaml').is_file():raise ValueError('请先完成建图并保存地图')
     output=root/'navigation_runtime';output.mkdir(exist_ok=True)
     lio=yaml.safe_load((root/'mapping_runtime/fast_lio.yaml').read_text())
     p=lio['/**']['ros__parameters']
+    radius,height=navigation_geometry(config,p['mapping']['extrinsic_T'])
     p['common'].update(odom_frame_id='navcar_odom',sensor_frame_id='navcar_imu',send_odom_base_tf=False)
     p['pcd_save']['pcd_save_en']=False
     # Static export is only needed while mapping. Keep live scans/obstacle
@@ -100,13 +124,13 @@ def build_navigation_config(root, maps, initial_pose=None):
         'goal_checker_plugins':['goal_checker'],'controller_plugins':['FollowPath'],
         'progress_checker':{'plugin':'nav2_controller::SimpleProgressChecker','required_movement_radius':.03,'movement_time_allowance':20.},
         'goal_checker':{'plugin':'nav2_controller::SimpleGoalChecker','xy_goal_tolerance':.15,'yaw_goal_tolerance':6.3,'stateful':True},
-        'FollowPath':{'plugin':'dwb_core::DWBLocalPlanner','min_vel_x':-.1,'max_vel_x':.1,
-          'min_vel_y':-.1,'max_vel_y':.1,'min_speed_xy':0.,'max_speed_xy':.1,'min_speed_theta':0.,'max_vel_theta':0.,
+        'FollowPath':{'plugin':'dwb_core::DWBLocalPlanner','min_vel_x':-speed,'max_vel_x':speed,
+          'min_vel_y':-speed,'max_vel_y':speed,'min_speed_xy':0.,'max_speed_xy':speed,'min_speed_theta':0.,'max_vel_theta':0.,
           'acc_lim_x':.3,'acc_lim_y':.3,'acc_lim_theta':.3,'decel_lim_x':-.3,'decel_lim_y':-.3,'decel_lim_theta':-.3,
           'vx_samples':9,'vy_samples':9,'vtheta_samples':1,'sim_time':1.5,'linear_granularity':.025,
           'angular_granularity':.025,'transform_tolerance':.3,'xy_goal_tolerance':.15,'trans_stopped_velocity':.01,
           'short_circuit_trajectory_evaluation':True,'stateful':True,
-          # At 0.1 m/s the horizon covers only 0.15 m. A .1 obstacle weight
+          # At the legacy 0.1 m/s the horizon covers only 0.15 m. A .1 obstacle weight
           # makes entering even the outer inflation band cost more than progress,
           # so DWB repeatedly selects zero. Keep collision rejection enabled while
           # balancing nonlethal inflation against this short, slow trajectory.
@@ -129,6 +153,7 @@ class NavigationControl:
         self.starting=self.stopping=False
         self.error='';self.process=None;self.worker=None
         self.initial_pose=None
+        self.max_speed=.1
 
     @property
     def running(self):return self.process is not None and self.process.poll() is None
@@ -152,7 +177,9 @@ class NavigationControl:
             from ament_index_python.packages import get_package_prefix
             for name in ('nav2_controller','nav2_planner','nav2_amcl','nav2_bt_navigator','pointcloud_to_laserscan'):
                 get_package_prefix(name)
-            build_navigation_config(self.root,self.mapping.maps_dir,self.initial_pose)
+            output=build_navigation_config(self.root,self.mapping.maps_dir,self.initial_pose)
+            params=yaml.safe_load((output/'nav2.yaml').read_text())
+            self.max_speed=params['controller_server']['ros__parameters']['FollowPath']['max_speed_xy']
             if self.mapping.is_running():
                 self.mapping.request_stop()
             deadline=time.monotonic()+60
@@ -375,8 +402,7 @@ class NavigationBridge:
                     moving=(active and p.nav_status=='active' and not p.nav_hold and not p.switching and
                             not p.navigation_reason() and time.monotonic()-stamp<.2)
                     vx,vy=values[:2] if moving else (0.,0.)
-                    scale=min(1.,.1/math.hypot(vx,vy)) if vx or vy else 1.
-                    vx,vy=vx*scale,vy*scale
+                    vx,vy=limit_translation(vx,vy,p.navigation_control.max_speed)
                 with self.io_lock:
                     if self.lease and active:
                         self.seq+=1
