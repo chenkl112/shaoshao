@@ -44,22 +44,24 @@ class NavigationTests(unittest.TestCase):
         with self.assertRaises(ValueError):navigation_speed({'navigation':None})
 
     def test_measured_octagon_encloses_all_yaws_about_actual_imu_origin(self):
-        config={'robot':{'circumscribed_radius_m':.29,'lidar_height_m':.32},
-                'yaw':{'axis_xyz_m':[0,0,.31],'lidar_offset_radius_m':.01,'imu_rpy_rad':[0,0,0]}}
+        config={'robot':{'circumscribed_radius_m':.276011,'lidar_height_m':.327},
+                'yaw':{'axis_xyz_m':[0,0,.280],'lidar_offset_radius_m':.01418,'imu_rpy_rad':[0,0,0]}}
         extrinsic=[-.011,-.02329,.04412]
         radius,height=navigation_geometry(config,extrinsic)
-        self.assertAlmostEqual(radius,.30+math.hypot(*extrinsic[:2]))
-        self.assertEqual(height,.32)
+        chassis_radius=.510/(2*math.cos(math.pi/8))
+        self.assertGreaterEqual(config['robot']['circumscribed_radius_m'],chassis_radius)
+        self.assertAlmostEqual(radius,.276011+.01418+math.hypot(*extrinsic[:2]))
+        self.assertEqual(height,.327)
         # All octagon vertices under independent chassis/sensor angles and
-        # every sampled direction of the measured 1 cm optical eccentricity.
+        # every sampled direction of the measured 14.18 mm optical eccentricity.
         for chassis in range(0,360,15):
             for sensor in range(0,360,30):
                 for eccentric in range(0,360,30):
                     offset=math.radians(eccentric)
-                    ox,oy=.01*math.cos(offset)+extrinsic[0],.01*math.sin(offset)+extrinsic[1]
+                    ox,oy=.01418*math.cos(offset)+extrinsic[0],.01418*math.sin(offset)+extrinsic[1]
                     for vertex in range(8):
                         angle=math.radians(chassis-sensor+45*vertex)
-                        self.assertLessEqual(math.hypot(.29*math.cos(angle)-ox,.29*math.sin(angle)-oy),radius+1e-12)
+                        self.assertLessEqual(math.hypot(chassis_radius*math.cos(angle)-ox,chassis_radius*math.sin(angle)-oy),radius+1e-12)
         with self.assertRaises(ValueError):navigation_geometry(config)
         config['robot']['circumscribed_radius_m']=0
         with self.assertRaises(ValueError):navigation_geometry(config,extrinsic)
@@ -166,16 +168,20 @@ class NavigationTests(unittest.TestCase):
             self.assertEqual(cost['robot_base_frame'],'navcar_imu')
             self.assertFalse(yaml.safe_load((out/'fast_lio.yaml').read_text())['/**']['ros__parameters']['pcd_save']['pcd_save_en'])
             self.assertFalse(yaml.safe_load((out/'fast_lio.yaml').read_text())['/**']['ros__parameters']['map_filter']['dynamic_enabled'])
-            config['robot']['circumscribed_radius_m']=.29
-            config['yaw']['lidar_offset_radius_m']=.01
-            config['yaw']['axis_xyz_m']=[0,0,.31]
+            config['robot']['circumscribed_radius_m']=.276011
+            config['robot']['lidar_height_m']=.327
+            config['yaw']['lidar_offset_radius_m']=.01418
+            config['yaw']['axis_xyz_m']=[0,0,.280]
             config['robot']['length_m']=config['robot']['width_m']=None
             config['yaw']['imu_xyz_m']=[None,None,None]
             (repo/'robot.yaml').write_text(yaml.safe_dump(config))
+            lio['/**']['ros__parameters']['mapping']['extrinsic_T']=[-.011,-.02329,.04412]
+            (runtime/'fast_lio.yaml').write_text(yaml.safe_dump(lio))
             params=yaml.safe_load((build_navigation_config(root,maps)/'nav2.yaml').read_text())
             measured=params['global_costmap']['global_costmap']['ros__parameters']
-            self.assertAlmostEqual(measured['robot_radius'],.30) # zero XY extrinsic in this fixture
+            self.assertAlmostEqual(measured['robot_radius'],.276011+.01418+math.hypot(.011,.02329))
             self.assertEqual(measured['footprint_padding'],.02)
+            self.assertAlmostEqual(params['navigation_scan']['ros__parameters']['min_height'],-.18288)
         config['robot']['width_m']=None
         config['robot'].pop('circumscribed_radius_m')
         with self.assertRaises(ValueError):navigation_geometry(config)

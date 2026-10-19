@@ -134,27 +134,34 @@ cp -n web_panel/robot.navcar.example.yaml web_panel/robot.yaml
 | `web_panel/serial.navcar.yaml` | `serial_port` 为 `/dev/serial/by-id/...`，波特率 2000000；平移倍率先按已测初值，横移仍待复测 |
 | `web_panel/robot.yaml` | 实际碰撞长宽、光学中心离地高度、yaw 轴和 IMU 安装位置、IMU 安装角；未测值保留 null |
 
-当前雷达坐标导航只读取 `robot` 的三项几何和 `yaw` 的安装位置/角度，不使用旧配置里的
+当前雷达坐标导航读取 `robot` 的外接半径（或长宽）、光心高度和 `yaw` 的安装位置/角度，不使用旧配置里的
 `yaw.reference`、编码器符号或编码器零位来伪造实际姿态。
 新的 `robot.navcar.example.yaml` 专门用于这条入口，旧 `robot.example.yaml` 属于 JSONL 通用入口。
-实车雷达离地高度已由用户确认是 `0.32 m`，模板已填写该值；该参数应对应光学中心离地距离。
-原有 `robot.yaml` 的 `0.5 × 0.5 m` 车体尺寸和其他安装参数仍需实测，不能因文件已有数字就视为已标定。
+最新实测已修正：正八边形对边距为 510 mm，已含轮子和突出物；雷达底面及 yaw 安装面离地 280 mm，
+水平偏心为 14.18 mm。旧的 29 cm 外接半径、32 cm 雷达高度、31 cm yaw 高度和 1 cm 偏心不再作为当前实车参数。
+MID360 官方尺寸图的点云原点距底面 47 mm，因此 `lidar_height_m` 应为 `0.280 + 0.047 = 0.327 m`，
+不能填成底面高度 0.280。[官方用户手册](https://terra-1-g.djicdn.com/851d20f7b9f64838a34cd02351370894/Livox/Livox_Mid-360_User_Manual_EN.pdf)
+的 Coordinates（印刷页 12）和附录尺寸图（印刷页 19）给出参考原点和尺寸；该换算要求水平正装。
 
 当前用户已补充实测外形，Navcar 导航可使用外接半径代替未知长宽。在原 `robot.yaml` 中合并以下字段，
 保留原有网络、串口和已标定安装角，不要用模板整份覆盖实车配置：
 
 ```yaml
 robot:
-  circumscribed_radius_m: 0.29  # 从车体中心量到最外侧，已含四个轮子
-  lidar_height_m: 0.32
+  across_flats_m: 0.510       # 对边距测量记录，含全部轮子和突出物
+  circumscribed_radius_m: 0.276011 # 0.510/(2*cos(pi/8))，向上取整到微米
+  lidar_bottom_height_m: 0.280 # 底面高度测量记录
+  lidar_height_m: 0.327       # 程序使用点云原点高度，280 + 47 mm
 yaw:
-  axis_xyz_m: [0.0, 0.0, 0.31] # yaw 轴位于车体中心，离地 31 cm
-  lidar_offset_radius_m: 0.01  # 雷达光学中心相对 yaw 轴的水平偏心
+  axis_xyz_m: [0.0, 0.0, 0.280] # yaw 轴居中，原点取与雷达底面同高的安装面
+  lidar_offset_radius_m: 0.01418 # 雷达光学中心相对 yaw 轴的水平偏心
 navigation:
   max_speed_mps: 0.5          # 三处导航速度限制共用，单位 m/s
 ```
 
 长宽可继续待测；填写有效外接半径后当前 Navcar 导航不再依赖长宽。
+`across_flats_m` 和 `lidar_bottom_height_m` 仅记录测量依据；程序直接使用显式的外接半径和点云原点高度，
+不会自动把对边距当直径，也不会自动把底面高度换算成点云原点高度。
 光学偏心模式也不依赖旧的 `yaw.imu_xyz_m`，使用 LIO 内部外参计入 IMU 与光学中心偏移；
 `yaw.imu_rpy_rad` 仍需满足水平安装要求。旧配置未写速度时保留原 0.1 m/s。
 重启两个 Web 服务后再进入导航，勿仅手改自动生成的 `navigation_runtime/nav2.yaml`。
