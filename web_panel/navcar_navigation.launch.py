@@ -1,5 +1,6 @@
-"""Nav2 localization and translation in the measured LiDAR IMU frame."""
+"""Nav2 localization and translation using calibrated sensor/reference frames."""
 from pathlib import Path
+import yaml
 from launch import LaunchDescription
 from launch.actions import EmitEvent, RegisterEventHandler
 from launch.event_handlers import OnProcessExit
@@ -16,6 +17,14 @@ def generate_launch_description():
            Node(package='pointcloud_to_laserscan',executable='pointcloud_to_laserscan_node',
                 name='navigation_scan',parameters=[params],
                 remappings=[('cloud_in','/cloud_registered_body'),('scan','/navcar/scan')],output='screen')]
+    frames_file=root/'frames.yaml'
+    if frames_file.is_file():
+        for transform in yaml.safe_load(frames_file.read_text())['static_transforms']:
+            x,y,z=transform['xyz']
+            nodes.append(Node(package='tf2_ros',executable='static_transform_publisher',
+                              name='navigation_'+transform['child'],arguments=[
+                                  '--frame-id','navcar_imu','--child-frame-id',transform['child'],
+                                  '--x',str(x),'--y',str(y),'--z',str(z),'--yaw','0','--pitch','0','--roll','0']))
     for package,executable,name in [('nav2_map_server','map_server','map_server'),
                                      ('nav2_amcl','amcl','amcl'),
                                      ('nav2_planner','planner_server','planner_server'),

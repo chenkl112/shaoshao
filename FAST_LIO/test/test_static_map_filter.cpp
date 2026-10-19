@@ -95,7 +95,7 @@ int main(int argc,char **argv) {
         return free_cells*resolution;
     };
     assert(free_width(.05)>free_width(.15)+.1);
-    for(double bad:{0.,-.05,.049,2.,std::numeric_limits<double>::infinity(),
+    for(double bad:{0.,-.05,.009,2.,std::numeric_limits<double>::infinity(),
                     std::numeric_limits<double>::quiet_NaN()}) {
         StaticMapProjection::Grid invalid;invalid.resolution=bad;
         bool rejected=false;
@@ -111,6 +111,43 @@ int main(int argc,char **argv) {
     }
     fine.snapshot(out);assert(out.size()==2);
     coarse.snapshot(out);assert(out.size()==1);
+    // A fully observed 60 cm corridor remains occupied at both walls. The
+    // corrected axis-centred circle (with the original 2 cm padding) has a
+    // centreline; the old IMU-centred enclosing circle does not. A 58 cm
+    // corridor must remain rejected with that same padding.
+    auto corridor=[&](double width,double radius){
+        StaticMapProjection map;
+        Cloud observations;
+        const double middle=.007;
+        for(int x=0;x<=40;++x) {
+            for(double y=middle-width/2+.005;y<middle+width/2;y+=.005)
+                observations.push_back(p(float(.005+x*.005),float(y),.03f));
+            observations.push_back(p(float(.005+x*.005),float(middle-width/2),.5f));
+            observations.push_back(p(float(.005+x*.005),float(middle+width/2),.5f));
+        }
+        map.terrain(observations);
+        StaticMapProjection::Grid g;g.resolution=.01;
+        assert(map.project(observations,g));
+        const auto x=unsigned(std::floor((.105-g.x)/g.resolution));
+        std::vector<unsigned> walls;
+        for(unsigned y=0;y<g.height;++y)if(g.data[y*g.width+x]==100)walls.push_back(y);
+        assert(walls.size()==2);
+        assert(std::count(g.data.begin(),g.data.end(),int8_t(-1))>0);
+        for(unsigned y=0;y<g.height;++y)if(g.data[y*g.width+x]==0) {
+            double clearance=1e9;
+            for(auto wall:walls)clearance=std::min(clearance,std::abs(double(y)-wall)*g.resolution);
+            if(clearance>radius)return true;
+        }
+        return false;
+    };
+    assert(corridor(.60,.276011+.02));
+    assert(!corridor(.60,.315948+.02));
+    assert(!corridor(.58,.276011+.02));
+    StaticMapFilter<Point> centimetre(.01),five_cm(.05);
+    auto close_surfaces=cloud({p(4.011),p(4.031)});
+    for(int i=0;i<10;++i){centimetre.update(close_surfaces,origin,40.+i*.2);five_cm.update(close_surfaces,origin,40.+i*.2);}
+    centimetre.snapshot(out);assert(out.size()==2);
+    five_cm.snapshot(out);assert(out.size()==1);
 #ifdef SCURM_TEST_PCL
     assert(argc==2);
     moving.snapshot(out);

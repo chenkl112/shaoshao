@@ -137,6 +137,7 @@ cp -n web_panel/robot.navcar.example.yaml web_panel/robot.yaml
 当前雷达坐标导航读取 `robot` 的外接半径（或长宽）、光心高度和 `yaw` 的安装位置/角度，不使用旧配置里的
 `yaw.reference`、编码器符号或编码器零位来伪造实际姿态。
 新的 `robot.navcar.example.yaml` 专门用于这条入口，旧 `robot.example.yaml` 属于 JSONL 通用入口。
+60 cm 通道联调使用已标定的中心参考点与独立低速细图配置，完整步骤见 [60 cm 通道联调](../web_panel/60cm通道联调.md)。
 最新实测已修正：正八边形对边距为 510 mm，已含轮子和突出物；雷达底面及 yaw 安装面离地 280 mm，
 水平偏心为 14.18 mm。旧的 29 cm 外接半径、32 cm 雷达高度、31 cm yaw 高度和 1 cm 偏心不再作为当前实车参数。
 MID360 官方尺寸图的点云原点距底面 47 mm，因此 `lidar_height_m` 应为 `0.280 + 0.047 = 0.327 m`，
@@ -155,8 +156,11 @@ robot:
 yaw:
   axis_xyz_m: [0.0, 0.0, 0.280] # yaw 轴居中，原点取与雷达底面同高的安装面
   lidar_offset_radius_m: 0.01418 # 雷达光学中心相对 yaw 轴的水平偏心
+  lidar_offset_xy_m: [-0.01418, 0.0] # 从 yaw 轴指向光心，沿雷达 x 负向
 navigation:
   max_speed_mps: 0.5          # 三处导航速度限制共用，单位 m/s
+  reference_point: yaw_axis # 水平原点为真实 yaw 轴，方向跟随雷达
+  narrow_passage: false     # 60 cm 联调设 true；有效限速为 0.05，需新建 1 cm 地图
 ```
 
 长宽可继续待测；填写有效外接半径后当前 Navcar 导航不再依赖长宽。
@@ -233,14 +237,15 @@ ros2 param get /static_map_projector resolution
 ros2 topic echo /projected_map --once --field info
 ```
 
-两项精度都应为 0.05，消息中的 `resolution` 也应约为 0.05。
+普通配置两项精度都应为 0.05，消息中的 `resolution` 也应约为 0.05；
+`narrow_passage: true` 时对应为 0.01，并要求新建的 1 cm 地图。
 内部 LIO 匹配体素仍是 0.15，与新的静态导出精度用途不同。
 
 导航时：
 
 1. 保持车辆在建图结束位置附近；点击“导航”，等待定位和导航就绪。
 2. 网页选一个附近、留有整车空间的目标，先查看路径预览。
-3. 预览成功再点击“前往目标”；导航向量速度上限读取 `navigation.max_speed_mps`，当前实车配置为 0.50 m/s，只平移，不做最后朝向对齐。
+3. 预览成功再点击“前往目标”；普通配置的导航向量速度上限读取 `navigation.max_speed_mps`，当前为 0.50 m/s；窄通道配置进一步限制为 0.05 m/s。只平移，不做最后朝向对齐。
 4. “取消导航”停止该任务；“待机”停止定位与规划，保留雷达和网页。
 5. 8081 任意手动方向/停止/yaw 设置会撤销导航控制权。导航完成前不要在另一个页面修改控制目标。
 

@@ -10,11 +10,14 @@ robot:
   lidar_height_m: 0.327      # 点云原点离地 = 底面 0.280 + 官方尺寸图 0.047，水平正装
 yaw:
   axis_xyz_m: [0.0, 0.0, 0.280] # yaw 安装面与雷达底面同高；轴线在车体中心
-  lidar_offset_radius_m: 0.01418 # 光学中心到 yaw 轴的水平偏心；方向未测，使用包络
+  lidar_offset_radius_m: 0.01418 # 光学中心到 yaw 轴的水平偏心长度，与下方向量互相校验
+  lidar_offset_xy_m: [-0.01418, 0.0] # 从 yaw 轴指向光心，以雷达 x 前、y 左表示，已确认
   imu_xyz_m: [null, null, null]   # 旧模式字段；光学偏心模式使用 LIO 内部外参，不填假值
   imu_rpy_rad: [null, null, null] # 内置 IMU 相对云台的安装角，rad，待测；当前要求水平
 navigation:
   max_speed_mps: 0.5         # 导航合成移速上限，Nav2 / 转发 / 8081 共用
+  reference_point: yaw_axis # 原点在真实 yaw 轴上，轴向跟随雷达；不冒充实际底盘航向
+  narrow_passage: false     # 60 cm 通道联调设 true：1 cm 新地图、0.05 m/s、1 cm 定位标准差门控
 # yaw 目标在 serial.navcar.yaml 的 yaw_target_deg 中配置，单位为度。
 # 下位机回显的 yaw 目标不是实际关节角；当前使用整车包围圆，不构造假的关节 TF。
 pending:

@@ -41,7 +41,7 @@ template<class Point> class StaticMapFilter {
 public:
     explicit StaticMapFilter(double resolution=.15,double confirmation=1.5,size_t capacity=2000000)
       :resolution_(resolution),confirmation_(confirmation),capacity_(capacity) {
-        if(!std::isfinite(resolution)||resolution<.05||resolution>1||
+        if(!std::isfinite(resolution)||resolution<.01||resolution>1||
            !std::isfinite(confirmation)||confirmation<1||confirmation>10||capacity==0)
             throw std::invalid_argument("Invalid static-map filter settings");
     }

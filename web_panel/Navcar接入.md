@@ -166,6 +166,7 @@ AMCL 将二维扫描匹配到当前保存的 `site.yaml`，Navfn 规划路径，
 
 导航通过8081已有的串口控制器发送向前/向左速度分量，向量总量由 `robot.yaml` 的
 `navigation.max_speed_mps` 统一配置；当前实车模板为 0.50 米/秒，旧配置未填写时仍为 0.10 米/秒。
+`navigation.narrow_passage: true` 时三层共用的有效上限进一步降为 0.05 米/秒。
 Nav2、导航转发和8081读取同一配置；8081仍受串口原生量程限制。
 与手动控制共用倍率10，只在串口发送前换算一次；手动页面上限仍3.0米/秒。
 8081授予独立导航控制权；任意有效手动方向或停止指令立即撤销该控制权，
@@ -186,29 +187,39 @@ Nav2、导航转发和8081读取同一配置；8081仍受串口原生量程限�
 最新修正：四轮斜向麦轮，含轮子及突出物的正八边形对边距为 0.510 m；
 yaw 轴位于车体中心，安装面与雷达底面均离地 0.280 m，水平偏心为 0.01418 m。
 外接半径为 `0.510/(2*cos(pi/8)) ≈ 0.276010011 m`，模板向上取整填 `robot.circumscribed_radius_m: 0.276011`。
-`yaw.lidar_offset_radius_m: 0.01418` 是距离包络，不猜测偏心方向，也不把它当作 IMU 的偏移。
+`yaw.lidar_offset_radius_m: 0.01418` 记录偏心长度；用户随后确认从 yaw 轴指向光心沿雷达 x 负向，
+因此增加 `yaw.lidar_offset_xy_m: [-0.01418,0.0]`，并与长度互相校验。
 
 雷达底面高度不能直接用作点云原点高度。MID360 [官方用户手册](https://terra-1-g.djicdn.com/851d20f7b9f64838a34cd02351370894/Livox/Livox_Mid-360_User_Manual_EN.pdf)
 的 Coordinates（印刷页 12）定义点云原点 O，附录尺寸图（印刷页 19）标明它距底面 47 mm。
 水平正装时，`robot.lidar_height_m = 0.280 + 0.047 = 0.327 m`。
 旧的 29 cm 外接半径、32 cm 雷达高度、31 cm yaw 高度和 1 cm 偏心已被此次修正替代。
 
-以雷达光学中心为圆心，整车包围半径为 0.290191 m。当前 Nav2 原点实际是内置 IMU，
+旧配置 `reference_point: imu` 以雷达光学中心为圆心时，整车包围半径为 0.290191 m，Nav2 原点为内置 IMU，
 还需加上 LIO `mapping.extrinsic_T` 的水平长度。当前内部外参为 `[-0.011,-0.02329,0.04412]`，
 故 `robot_radius` 约为 0.315948 m，另保留 0.02 m padding；安装面高度 0.280 m 不计入水平半径。
 这仍包住任何底盘/yaw 朝向，无需假装获得实际车身朝向。
-当前圆形模型名义碰撞直径约 0.671896 m；不能据此宣称已支持 60 cm 通道。
+该旧模型名义碰撞直径约 0.671896 m。
 真实外形平边对墙时在 60 cm 通道中每侧有 45 mm 几何余量，实际通行仍取决于定位、感知和车体控制。
 本次未实现多边形规划/控制，也未验证实际窄通道通行或 0.5 m/s 刹停表现。
 
+新模板使用 `navigation.reference_point: yaw_axis`：建立 IMU 到 `navcar_center` 的实际固定偏移
+`[0.00318,-0.02329,0] m`，水平原点位于真实 yaw 轴，方向仍跟随雷达 IMU。
+AMCL、Nav2 与里程计采用该中心参考点，扫描保留光学原点 `navcar_lidar`。
+圆半径为真实 0.276011 m，2 cm padding 不变，名义宽度变为 0.592022 m。
+里程计位置、速度、平面协方差和初始位置一并转换；不将偏心传感器的圆周运动当成中心移动。
+此坐标不是实际底盘朝向，不冒充 `base_link` 或 yaw 反馈；圆包络仍覆盖所有底盘朝向。
+仅改变原点不会自动保证 60 cm 通行，细图、近场处理和低速验收见 [60 cm 通道联调](60cm通道联调.md)。
+
 修改配置后需在待机状态重启 8080 和 8081，再进入导航以重新生成参数。
-8081 `GET /api/state` 的 `navigation_max_speed_mps` 应为 0.5；
-`~/ccc/navigation_runtime/nav2.yaml` 的 `FollowPath.max_speed_xy` 应为 0.5。
+8081 `GET /api/state` 的 `navigation_max_speed_mps` 与
+`~/ccc/navigation_runtime/nav2.yaml` 的 `FollowPath.max_speed_xy` 应相同：普通配置为 0.5，窄通道配置为 0.05。
 手动页面的速度输入独立，默认仍为 0.10 m/s。
 
 ### 窄通道与地图精度
 
 2026-10-19 起，新建地图的静态导出体素、二维投影和全局代价地图默认都为 0.05 m。
+窄通道配置使用 0.01 m，且 C++ 最小分辨率支持同步扩展为 0.01 m。
 LIO 内部匹配的 `filter_size_surf` / `filter_size_map` 保留 0.15 m：静态导出使用去畸变后的原始观测，
 无需同时加密里程计内部地图。`map_filter.static_resolution` 控制静态导出体素，
 `static_map_projector.resolution` 控制二维投影。修改 C++ 后需要重新编译。

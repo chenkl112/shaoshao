@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
-import argparse,fcntl,json,os,re,signal,subprocess,time,shlex
+import argparse,fcntl,json,os,re,signal,subprocess,time,shlex,sys
 import yaml
 from lidar_runtime import ensure_driver
 root=Path.home()/'ccc'
@@ -11,6 +11,11 @@ parser.add_argument('--expected-pid',type=int)
 parser.add_argument('--expected-maps-dir',type=Path)
 parser.add_argument('--filter-config',type=Path)
 args=parser.parse_args()
+sys.path.insert(0,str(repo/'web_panel'))
+from navcar_settings import navigation_options
+robot_file=repo/'web_panel/robot.yaml'
+robot_config=yaml.safe_load(robot_file.read_text()) if robot_file.exists() else {}
+navigation=navigation_options(robot_config)
 start_lock=(root/'mapping-start.lock').open('a')
 fcntl.flock(start_lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
 if args.expected_pid is not None and int((root/'mapping.pid').read_text())!=args.expected_pid:
@@ -50,12 +55,13 @@ c=config['/**']['ros__parameters']
 c['map_file_path']=str(maps/'site.pcd')
 c['filter_size_surf']=c['filter_size_map']=.15
 c['preprocess']['lidar_type']=1
+if navigation['narrow']:c['preprocess']['blind']=navigation['min_range']
 c['common']['send_odom_base_tf']=False
 c['mapping']['extrinsic_est_en']=False
 c['mapping']['extrinsic_T']=[-.011,-.02329,.04412]
 c['mapping']['extrinsic_R']=[1.,0.,0.,0.,1.,0.,0.,0.,1.]
 c['map_filter']={'enabled':settings['enabled'],'max_height':float(settings['height_m']),
-                 'dynamic_enabled':True,'static_resolution':.05}
+                 'dynamic_enabled':True,'static_resolution':navigation['resolution']}
 (root/'mapping_runtime/fast_lio.yaml').write_text(yaml.safe_dump(config,sort_keys=False))
 token=None
 for f in ['web.log','web.previous.log']:

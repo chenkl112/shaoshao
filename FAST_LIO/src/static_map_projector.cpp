@@ -18,8 +18,8 @@ class StaticMapProjector:public rclcpp::Node {
 public:
     StaticMapProjector():Node("static_map_projector") {
         resolution_=declare_parameter<double>("resolution",.05);
-        if(!std::isfinite(resolution_)||resolution_<.05||resolution_>1.)
-            throw std::invalid_argument("Static projected map resolution must be in [0.05, 1.0] m");
+        if(!std::isfinite(resolution_)||resolution_<.01||resolution_>1.)
+            throw std::invalid_argument("Static projected map resolution must be in [0.01, 1.0] m");
         pub_=create_publisher<nav_msgs::msg::OccupancyGrid>("/projected_map",rclcpp::QoS(1).transient_local().reliable());
         map_sub_=create_subscription<sensor_msgs::msg::PointCloud2>("/Laser_map",rclcpp::QoS(1).reliable(),
             [this](sensor_msgs::msg::PointCloud2::ConstSharedPtr msg){
