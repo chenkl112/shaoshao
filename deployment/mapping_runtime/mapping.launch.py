@@ -6,7 +6,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
     root=Path.home()/'ccc'
     lio=yaml.safe_load((root/'mapping_runtime/fast_lio.yaml').read_text())
-    resolution=lio['/**']['ros__parameters'].get('map_filter',{}).get('static_resolution',.05)
+    resolution=lio['/**']['ros__parameters'].get('map_filter',{}).get('static_resolution',.01)
     nodes=[
       Node(package='fast_lio',executable='fastlio_mapping',output='screen',parameters=[str(root/'mapping_runtime/fast_lio.yaml')],remappings=[('/Odometry','/state_estimation')]),
       Node(package='terrain_analysis_ext',executable='terrainAnalysisExt',output='screen',parameters=[{

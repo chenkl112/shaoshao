@@ -18,7 +18,7 @@ from navcar_settings import navigation_speed, limit_translation
 from navcar_reference import navigation_frames,shift_pose,initial_reference_pose,shift_planar_covariance
 
 
-def localization_quality(frame, covariance,position_std_limit=.3):
+def localization_quality(frame, covariance,position_std_limit=.01):
     if frame!='map' or len(covariance)!=36:
         return {'ready':False,'message':'地图定位消息无效，等待有效的 map 定位结果'}
     values=[covariance[i] for i in (0,7,35)]
@@ -30,7 +30,7 @@ def localization_quality(frame, covariance,position_std_limit=.3):
     ready=all(v<=position_std_limit**2 for v in values[:2]) and values[2]<=.09
     message=('地图定位就绪' if ready else
              f'定位尚未收敛：位置不确定度 {max(deviations[:2]):.2f} 米，方向 {math.degrees(deviations[2]):.1f}°；请在建图结束位置附近缓慢移动以匹配地图')
-    if not ready and position_std_limit<.3:message+=f'；窄通道要求位置标准差 ≤ {position_std_limit*1000:g} mm'
+    if not ready:message+=f'；导航要求位置标准差 ≤ {position_std_limit*1000:g} mm'
     return {'ready':ready,'message':message,'position_std_m':max(deviations[:2]),'yaw_std_rad':deviations[2]}
 
 
@@ -87,13 +87,12 @@ def build_navigation_config(root, maps, initial_pose=None):
     lio=yaml.safe_load((root/'mapping_runtime/fast_lio.yaml').read_text())
     p=lio['/**']['ros__parameters']
     radius,height=navigation_geometry(config,p['mapping']['extrinsic_T'])
-    frames=navigation_frames(config,p);narrow=frames['narrow'];base=frames['base_frame']
-    if narrow:
-        metadata=yaml.safe_load((maps/'site.yaml').read_text())
-        resolution=metadata.get('resolution') if isinstance(metadata,dict) else None
-        if not finite_number(resolution) or not 0 < resolution <= frames['resolution']+1e-9:
-            raise ValueError('窄通道需要新建并保存的 1 cm 地图；不能仅修改旧地图 YAML 的分辨率')
-        p['preprocess']={**p.get('preprocess',{}),'blind':frames['min_range']}
+    frames=navigation_frames(config,p);base=frames['base_frame']
+    metadata=yaml.safe_load((maps/'site.yaml').read_text())
+    resolution=metadata.get('resolution') if isinstance(metadata,dict) else None
+    if not finite_number(resolution) or not 0 < resolution <= frames['resolution']+1e-9:
+        raise ValueError('导航需要新建并保存的 1 cm 地图；不能仅修改旧地图 YAML 的分辨率')
+    p['preprocess']={**p.get('preprocess',{}),'blind':frames['min_range']}
     (output/'frames.yaml').write_text(yaml.safe_dump(frames,sort_keys=False))
     p['common'].update(odom_frame_id='navcar_odom',sensor_frame_id='navcar_imu',send_odom_base_tf=False)
     p['pcd_save']['pcd_save_en']=False
@@ -110,14 +109,14 @@ def build_navigation_config(root, maps, initial_pose=None):
     obstacle={'plugin':'nav2_costmap_2d::ObstacleLayer','enabled':True,'observation_sources':'scan',
               'scan':{'topic':'/navcar/scan','data_type':'LaserScan','clearing':True,'marking':True,
                       'max_obstacle_height':2.,'raytrace_max_range':15.,'raytrace_min_range':min_range,
-                      'obstacle_max_range':10.,'obstacle_min_range':min_range,'inf_is_valid':False if narrow else True}}
+                      'obstacle_max_range':10.,'obstacle_min_range':min_range,'inf_is_valid':False}}
     inflation={'plugin':'nav2_costmap_2d::InflationLayer','cost_scaling_factor':5.,'inflation_radius':radius+.2}
     local={**common,'global_frame':'navcar_odom','robot_base_frame':base,'update_frequency':10.,
-           'publish_frequency':1. if narrow else 2.,'rolling_window':True,'width':2 if narrow else 6,
-           'height':2 if narrow else 6,'resolution':resolution,
+           'publish_frequency':1.,'rolling_window':True,'width':2,
+           'height':2,'resolution':resolution,
            'robot_radius':radius,'footprint_padding':.02,'transform_tolerance':.3,
            'plugins':['obstacle_layer','inflation_layer'],'obstacle_layer':obstacle,'inflation_layer':inflation}
-    glob={**local,'global_frame':'map','rolling_window':False,'update_frequency':1. if narrow else 2.,'resolution':resolution,
+    glob={**local,'global_frame':'map','rolling_window':False,'update_frequency':1.,'resolution':resolution,
           'track_unknown_space':True,'plugins':['static_layer','obstacle_layer','inflation_layer'],
           'static_layer':{'plugin':'nav2_costmap_2d::StaticLayer','map_subscribe_transient_local':True}}
     params={
@@ -133,24 +132,24 @@ def build_navigation_config(root, maps, initial_pose=None):
         'update_min_d':.02,'update_min_a':.02,'resample_interval':1,'set_initial_pose':True,
         'initial_pose':{'x':float(initial_pose['x']),'y':float(initial_pose['y']),'z':0.,'yaw':float(initial_pose['yaw'])}}},
       'planner_server':{'ros__parameters':{**common,'expected_planner_frequency':1.,'planner_plugins':['GridBased'],
-        'GridBased':{'plugin':'nav2_navfn_planner::NavfnPlanner','tolerance':.02 if narrow else .15,'use_astar':True,'allow_unknown':False}}},
+        'GridBased':{'plugin':'nav2_navfn_planner::NavfnPlanner','tolerance':.02,'use_astar':True,'allow_unknown':False}}},
       'controller_server':{'ros__parameters':{**common,'controller_frequency':20.,'odom_topic':'/navcar/odom',
         'enable_stamped_cmd_vel':False,'min_x_velocity_threshold':.001,'min_y_velocity_threshold':.001,
         'min_theta_velocity_threshold':.001,'failure_tolerance':.3,'progress_checker_plugins':['progress_checker'],
         'goal_checker_plugins':['goal_checker'],'controller_plugins':['FollowPath'],
-        'progress_checker':{'plugin':'nav2_controller::SimpleProgressChecker','required_movement_radius':.01 if narrow else .03,'movement_time_allowance':20.},
-        'goal_checker':{'plugin':'nav2_controller::SimpleGoalChecker','xy_goal_tolerance':.03 if narrow else .15,'yaw_goal_tolerance':6.3,'stateful':True},
+        'progress_checker':{'plugin':'nav2_controller::SimpleProgressChecker','required_movement_radius':.01,'movement_time_allowance':20.},
+        'goal_checker':{'plugin':'nav2_controller::SimpleGoalChecker','xy_goal_tolerance':.03,'yaw_goal_tolerance':6.3,'stateful':True},
         'FollowPath':{'plugin':'dwb_core::DWBLocalPlanner','min_vel_x':-speed,'max_vel_x':speed,
           'min_vel_y':-speed,'max_vel_y':speed,'min_speed_xy':0.,'max_speed_xy':speed,'min_speed_theta':0.,'max_vel_theta':0.,
           'acc_lim_x':.3,'acc_lim_y':.3,'acc_lim_theta':.3,'decel_lim_x':-.3,'decel_lim_y':-.3,'decel_lim_theta':-.3,
-          'vx_samples':9,'vy_samples':9,'vtheta_samples':1,'sim_time':2. if narrow else 1.5,'linear_granularity':.005 if narrow else .025,
-          'angular_granularity':.025,'transform_tolerance':.3,'xy_goal_tolerance':.03 if narrow else .15,'trans_stopped_velocity':.01,
+          'vx_samples':9,'vy_samples':9,'vtheta_samples':1,'sim_time':2.,'linear_granularity':.005,
+          'angular_granularity':.025,'transform_tolerance':.3,'xy_goal_tolerance':.03,'trans_stopped_velocity':.01,
           'short_circuit_trajectory_evaluation':True,'stateful':True,
           # At the legacy 0.1 m/s the horizon covers only 0.15 m. A .1 obstacle weight
           # makes entering even the outer inflation band cost more than progress,
           # so DWB repeatedly selects zero. Keep collision rejection enabled while
           # balancing nonlethal inflation against this short, slow trajectory.
-          'critics':['BaseObstacle','PathDist','GoalDist'],'BaseObstacle.scale':.001 if narrow else .01,'PathDist.scale':32.,'GoalDist.scale':24.}}},
+          'critics':['BaseObstacle','PathDist','GoalDist'],'BaseObstacle.scale':.001,'PathDist.scale':32.,'GoalDist.scale':24.}}},
       'local_costmap':{'local_costmap':{'ros__parameters':local}},
       'global_costmap':{'global_costmap':{'ros__parameters':glob}},
       'bt_navigator':{'ros__parameters':{**common,'global_frame':'map','robot_base_frame':base,
@@ -169,8 +168,8 @@ class NavigationControl:
         self.starting=self.stopping=False
         self.error='';self.process=None;self.worker=None
         self.initial_pose=None
-        self.max_speed=.1
-        self.frames={'base_frame':'navcar_imu','center_offset':[0.,0.,0.],'position_std_limit':.3}
+        self.max_speed=.3
+        self.frames={'base_frame':'navcar_imu','center_offset':[0.,0.,0.],'position_std_limit':.01}
 
     @property
     def running(self):return self.process is not None and self.process.poll() is None

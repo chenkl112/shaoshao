@@ -55,7 +55,7 @@ c=config['/**']['ros__parameters']
 c['map_file_path']=str(maps/'site.pcd')
 c['filter_size_surf']=c['filter_size_map']=.15
 c['preprocess']['lidar_type']=1
-if navigation['narrow']:c['preprocess']['blind']=navigation['min_range']
+c['preprocess']['blind']=navigation['min_range']
 c['common']['send_odom_base_tf']=False
 c['mapping']['extrinsic_est_en']=False
 c['mapping']['extrinsic_T']=[-.011,-.02329,.04412]

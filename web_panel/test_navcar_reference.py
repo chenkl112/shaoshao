@@ -19,7 +19,7 @@ def config():
     return {'robot':{'circumscribed_radius_m':.276011,'lidar_height_m':.327},
             'yaw':{'axis_xyz_m':[0,0,.280],'lidar_offset_radius_m':.01418,
                    'lidar_offset_xy_m':[-.01418,0.],'imu_rpy_rad':[0,0,0]},
-            'navigation':{'reference_point':'yaw_axis','narrow_passage':True,'max_speed_mps':.5}}
+            'navigation':{'reference_point':'yaw_axis','max_speed_mps':.3}}
 
 
 def lio():
@@ -100,7 +100,7 @@ class ReferenceTests(unittest.TestCase):
         with self.assertRaises(ValueError):navigation_frames(cfg,lio())
         params=lio();params['mapping']['extrinsic_R']=[0,-1,0,1,0,0,0,0,1]
         with self.assertRaises(ValueError):navigation_frames(config(),params)
-        cfg=config();cfg['navigation']['reference_point']='imu'
+        cfg=config();cfg['navigation']['reference_point']='invalid'
         with self.assertRaises(ValueError):navigation_options(cfg)
 
     def test_profile_rejects_old_map_and_generates_consistent_sensor_and_center_frames(self):
@@ -115,6 +115,7 @@ class ReferenceTests(unittest.TestCase):
             (maps/'site.yaml').write_text('image: site.png\nresolution: 0.01\n')
             output=build_navigation_config(root,maps,{'x':1.,'y':2.,'yaw':0.})
             frames=yaml.safe_load((output/'frames.yaml').read_text())
+            self.assertNotIn('narrow',frames)
             params=yaml.safe_load((output/'nav2.yaml').read_text())
             fast=yaml.safe_load((output/'fast_lio.yaml').read_text())['/**']['ros__parameters']
             self.assertEqual(fast['preprocess']['blind'],.2)
@@ -140,12 +141,12 @@ class ReferenceTests(unittest.TestCase):
             self.assertEqual(params['bt_navigator']['ros__parameters']['robot_base_frame'],'navcar_center')
             controller=params['controller_server']['ros__parameters']['FollowPath']
             self.assertEqual(controller['max_speed_xy'],load_navigation_speed(path))
-            self.assertEqual(controller['max_speed_xy'],.05)
+            self.assertEqual(controller['max_speed_xy'],.3)
             self.assertEqual(controller['max_vel_theta'],0.)
             self.assertEqual(controller['critics'][0],'BaseObstacle')
             self.assertNotIn('&id',(output/'nav2.yaml').read_text())
 
-    def test_narrow_speed_reaches_uart_once_and_localization_gate_is_tighter(self):
+    def test_global_speed_reaches_uart_once_and_localization_gate_is_tight(self):
         speed=navigation_speed(config())
         controller=Controller(dict(forward_units_per_mps=10,left_units_per_mps=10,rot_units_per_radps=1,
                                    max_translation_units=30,max_rot_units=6),clock=lambda:10.,
@@ -154,13 +155,23 @@ class ReferenceTests(unittest.TestCase):
         lease=controller.acquire_navigation()
         controller.navigation_command(dict(lease=lease,seq=1,forward=.03,left=.04))
         self.assertEqual(controller.desired(),(.3,-.4,0.,17))
+        controller.navigation_command(dict(lease=lease,seq=2,forward=.18,left=.24))
+        forward,left,rotation,yaw=controller.desired()
+        self.assertAlmostEqual(forward,1.8)
+        self.assertAlmostEqual(left,-2.4)
+        self.assertEqual((rotation,yaw),(0.,17))
         with self.assertRaises(ValueError):
-            controller.navigation_command(dict(lease=lease,seq=2,forward=.06,left=0))
+            controller.navigation_command(dict(lease=lease,seq=3,forward=.31,left=0))
+        lower=config();lower['navigation']['max_speed_mps']=.1
+        self.assertEqual(navigation_speed(lower),.1)
+        legacy=config();legacy['navigation'].update(narrow_passage=False,max_speed_mps=.5)
+        self.assertEqual(navigation_speed(legacy),.3)
+        self.assertEqual(navigation_options(legacy)['resolution'],.01)
         covariance=[0.]*36;covariance[0]=covariance[7]=.000025
         self.assertTrue(localization_quality('map',covariance,.01)['ready'])
         covariance[7]=.000121
         self.assertFalse(localization_quality('map',covariance,.01)['ready'])
-        self.assertTrue(localization_quality('map',covariance)['ready'])
+        self.assertFalse(localization_quality('map',covariance)['ready'])
 
 
 if __name__=='__main__':unittest.main()
