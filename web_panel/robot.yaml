@@ -1,0 +1,49 @@
+# 复制为 robot.yaml 后填写。null/待测 均表示未知，实车启动前必须补全必填项。
+version: 1
+robot:
+  across_flats_m: 0.510       # 正八边形对边距，含轮子和突出物，已确认
+  circumscribed_radius_m: 0.276011 # 根据对边距换算的外接半径，向上取整到微米
+  length_m: 0.5            # 含轮子、突出支架的碰撞长度，待测
+  width_m: 0.5              # 碰撞宽度，待测
+  lidar_bottom_height_m: 0.280 # 雷达底面离地高度，已确认
+  lidar_height_m: 0.327    # 点云原点离地 = 底面 0.280 + 官方尺寸图 0.047，水平正装
+yaw:
+  reference: 0            # 本版支持 base_link：保持相对底盘固定角
+  target_rad: 0           # 闭环保持角，按标定后的关节零位，待测
+  axis_xyz_m: [0, 0, 0.280] # yaw 安装面与雷达底面同高；轴线在车体中心
+  lidar_offset_radius_m: 0.01418 # 雷达光学中心到 yaw 轴水平偏心，已确认
+  lidar_offset_xy_m: [-0.01418, 0.0] # 从 yaw 轴指向光心，沿雷达 x 负方向，已确认
+  imu_xyz_m: [0.02, 0, 0]   # 内置 IMU 在 yaw_link 中的位置，待测
+  imu_rpy_rad: [0, 0, 0] # 内置 IMU 相对 yaw_link 的安装角，待测
+  joint_name: yaw_joint
+  angle_tolerance_rad: 0.02  # 约 1.15°，起始门控容差，需实测调整
+  rate_tolerance_rad_s: 0.03
+  feedback_timeout_s: 0.3
+  settle_time_s: 0.5
+navigation:
+  max_speed_mps: 0.5
+  reference_point: yaw_axis
+network:
+  host_ip: 192.168.10.100              # 雷达专用网口 IP，待测
+  lidar_ip: 192.168.10.101             # MID360 实际 IP，待测
+hardware:
+  transport: navcar_uart1_v1  # 已选定参考串口协议；下位机由底盘负责人实现
+  driver_command: []         # 已有 ROS 驱动的启动命令数组，待测；也可单独启动
+  serial_port:  /dev/serial/by-id/usb-1a86_USB_Single_Serial_5B21005517-if00          # 例如 /dev/serial/by-id/...，待测
+  baud: 2000000                 # 与下位机一致，待测
+  yaw_encoder_sign: 1     # 原始编码器转 ROS 关节正方向，+1/-1，串口方案必填
+  yaw_encoder_zero_rad: 0 # 原始编码器对应关节零位的读数，串口方案必填
+  command_timeout_s: 0.3
+# 以下作为待测记录，不会被当成真实值写入轮速控制器。
+pending:
+  ubuntu_ros_version: 24.04
+  controller_model_and_protocol: navcar_uart1_v1
+  wheel_radius_m: null
+  half_wheelbase_m: null
+  half_track_m: null
+  roller_layout: 待测
+  gear_ratio: null
+  encoder_ticks_per_revolution: null
+  motor_directions: 待测
+  yaw_pid_and_current_limits: 待测
+  yaw_mechanical_limits_rad: 待测

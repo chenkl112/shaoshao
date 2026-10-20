@@ -1,7 +1,6 @@
 __pycache__/
 original_configs/
 robot_static.launch.py
-robot.yaml
 serial.yaml
 serial.navcar.yaml
 runtime.json
