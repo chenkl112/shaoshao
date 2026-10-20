@@ -168,7 +168,7 @@ class NavigationControl:
         self.starting=self.stopping=False
         self.error='';self.process=None;self.worker=None
         self.initial_pose=None
-        self.max_speed=.3
+        self.max_speed=.5
         self.frames={'base_frame':'navcar_imu','center_offset':[0.,0.,0.],'position_std_limit':.01}
 
     @property

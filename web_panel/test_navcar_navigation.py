@@ -16,7 +16,7 @@ class NavigationTests(unittest.TestCase):
         config={'navigation':{'max_speed_mps':.5}}
         with tempfile.TemporaryDirectory() as temp:
             path=Path(temp)/'robot.yaml'
-            self.assertEqual(load_navigation_speed(path),.3)
+            self.assertEqual(load_navigation_speed(path),.5)
             path.write_text(yaml.safe_dump(config),encoding='utf-8')
             speed=load_navigation_speed(path)
         controller=Controller(dict(forward_units_per_mps=10,left_units_per_mps=10,rot_units_per_radps=1,
@@ -26,16 +26,16 @@ class NavigationTests(unittest.TestCase):
         controller.yaw=17
         lease=controller.acquire_navigation()
         vx,vy=limit_translation(.5,.5,speed)
-        self.assertAlmostEqual(math.hypot(vx,vy),.3)
+        self.assertAlmostEqual(math.hypot(vx,vy),.5)
         controller.navigation_command(dict(lease=lease,seq=1,forward=vx,left=vy))
         forward,right,rot,yaw=controller.desired()
-        self.assertAlmostEqual(math.hypot(forward,right),3.)
+        self.assertAlmostEqual(math.hypot(forward,right),5.)
         self.assertEqual((rot,yaw),(0,17))
-        self.assertEqual(controller.state()['navigation_max_speed_mps'],.3)
+        self.assertEqual(controller.state()['navigation_max_speed_mps'],.5)
         with self.assertRaises(ValueError):
             controller.navigation_command(dict(lease=lease,seq=2,forward=.5,left=.5))
-        controller.navigation_command(dict(lease=lease,seq=2,forward=.3,left=0))
-        self.assertEqual(controller.desired(),(3.,0.,0.,17))
+        controller.navigation_command(dict(lease=lease,seq=2,forward=.5,left=0))
+        self.assertEqual(controller.desired(),(5.,0.,0.,17))
         limited=Controller(dict(forward_units_per_mps=10,left_units_per_mps=20,rot_units_per_radps=1,
                                 max_translation_units=3,max_rot_units=6),navigation_max_speed_mps=.5)
         self.assertEqual(limited.navigation_max_speed,.15)
@@ -143,9 +143,9 @@ class NavigationTests(unittest.TestCase):
             self.assertNotIn('&id',(out/'nav2.yaml').read_text(),'ROS parameter files cannot contain YAML aliases')
             ctrl=params['controller_server']['ros__parameters']['FollowPath']
             self.assertEqual(ctrl['max_vel_theta'],0.)
-            self.assertEqual(ctrl['max_speed_xy'],.3)
-            self.assertEqual(ctrl['max_vel_x'],.3)
-            self.assertEqual(ctrl['min_vel_y'],-.3)
+            self.assertEqual(ctrl['max_speed_xy'],.5)
+            self.assertEqual(ctrl['max_vel_x'],.5)
+            self.assertEqual(ctrl['min_vel_y'],-.5)
             # Complete DWB scores recorded at an actual 105 stall (2026-10-18).
             # Moving toward the goal was legal but entered cost 100 inflation;
             # the old .1 weight preferred stopping indefinitely at cost zero.

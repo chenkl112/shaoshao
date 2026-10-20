@@ -19,7 +19,7 @@ def config():
     return {'robot':{'circumscribed_radius_m':.276011,'lidar_height_m':.327},
             'yaw':{'axis_xyz_m':[0,0,.280],'lidar_offset_radius_m':.01418,
                    'lidar_offset_xy_m':[-.01418,0.],'imu_rpy_rad':[0,0,0]},
-            'navigation':{'reference_point':'yaw_axis','max_speed_mps':.3}}
+            'navigation':{'reference_point':'yaw_axis','max_speed_mps':.5}}
 
 
 def lio():
@@ -141,7 +141,7 @@ class ReferenceTests(unittest.TestCase):
             self.assertEqual(params['bt_navigator']['ros__parameters']['robot_base_frame'],'navcar_center')
             controller=params['controller_server']['ros__parameters']['FollowPath']
             self.assertEqual(controller['max_speed_xy'],load_navigation_speed(path))
-            self.assertEqual(controller['max_speed_xy'],.3)
+            self.assertEqual(controller['max_speed_xy'],.5)
             self.assertEqual(controller['max_vel_theta'],0.)
             self.assertEqual(controller['critics'][0],'BaseObstacle')
             self.assertNotIn('&id',(output/'nav2.yaml').read_text())
@@ -155,17 +155,17 @@ class ReferenceTests(unittest.TestCase):
         lease=controller.acquire_navigation()
         controller.navigation_command(dict(lease=lease,seq=1,forward=.03,left=.04))
         self.assertEqual(controller.desired(),(.3,-.4,0.,17))
-        controller.navigation_command(dict(lease=lease,seq=2,forward=.18,left=.24))
+        controller.navigation_command(dict(lease=lease,seq=2,forward=.3,left=.4))
         forward,left,rotation,yaw=controller.desired()
-        self.assertAlmostEqual(forward,1.8)
-        self.assertAlmostEqual(left,-2.4)
+        self.assertAlmostEqual(forward,3.)
+        self.assertAlmostEqual(left,-4.)
         self.assertEqual((rotation,yaw),(0.,17))
         with self.assertRaises(ValueError):
-            controller.navigation_command(dict(lease=lease,seq=3,forward=.31,left=0))
+            controller.navigation_command(dict(lease=lease,seq=3,forward=.51,left=0))
         lower=config();lower['navigation']['max_speed_mps']=.1
         self.assertEqual(navigation_speed(lower),.1)
-        legacy=config();legacy['navigation'].update(narrow_passage=False,max_speed_mps=.5)
-        self.assertEqual(navigation_speed(legacy),.3)
+        legacy=config();legacy['navigation'].update(narrow_passage=False,max_speed_mps=.8)
+        self.assertEqual(navigation_speed(legacy),.5)
         self.assertEqual(navigation_options(legacy)['resolution'],.01)
         covariance=[0.]*36;covariance[0]=covariance[7]=.000025
         self.assertTrue(localization_quality('map',covariance,.01)['ready'])
