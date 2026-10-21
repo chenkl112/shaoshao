@@ -1,8 +1,8 @@
 # 复制为 robot.yaml 后填写。null/待测 均表示未知，实车启动前必须补全必填项。
 version: 1
 robot:
-  across_flats_m: 0.510       # 正八边形对边距，含轮子和突出物，已确认
-  circumscribed_radius_m: 0.276011 # 根据对边距换算的外接半径，向上取整到微米
+  across_flats_m: 0.550       # 正八边形对边距，含轮子和突出物，2026-10-21 修正
+  circumscribed_radius_m: 0.297658 # 0.550/(2*cos(pi/8))，向上取整到微米
   length_m: 0.5            # 含轮子、突出支架的碰撞长度，待测
   width_m: 0.5              # 碰撞宽度，待测
   lidar_bottom_height_m: 0.280 # 雷达底面离地高度，已确认

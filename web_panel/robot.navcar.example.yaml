@@ -2,8 +2,8 @@
 # 不用于 configure.py / bringup.py 的旧 JSONL 入口。
 version: 1
 robot:
-  across_flats_m: 0.510       # 正八边形对边距，含全部轮子和突出物；测量记录
-  circumscribed_radius_m: 0.276011 # 0.510/(2*cos(pi/8)) 向上取整到微米；优先于长宽
+  across_flats_m: 0.550       # 正八边形对边距，含全部轮子和突出物；2026-10-21 修正
+  circumscribed_radius_m: 0.297658 # 0.550/(2*cos(pi/8)) 向上取整到微米；优先于长宽
   length_m: null             # 含轮子、突出支架的实际碰撞长度，m，待测
   width_m: null              # 实际碰撞宽度，m，待测
   lidar_bottom_height_m: 0.280 # 雷达底面离地高度，已确认；不可直接作为光心高度

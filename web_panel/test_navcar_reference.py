@@ -16,7 +16,7 @@ from navcar_settings import navigation_options,navigation_speed,load_navigation_
 
 
 def config():
-    return {'robot':{'circumscribed_radius_m':.276011,'lidar_height_m':.327},
+    return {'robot':{'circumscribed_radius_m':.297658,'lidar_height_m':.327},
             'yaw':{'axis_xyz_m':[0,0,.280],'lidar_offset_radius_m':.01418,
                    'lidar_offset_xy_m':[-.01418,0.],'imu_rpy_rad':[0,0,0]},
             'navigation':{'reference_point':'yaw_axis','max_speed_mps':.5}}
@@ -58,7 +58,7 @@ class ReferenceTests(unittest.TestCase):
         self.assertAlmostEqual(offset[0],.00318)
         self.assertAlmostEqual(offset[1],-.02329)
         radius,_=navigation_geometry(cfg,lio()['mapping']['extrinsic_T'])
-        self.assertEqual(radius,.276011)
+        self.assertEqual(radius,.297658)
         for degree in range(0,360,5):
             angle=math.radians(degree)
             imu=shift_pose(1.,2.,angle,[-offset[0],-offset[1]])
@@ -68,7 +68,7 @@ class ReferenceTests(unittest.TestCase):
             for chassis_degree in range(0,360,15):
                 for vertex in range(8):
                     heading=math.radians(chassis_degree+vertex*45)
-                    r=.510/(2*math.cos(math.pi/8))
+                    r=.550/(2*math.cos(math.pi/8))
                     point=(1+r*math.cos(heading),2+r*math.sin(heading))
                     self.assertLessEqual(math.hypot(point[0]-center[0],point[1]-center[1]),radius)
 
@@ -126,7 +126,7 @@ class ReferenceTests(unittest.TestCase):
             for name in ('global_costmap','local_costmap'):
                 cost=params[name][name]['ros__parameters']
                 self.assertEqual(cost['robot_base_frame'],'navcar_center')
-                self.assertEqual(cost['robot_radius'],.276011)
+                self.assertEqual(cost['robot_radius'],.297658)
                 self.assertEqual(cost['footprint_padding'],.02)
                 self.assertEqual(cost['resolution'],.01)
                 self.assertFalse(cost['obstacle_layer']['scan']['inf_is_valid'])

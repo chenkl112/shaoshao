@@ -143,6 +143,12 @@ int main(int argc,char **argv) {
     assert(corridor(.60,.276011+.02));
     assert(!corridor(.60,.315948+.02));
     assert(!corridor(.58,.276011+.02));
+    // Latest measured 550 mm across-flats octagon, with the same 20 mm padding.
+    const double measured_radius=std::ceil(.550/(2*std::cos(std::acos(-1.)/8))*1e6)/1e6;
+    assert(std::abs(measured_radius-.297658)<1e-12);
+    assert(corridor(.65,measured_radius+.02));
+    assert(!corridor(.63,measured_radius+.02));
+    assert(!corridor(.60,measured_radius+.02));
     StaticMapFilter<Point> centimetre(.01),five_cm(.05);
     auto close_surfaces=cloud({p(4.011),p(4.031)});
     for(int i=0;i<10;++i){centimetre.update(close_surfaces,origin,40.+i*.2);five_cm.update(close_surfaces,origin,40.+i*.2);}

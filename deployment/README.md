@@ -137,8 +137,8 @@ cp -n web_panel/robot.navcar.example.yaml web_panel/robot.yaml
 当前雷达坐标导航读取 `robot` 的外接半径（或长宽）、光心高度和 `yaw` 的安装位置/角度，不使用旧配置里的
 `yaw.reference`、编码器符号或编码器零位来伪造实际姿态。
 新的 `robot.navcar.example.yaml` 专门用于这条入口，旧 `robot.example.yaml` 属于 JSONL 通用入口。
-60 cm 通道联调使用已标定的中心参考点与独立低速细图配置，完整步骤见 [60 cm 通道联调](../web_panel/60cm通道联调.md)。
-最新实测已修正：正八边形对边距为 510 mm，已含轮子和突出物；雷达底面及 yaw 安装面离地 280 mm，
+65 cm 通道联调使用已标定的中心参考点与统一 1 cm 细图配置，完整步骤见 [65 cm 通道联调](../web_panel/60cm通道联调.md)。
+最新实测已修正：正八边形对边距为 550 mm，联调通道宽 650 mm；已含轮子和突出物；雷达底面及 yaw 安装面离地 280 mm，
 水平偏心为 14.18 mm。旧的 29 cm 外接半径、32 cm 雷达高度、31 cm yaw 高度和 1 cm 偏心不再作为当前实车参数。
 MID360 官方尺寸图的点云原点距底面 47 mm，因此 `lidar_height_m` 应为 `0.280 + 0.047 = 0.327 m`，
 不能填成底面高度 0.280。[官方用户手册](https://terra-1-g.djicdn.com/851d20f7b9f64838a34cd02351370894/Livox/Livox_Mid-360_User_Manual_EN.pdf)
@@ -149,8 +149,8 @@ MID360 官方尺寸图的点云原点距底面 47 mm，因此 `lidar_height_m` �
 
 ```yaml
 robot:
-  across_flats_m: 0.510       # 对边距测量记录，含全部轮子和突出物
-  circumscribed_radius_m: 0.276011 # 0.510/(2*cos(pi/8))，向上取整到微米
+  across_flats_m: 0.550       # 对边距测量记录，含全部轮子和突出物
+  circumscribed_radius_m: 0.297658 # 0.550/(2*cos(pi/8))，向上取整到微米
   lidar_bottom_height_m: 0.280 # 底面高度测量记录
   lidar_height_m: 0.327       # 程序使用点云原点高度，280 + 47 mm
 yaw:

@@ -44,13 +44,13 @@ class NavigationTests(unittest.TestCase):
         with self.assertRaises(ValueError):navigation_speed({'navigation':None})
 
     def test_measured_octagon_encloses_all_yaws_about_actual_imu_origin(self):
-        config={'robot':{'circumscribed_radius_m':.276011,'lidar_height_m':.327},
+        config={'robot':{'circumscribed_radius_m':.297658,'lidar_height_m':.327},
                 'yaw':{'axis_xyz_m':[0,0,.280],'lidar_offset_radius_m':.01418,'imu_rpy_rad':[0,0,0]}}
         extrinsic=[-.011,-.02329,.04412]
         radius,height=navigation_geometry(config,extrinsic)
-        chassis_radius=.510/(2*math.cos(math.pi/8))
+        chassis_radius=.550/(2*math.cos(math.pi/8))
         self.assertGreaterEqual(config['robot']['circumscribed_radius_m'],chassis_radius)
-        self.assertAlmostEqual(radius,.276011+.01418+math.hypot(*extrinsic[:2]))
+        self.assertAlmostEqual(radius,.297658+.01418+math.hypot(*extrinsic[:2]))
         self.assertEqual(height,.327)
         # All octagon vertices under independent chassis/sensor angles and
         # every sampled direction of the measured 14.18 mm optical eccentricity.
@@ -168,7 +168,7 @@ class NavigationTests(unittest.TestCase):
             self.assertEqual(cost['robot_base_frame'],'navcar_imu')
             self.assertFalse(yaml.safe_load((out/'fast_lio.yaml').read_text())['/**']['ros__parameters']['pcd_save']['pcd_save_en'])
             self.assertFalse(yaml.safe_load((out/'fast_lio.yaml').read_text())['/**']['ros__parameters']['map_filter']['dynamic_enabled'])
-            config['robot']['circumscribed_radius_m']=.276011
+            config['robot']['circumscribed_radius_m']=.297658
             config['robot']['lidar_height_m']=.327
             config['yaw']['lidar_offset_radius_m']=.01418
             config['yaw']['axis_xyz_m']=[0,0,.280]
@@ -179,7 +179,7 @@ class NavigationTests(unittest.TestCase):
             (runtime/'fast_lio.yaml').write_text(yaml.safe_dump(lio))
             params=yaml.safe_load((build_navigation_config(root,maps)/'nav2.yaml').read_text())
             measured=params['global_costmap']['global_costmap']['ros__parameters']
-            self.assertAlmostEqual(measured['robot_radius'],.276011+.01418+math.hypot(.011,.02329))
+            self.assertAlmostEqual(measured['robot_radius'],.297658+.01418+math.hypot(.011,.02329))
             self.assertEqual(measured['footprint_padding'],.02)
             self.assertAlmostEqual(params['navigation_scan']['ros__parameters']['min_height'],-.18288)
         config['robot']['width_m']=None
