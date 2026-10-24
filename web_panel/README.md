@@ -9,7 +9,7 @@
 
 **交付边界：** 已完成可在当前电脑检查的软件与演示链路。没有连接你的电机、编码器、雷达或车载 Ubuntu；不能把本地演示当作实车已调通。实测几何、yaw 参考系/零位、串口路径和波特率仍待测，均留在 `robot.example.yaml`；下位机按已选协议的固件由底盘负责人实现。未填写必填项时，实车配置生成和启动会报错并指出缺失项。
 
-**2026-10-18 实车协议更新：** 下位机已提供 [Navcar UART1 V1](https://github.com/Li-chee/Navcar-Comm-Protocol)，请使用 [Navcar 接入说明](Navcar接入.md) 和 `navcar_bridge.py`。原 JSONL 参考桥仅保留兼容，不适用于该固件。Navcar 仅回传目标，不提供实测 yaw/轮式里程计，不能替代下文的实际角度反馈或直接启用整车导航。
+**2026-10-24 实车协议更新：** 下位机已提供 [Navcar UART1 V2](https://github.com/Li-chee/Navcar-Comm-Protocol)，请使用 [Navcar 接入说明](Navcar接入.md) 和 `navcar_bridge.py`。原 JSONL 参考桥仅保留兼容，不适用于该固件。V2 回传轮速解算车体速度和 IMU 实测 yaw，但没有云台相对底盘角；导航决策与定位输入保持原样。
 
 **旧参考协议分工：** 你负责上位机和串口收发，底盘负责人实现下位机四轮/yaw 控制。双方已选 `serial_jsonl_v1`；将 [串口对接约定](串口对接约定.md) 交给对方实现。轮径、轮距、减速比和电机 PID 由对方负责，不是你这边生成导航配置的必填项。车体碰撞外形与雷达安装几何仍需测量，用于 footprint 和 TF。
 

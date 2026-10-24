@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""UART1 Navcar V1 bridge. Default: read-only monitor, no motor commands."""
+"""UART1 Navcar V2 bridge. Default: read-only monitor, no motor commands."""
 import argparse
 import json
 import math
@@ -13,8 +13,8 @@ from navcar_protocol import Session, stop_confirmed
 def load_config(path, control=False):
     import yaml
     config = yaml.safe_load(path.read_text(encoding='utf-8'))
-    if not isinstance(config, dict) or config.get('transport') != 'navcar_uart1_v1':
-        raise ValueError('transport must be navcar_uart1_v1')
+    if not isinstance(config, dict) or config.get('transport') != 'navcar_uart1_v2':
+        raise ValueError('transport must be navcar_uart1_v2')
     if not isinstance(config.get('serial_port'), str) or not config['serial_port']:
         raise ValueError('Fill serial_port with the actual /dev/serial/by-id/...')
     if config.get('baud') != 2000000:
@@ -32,11 +32,11 @@ def load_config(path, control=False):
 
 
 def targets(velocity, config):
-    """ROS-style yaw-frame forward/left/CCW -> native forward/right/CW."""
+    """ROS-style yaw-frame forward/left/CCW -> Navcar V2 forward/right/CCW."""
     forward, left, ccw = velocity
     values = (forward * config['forward_units_per_mps'],
               -left * config['left_units_per_mps'],
-              -ccw * config['rot_units_per_radps'])
+              ccw * config['rot_units_per_radps'])
     limits = (config['max_translation_units'], config['max_translation_units'], config['max_rot_units'])
     if not all(math.isfinite(v) and abs(v) <= limit for v, limit in zip(values, limits)):
         raise ValueError('Command exceeds commissioned native-unit limits')
@@ -121,10 +121,11 @@ def main(argv=None):
             if now-last_report >= .2:
                 last_report = now
                 state = session.state
-                report = {'protocol': 'navcar_uart1_v1', 'control_enabled': args.enable_control,
-                          'feedback_kind': 'targets_only', 'measured_yaw_available': False,
-                          'wheel_odometry_available': False, 'sequence': state.sequence if state else None,
-                          'targets_vy_vx_rot_yaw_deg': state.values if state else None,
+                report = {'protocol': 'navcar_uart1_v2', 'control_enabled': args.enable_control,
+                          'feedback_kind': 'wheel_speed_estimate_and_measured_yaw',
+                          'wheel_velocity_valid': bool(state and all(math.isfinite(v) for v in state.values[:3])),
+                          'measured_yaw_deg': state.values[3] if state else None,
+                          'wheel_odometry_published': False, 'sequence': state.sequence if state else None,
                           'status_age_s': now-session.state_time if state else None,
                           'last_ack': session.last_ack, 'error': session.error}
                 encoded = json.dumps(report, allow_nan=False)
@@ -157,7 +158,7 @@ def main(argv=None):
                         if packet and port.write(packet) != len(packet):
                             session.fail('Partial stop retry')
                     time.sleep(.002)
-                print('零速 ACK 和状态已确认' if stop_confirmed(session, after) else '未确认零速；已停止发帧，MCU 300ms 看门狗归零', flush=True)
+                print('零速 ACK 和后续状态帧已确认' if stop_confirmed(session, after) else '未确认零速命令；已停止发帧，MCU 300ms 看门狗归零', flush=True)
             else:
                 print('未完成 ACK；停止发帧，MCU 300ms 看门狗归零', flush=True)
         port.close()

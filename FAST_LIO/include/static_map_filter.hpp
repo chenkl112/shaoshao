@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstdint>
 #include <limits>
+#include <memory>
 #include <stdexcept>
 #include <unordered_map>
 #include <unordered_set>
@@ -26,6 +27,12 @@ template<class Point> class StaticMapFilter {
     using Key=StaticVoxelKey;
     using Set=std::unordered_set<Key,StaticVoxelHash>;
     std::unordered_map<Key,Cell,StaticVoxelHash> cells_;
+    // Fine export spacing must not also be the repeat-hit tolerance. MID360
+    // returns from a stationary surface move between centimetre voxels. Keep
+    // the same temporal/free-ray checks on 5 cm evidence, then retain observed
+    // coordinates in the requested fine grid without inventing surface points.
+    std::unique_ptr<StaticMapFilter<Point>> evidence_;
+    std::unordered_map<Key,Point,StaticVoxelHash> fine_cells_;
     double last_stamp_=-std::numeric_limits<double>::infinity();
     double last_prune_=-std::numeric_limits<double>::infinity();
     double resolution_=0.15, confirmation_=1.5;
@@ -44,10 +51,34 @@ public:
         if(!std::isfinite(resolution)||resolution<.01||resolution>1||
            !std::isfinite(confirmation)||confirmation<1||confirmation>10||capacity==0)
             throw std::invalid_argument("Invalid static-map filter settings");
+        if(resolution<.05)
+            evidence_.reset(new StaticMapFilter<Point>(.05,confirmation,capacity));
     }
-    size_t size() const { return cells_.size(); }
-    bool full() const { return cells_.size()>=capacity_; }
+    size_t size() const { return evidence_?evidence_->size()+fine_cells_.size():cells_.size(); }
+    bool full() const { return evidence_?(evidence_->full()||fine_cells_.size()>=capacity_):cells_.size()>=capacity_; }
     template<class Cloud> bool update(const Cloud &cloud,const std::array<double,3> &origin,double stamp) {
+        if(evidence_) {
+            if(!evidence_->update(cloud,origin,stamp))return false;
+            auto confirmed=[&](const Point &p) {
+                const auto it=evidence_->cells_.find(evidence_->key(p.x,p.y,p.z));
+                return it!=evidence_->cells_.end()&&it->second.confirmed;
+            };
+            // A free-ray removal must also remove every fine point supported by
+            // that evidence cell. Occlusion alone still cannot erase a wall.
+            for(auto it=fine_cells_.begin();it!=fine_cells_.end();) {
+                if(!confirmed(it->second))it=fine_cells_.erase(it);else ++it;
+            }
+            for(const auto &p:cloud) {
+                if(!valid(p.x,p.y,p.z))continue;
+                const double dx=p.x-origin[0],dy=p.y-origin[1],dz=p.z-origin[2];
+                if(dx*dx+dy*dy+dz*dz>2500.||!confirmed(p))continue;
+                const auto k=key(p.x,p.y,p.z);
+                auto it=fine_cells_.find(k);
+                if(it!=fine_cells_.end())it->second=p;
+                else if(fine_cells_.size()<capacity_)fine_cells_.emplace(k,p);
+            }
+            return true;
+        }
         if(!std::isfinite(stamp)||stamp<=last_stamp_||stamp-last_stamp_<.19||
            !valid(origin[0],origin[1],origin[2])) return false;
         last_stamp_=stamp;
@@ -113,6 +144,11 @@ public:
         return true;
     }
     template<class Cloud> void snapshot(Cloud &out) const {
+        if(evidence_) {
+            out.clear();out.reserve(fine_cells_.size());
+            for(const auto &item:fine_cells_)out.push_back(item.second);
+            return;
+        }
         out.clear();out.reserve(cells_.size());
         for(const auto &item:cells_)if(item.second.confirmed)out.push_back(item.second.point);
     }

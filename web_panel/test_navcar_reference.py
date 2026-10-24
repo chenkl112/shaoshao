@@ -111,8 +111,8 @@ class ReferenceTests(unittest.TestCase):
             (runtime/'fast_lio.yaml').write_text(yaml.safe_dump({'/**':{'ros__parameters':lio()}}))
             maps=root/'maps';maps.mkdir()
             (maps/'site.yaml').write_text('image: site.png\nresolution: 0.05\n')
-            with self.assertRaisesRegex(ValueError,'1 cm 地图'):build_navigation_config(root,maps)
-            (maps/'site.yaml').write_text('image: site.png\nresolution: 0.01\n')
+            with self.assertRaisesRegex(ValueError,'2.5 cm'):build_navigation_config(root,maps)
+            (maps/'site.yaml').write_text('image: site.png\nresolution: 0.025\n')
             output=build_navigation_config(root,maps,{'x':1.,'y':2.,'yaw':0.})
             frames=yaml.safe_load((output/'frames.yaml').read_text())
             self.assertNotIn('narrow',frames)
@@ -128,7 +128,7 @@ class ReferenceTests(unittest.TestCase):
                 self.assertEqual(cost['robot_base_frame'],'navcar_center')
                 self.assertEqual(cost['robot_radius'],.297658)
                 self.assertEqual(cost['footprint_padding'],.02)
-                self.assertEqual(cost['resolution'],.01)
+                self.assertEqual(cost['resolution'],.025)
                 self.assertFalse(cost['obstacle_layer']['scan']['inf_is_valid'])
             scan=params['navigation_scan']['ros__parameters']
             self.assertEqual(scan['target_frame'],'navcar_lidar')
@@ -166,7 +166,7 @@ class ReferenceTests(unittest.TestCase):
         self.assertEqual(navigation_speed(lower),.1)
         legacy=config();legacy['navigation'].update(narrow_passage=False,max_speed_mps=.8)
         self.assertEqual(navigation_speed(legacy),.5)
-        self.assertEqual(navigation_options(legacy)['resolution'],.01)
+        self.assertEqual(navigation_options(legacy)['resolution'],.025)
         covariance=[0.]*36;covariance[0]=covariance[7]=.000025
         self.assertTrue(localization_quality('map',covariance,.01)['ready'])
         covariance[7]=.000121

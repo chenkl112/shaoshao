@@ -18,19 +18,25 @@ from navcar_settings import navigation_speed, limit_translation
 from navcar_reference import navigation_frames,shift_pose,initial_reference_pose,shift_planar_covariance
 
 
-def localization_quality(frame, covariance,position_std_limit=.01):
+def localization_quality(frame, covariance,position_std_limit=.01, *, previous_ready=False, stop_std_limit=None):
     if frame!='map' or len(covariance)!=36:
         return {'ready':False,'message':'地图定位消息无效，等待有效的 map 定位结果'}
-    values=[covariance[i] for i in (0,7,35)]
+    # ROS covariance uses NumPy scalars; expose only JSON-native values to the web.
+    values=[float(covariance[i]) for i in (0,7,35)]
     # AMCL's weighted second moments can round a zero variance just below zero.
     # Tolerate only numerical roundoff; genuinely negative/large variances remain invalid.
     if not all(math.isfinite(v) and v>=-1e-12 for v in values):
         return {'ready':False,'message':'地图定位方差无效，等待新的定位结果'}
     deviations=[math.sqrt(max(0.,v)) for v in values]
-    ready=all(v<=position_std_limit**2 for v in values[:2]) and values[2]<=.09
+    # Resume below the entry limit; keep valid localization until the stop limit.
+    # Invalid covariance, frame and heading checks still fail immediately.
+    active_limit=stop_std_limit if previous_ready and stop_std_limit is not None else position_std_limit
+    ready=all(v<=active_limit**2 for v in values[:2]) and values[2]<=.09
     message=('地图定位就绪' if ready else
              f'定位尚未收敛：位置不确定度 {max(deviations[:2]):.2f} 米，方向 {math.degrees(deviations[2]):.1f}°；请在建图结束位置附近缓慢移动以匹配地图')
-    if not ready:message+=f'；导航要求位置标准差 ≤ {position_std_limit*1000:g} mm'
+    if not ready:message+=f'；恢复导航要求位置标准差 ≤ {position_std_limit*1000:g} mm'
+    elif stop_std_limit is not None:
+        message+=f'：位置标准差 {max(deviations[:2])*1000:.0f} mm，超过 {stop_std_limit*1000:g} mm 暂停'
     return {'ready':ready,'message':message,'position_std_m':max(deviations[:2]),'yaw_std_rad':deviations[2]}
 
 
@@ -91,7 +97,7 @@ def build_navigation_config(root, maps, initial_pose=None):
     metadata=yaml.safe_load((maps/'site.yaml').read_text())
     resolution=metadata.get('resolution') if isinstance(metadata,dict) else None
     if not finite_number(resolution) or not 0 < resolution <= frames['resolution']+1e-9:
-        raise ValueError('导航需要新建并保存的 1 cm 地图；不能仅修改旧地图 YAML 的分辨率')
+        raise ValueError(f"导航需要新建并保存的 {frames['resolution']*100:g} cm 或更细的地图；不能仅修改旧地图 YAML 的分辨率")
     p['preprocess']={**p.get('preprocess',{}),'blind':frames['min_range']}
     (output/'frames.yaml').write_text(yaml.safe_dump(frames,sort_keys=False))
     p['common'].update(odom_frame_id='navcar_odom',sensor_frame_id='navcar_imu',send_odom_base_tf=False)
@@ -138,12 +144,12 @@ def build_navigation_config(root, maps, initial_pose=None):
         'min_theta_velocity_threshold':.001,'failure_tolerance':.3,'progress_checker_plugins':['progress_checker'],
         'goal_checker_plugins':['goal_checker'],'controller_plugins':['FollowPath'],
         'progress_checker':{'plugin':'nav2_controller::SimpleProgressChecker','required_movement_radius':.01,'movement_time_allowance':20.},
-        'goal_checker':{'plugin':'nav2_controller::SimpleGoalChecker','xy_goal_tolerance':.03,'yaw_goal_tolerance':6.3,'stateful':True},
+        'goal_checker':{'plugin':'nav2_controller::SimpleGoalChecker','xy_goal_tolerance':.20,'yaw_goal_tolerance':6.3,'stateful':True},
         'FollowPath':{'plugin':'dwb_core::DWBLocalPlanner','min_vel_x':-speed,'max_vel_x':speed,
           'min_vel_y':-speed,'max_vel_y':speed,'min_speed_xy':0.,'max_speed_xy':speed,'min_speed_theta':0.,'max_vel_theta':0.,
           'acc_lim_x':.3,'acc_lim_y':.3,'acc_lim_theta':.3,'decel_lim_x':-.3,'decel_lim_y':-.3,'decel_lim_theta':-.3,
           'vx_samples':9,'vy_samples':9,'vtheta_samples':1,'sim_time':2.,'linear_granularity':.005,
-          'angular_granularity':.025,'transform_tolerance':.3,'xy_goal_tolerance':.03,'trans_stopped_velocity':.01,
+          'angular_granularity':.025,'transform_tolerance':.3,'xy_goal_tolerance':.20,'trans_stopped_velocity':.01,
           'short_circuit_trajectory_evaluation':True,'stateful':True,
           # At the legacy 0.1 m/s the horizon covers only 0.15 m. A .1 obstacle weight
           # makes entering even the outer inflation band cost more than progress,
@@ -209,7 +215,7 @@ class NavigationControl:
                 if self.panel.bridge:self.panel.bridge.localization_info={'ready':False,'message':'等待雷达匹配已保存地图'}
                 self.panel.clear_navigation_plan();self.panel.navigation_costmap={'available':False}
                 self.panel.cloud_time=self.panel.odom_time=0.
-            setup='source /opt/ros/jazzy/setup.bash\nsource "$HOME/Zzj_slam/ws/out/install-livox/setup.bash"\nsource "$HOME/ccc/mapping_install/setup.bash"\n'
+            setup='set -e\nsource "$HOME/ccc/ros_env.sh"\n'
             cmd=['ros2','launch',str(self.root/'shaoshao/web_panel/navcar_navigation.launch.py')]
             with (self.root/'navigation.log').open('a') as log:
                 self.process=subprocess.Popen(['bash','-c',setup+'exec '+shlex.join(cmd)],stdin=subprocess.DEVNULL,
@@ -369,8 +375,11 @@ class NavigationBridge:
     def localized(self,msg):
         p=self.panel
         # AMCL is the localization source; MCU target echoes are never used as observations.
-        quality=localization_quality(msg.header.frame_id,msg.pose.covariance,p.navigation_control.frames['position_std_limit'])
         with p.lock:
+            frames=p.navigation_control.frames
+            quality=localization_quality(msg.header.frame_id,msg.pose.covariance,
+                frames['position_std_limit'],previous_ready=bool(p.nav_localized),
+                stop_std_limit=frames.get('position_std_stop_limit',frames['position_std_limit']))
             self.localization_info=quality;p.nav_localized=quality['ready']
 
     def odom(self,msg):

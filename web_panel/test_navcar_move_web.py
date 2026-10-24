@@ -80,7 +80,7 @@ class MoveTests(unittest.TestCase):
     def test_yaw_sets_target_stops_translation_and_spin_and_rejects_stale_requests(self):
         self.control.set_spin(dict(enabled=True,rate=.2,client='test',seq=1))
         self.control.command(dict(action='forward',strength=.1,client='test',seq=2,spin_enabled=True,spin_rate=.2))
-        self.assertEqual(self.control.desired(),(.1,0,-.2,17))
+        self.assertEqual(self.control.desired(),(.1,0,.2,17))
         self.control.set_yaw(dict(angle_deg=45,client='test',seq=3))
         self.assertEqual(self.control.desired(),(0,0,0,45))
         self.assertFalse(self.control.state()['spin']['enabled'])
@@ -92,16 +92,19 @@ class MoveTests(unittest.TestCase):
     def test_spin_translation_release_rate_adjustment_stop_and_timeout(self):
         self.assertFalse(self.control.state()['spin']['enabled'])
         self.control.set_spin(dict(enabled=True,rate=.2,client='test',seq=1))
-        self.assertEqual(self.control.desired(),(0,0,-.2,17))
+        self.assertEqual(self.control.desired(),(0,0,.2,17))
         with self.assertRaises(RuntimeError):self.control.acquire_navigation()
         self.control.command(dict(action='left',strength=.1,client='test',seq=2,spin_enabled=True,spin_rate=.2))
-        self.assertEqual(self.control.desired(),(0,-.1,-.2,17))
+        self.assertEqual(self.control.desired(),(0,-.1,.2,17))
         self.control.set_spin(dict(enabled=True,rate=-6.,client='test',seq=3))
-        self.assertEqual(self.control.desired(),(0,-.1,6.,17))
+        self.assertEqual(self.control.desired(),(0,-.1,-6.,17))
         self.control.command(dict(action='stop',strength=.1,client='test',seq=4,spin_enabled=True,spin_rate=6.))
-        self.assertEqual(self.control.desired(),(0,0,-6.,17))
+        self.assertEqual(self.control.desired(),(0,0,6.,17))
         self.assertEqual(self.control.state()['spin']['max_rate'],6.)
         self.now+=.201
+        self.assertEqual(self.control.desired(),(0,0,6.,17))
+        self.assertTrue(self.control.state()['spin']['enabled'])
+        self.now+=.1
         self.assertEqual(self.control.desired(),(0,0,0,17))
         self.assertFalse(self.control.state()['spin']['enabled'])
         self.control.session.state_time=self.now
@@ -110,6 +113,41 @@ class MoveTests(unittest.TestCase):
         self.assertEqual(self.control.desired(),(0,0,0,17))
         self.control.set_spin(dict(enabled=True,rate=.3,client='test',seq=4))
         self.assertEqual(self.control.desired(),(0,0,0,17))
+
+    def test_latched_spin_translation_deadman_page_release_and_explicit_stop(self):
+        self.control.set_spin(dict(enabled=True,rate=2.,client='test',seq=1))
+        self.send('left',2)
+        self.assertEqual(self.control.desired(),(0,-.1,2.,17))
+        # No browser heartbeat: translation expires, live MCU keeps gyro running.
+        for _ in range(5):
+            self.now+=.15
+            self.control.session.receive(state_packet(),self.now)
+            self.control.desired()
+        self.assertEqual(self.control.desired(),(0,0,2.,17))
+        # A page blur/release or another page's translation stop preserves gyro.
+        self.send('stop',3)
+        self.send('stop',1,client='new-page')
+        self.assertEqual(self.control.desired(),(0,0,2.,17))
+        self.control.command(dict(action='stop',strength=.1,client='new-page',seq=2,spin_enabled=False))
+        self.assertEqual(self.control.desired(),(0,0,0,17))
+        self.control.set_spin(dict(enabled=True,rate=2.,client='test',seq=4))
+        self.control.set_spin(dict(enabled=False,client='new-page',seq=3))
+        self.assertFalse(self.control.spin_live())
+
+    def test_mcu_timeout_error_and_shutdown_latch_off_without_automatic_resume(self):
+        for failure in ('timeout','ack','shutdown'):
+            with self.subTest(failure=failure):
+                self.setUp()
+                self.control.set_spin(dict(enabled=True,rate=2.,client='test',seq=1))
+                if failure=='timeout':self.now+=.301
+                elif failure=='ack':self.control.session.fail('ACK timeout')
+                else:self.control.closed.set()
+                self.assertEqual(self.control.desired()[:3],(0,0,0))
+                self.assertFalse(self.control.spin_enabled)
+                self.control.closed.clear();self.control.session.error=''
+                self.control.session.receive(state_packet(),self.now)
+                self.assertEqual(self.control.desired()[:3],(0,0,0))
+                self.assertFalse(self.control.state()['spin']['enabled'])
 
     def test_spin_validation_and_manual_yaw_revoke_navigation(self):
         for rate in (0,6.01,-6.01,float('nan'),True):
@@ -174,8 +212,23 @@ class MoveTests(unittest.TestCase):
             time.sleep(.2)
             self.assertEqual(port.commands[-1][1],(0.,0.,0.,17.))
             self.assertTrue(all(v[2]==0 and v[3]==17 for _,v in port.commands))
+            c.set_spin(dict(enabled=True,rate=2.,client='sim',seq=2))
+            c.command(dict(action='left',strength=.1,client='sim',seq=3))
+            time.sleep(.35)
+            self.assertEqual(port.commands[-1][1],(0.,0.,2.,17.))
+            self.assertTrue(c.state()['spin']['enabled'])
+            c.command(dict(action='stop',strength=.1,client='sim',seq=4))
+            time.sleep(.06)
+            self.assertEqual(port.commands[-1][1],(0.,0.,2.,17.))
+            c.command(dict(action='stop',strength=.1,client='sim',seq=5,spin_enabled=False))
+            time.sleep(.06)
+            self.assertEqual(port.commands[-1][1],(0.,0.,0.,17.))
+            c.set_spin(dict(enabled=True,rate=2.,client='sim',seq=6))
+            time.sleep(.04)
         finally:c.closed.set();worker.join(1)
         self.assertTrue(port.closed)
+        self.assertFalse(c.spin_enabled)
+        self.assertEqual(port.commands[-1][1],(0.,0.,0.,17.))
 
 
 if __name__=='__main__':unittest.main()

@@ -48,7 +48,7 @@ def main():
     if not settings.exists():
         previous=Path.home()/'scurm_maps/mapping_filter.json'
         settings.write_text(previous.read_text() if previous.exists() else json.dumps({'enabled':True,'height_m':1.5,'dynamic_enabled':True})+'\n')
-    setup='source /opt/ros/jazzy/setup.bash\nsource "$HOME/Zzj_slam/ws/out/install-livox/setup.bash"\nsource "$HOME/ccc/mapping_install/setup.bash"\n'
+    setup='set -e\nsource "$HOME/ccc/ros_env.sh"\n'
     command=['python3','-u',str(root/'lidar_mapping_web.py'),'--maps-dir',str(maps)]
     with (root/'web.log').open('a') as log:
         proc=subprocess.Popen(['bash','-c',setup+'exec '+shlex.join(command)],cwd=root,

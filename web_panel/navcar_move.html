@@ -2,29 +2,31 @@
 <html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <title>底盘移动控制</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#101827;color:#e9eef8;font:16px system-ui,sans-serif;display:grid;place-items:center;min-height:100dvh}main{width:min(94vw,540px);padding:28px;border:1px solid #344157;border-radius:24px;background:#172235}h1{font-size:26px;margin:0 0 10px}p{color:#b4c2d6;line-height:1.6}.status{padding:12px;border-radius:10px;background:#24324a}label{display:flex;justify-content:space-between;align-items:center;margin:24px 0 10px}input{font:inherit;width:105px;padding:9px;background:#101827;color:white;border:1px solid #536887;border-radius:8px}.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}button{min-height:82px;border:0;border-radius:14px;background:#304c70;color:white;font:600 19px system-ui;touch-action:none;user-select:none;-webkit-user-select:none}button:disabled{opacity:.4}button.active{background:#217cbe;box-shadow:inset 0 0 0 3px #87cdff}#stop{background:#a6313e}.small{font-size:13px}#error{color:#ffb1b6;min-height:24px}a{color:#9bcfff}
+*{box-sizing:border-box}body{margin:0;background:#f4f4f4;color:#111111;font:16px system-ui,sans-serif;display:grid;place-items:center;min-height:100dvh}main{width:min(94vw,540px);padding:28px;border:1px solid #d4d4d4;border-radius:24px;background:#ffffff}h1{font-size:26px;margin:0 0 10px}p{color:#555555;line-height:1.6}.status{padding:12px;border-radius:10px;background:#eeeeee}label{display:flex;justify-content:space-between;align-items:center;margin:24px 0 10px}input{font:inherit;width:105px;padding:9px;background:#ffffff;color:#111111;border:1px solid #999999;border-radius:8px}.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}button{min-height:82px;border:0;border-radius:14px;background:#444444;color:white;font:600 19px system-ui;touch-action:none;user-select:none;-webkit-user-select:none}button:disabled{opacity:.4}button.active{background:#111111;box-shadow:inset 0 0 0 3px #ffffff}#stop{background:#111111}.small{font-size:13px}#error{color:#111111;min-height:24px}a{color:#222222}
+
+button:focus-visible,input:focus-visible{outline:2px solid #111;outline-offset:3px}#stop{border:3px double #fff;box-shadow:0 0 0 1px #111}#error{font-weight:600}a{text-decoration:underline}:root{color-scheme:light;accent-color:#111}
 </style>
-<style>.section{border-top:1px solid #344157;margin-top:24px;padding-top:8px}.row{display:flex;gap:8px;flex-wrap:wrap}.row button{flex:1;min-height:48px;padding:8px;font-size:16px}#spinToggle.active{background:#217cbe}h2{font-size:20px;margin:16px 0 0}</style>
+<style>.section{border-top:1px solid #d4d4d4;margin-top:24px;padding-top:8px}.row{display:flex;gap:8px;flex-wrap:wrap}.row button{flex:1;min-height:48px;padding:8px;font-size:16px}#spinToggle.active{background:#111111}h2{font-size:20px;margin:16px 0 0}</style>
 <main><h1>底盘移动控制</h1><p>按住方向键移动，松开停止。支持键盘 W / A / S / D 和方向键，空格停止。</p>
 <div class="status" id="status">正在连接下位机…</div>
-<label>目标速度（米/秒） <input id="strength" type="number" min="0.01" max="3" step="0.01" value="0.10"></label>
-<p class="small">按实测倍率换算下发；目标速度上限 <span id="limit">3.0</span> 米/秒。</p>
+<label>目标速度（米/秒） <input id="strength" type="number" min="0.01" max="0.3" step="0.01" value="0.10"></label>
+<p class="small">按实际速度直接下发；目标速度上限 <span id="limit">0.3</span> 米/秒。</p>
 <div class="pad"><span></span><button data-action="forward">↑ 前进</button><span></span><button data-action="left">← 左移</button><button id="stop">停止</button><button data-action="right">右移 →</button><span></span><button data-action="backward">↓ 后退</button><span></span></div>
 <section class="section"><h2>Yaw 云台</h2>
 <label>目标角（°）<input id="yawAngle" type="number" min="-180" max="180" step="0.1" value="0" required disabled></label>
 <div class="row"><button id="yawMinus" disabled>−5°</button><button id="yawApply" disabled>设置目标角</button><button id="yawPlus" disabled>+5°</button><button id="yawZero" disabled>回到 0°</button></div>
-<p class="small">角度相对下位机启动朝向。调整 yaw 会停止平移并关闭小陀螺；回传角度是目标值。</p></section>
+<p class="small">角度相对下位机启动朝向。调整 yaw 会停止平移并关闭小陀螺；回传角度是 IMU 实测值。</p></section>
 <section class="section"><h2>小陀螺</h2>
 <label>旋转强度<input id="spinRate" type="number" min="-6" max="6" step="0.05" value="0.10" required disabled></label>
 <div class="row"><button id="spinToggle" aria-pressed="false" disabled>小陀螺：关</button><button id="spinApply" disabled>应用旋转速度</button></div>
-<p class="small">正值逆时针，负值顺时针；旋转强度使用指令值。可同时平移，松开方向键只停止平移。点“停止”、页面失焦或通讯超时会关闭小陀螺，yaw 保持目标角。</p></section>
+<p class="small">正值逆时针，负值顺时针；旋转强度使用指令值。可同时平移，松开方向键只停止平移。切换或关闭网页后小陀螺继续旋转；平移停止。点“停止”、关闭小陀螺、调整 yaw、下位机断连或服务重启会关闭小陀螺。</p></section>
 <div id="error" role="alert"></div><p class="small" id="feedback">小陀螺关闭 · 云台保持接入时目标角</p>
 </main>
 <script>
 const token=new URLSearchParams(location.search).get('token')||'';
 const client=globalThis.crypto?.randomUUID?globalThis.crypto.randomUUID():Math.random().toString(36).slice(2);
 const $=id=>document.getElementById(id),buttons=[...document.querySelectorAll('[data-action]')];
-let action='stop',seq=0,busy=false,ready=false,lastPoll=0,spinEnabled=false,spinRate=.1,spinBusy=false,yawBusy=false,yawDirty=false,remoteSpin=false,commandError='';
+let action='stop',seq=0,busy=false,ready=false,lastPoll=0,spinEnabled=false,spinRate=.1,spinBusy=false,yawBusy=false,yawDirty=false,spinDirty=false,remoteSpin=false,commandError='';
 const auxiliary=['yawMinus','yawApply','yawPlus','yawZero','spinToggle','spinApply'];
 const names={forward:'前进',backward:'后退',left:'左移',right:'右移',stop:'停止',navigation:'自动导航'};
 function paint(){buttons.forEach(b=>b.classList.toggle('active',b.dataset.action===action))}
@@ -40,19 +42,19 @@ async function timedFetch(url,options,ms){
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),ms);
  try{return await fetch(url,{...options,signal:controller.signal})}finally{clearTimeout(timer)}
 }
-async function send(force=false){
+async function send(force=false,disableSpin=false){
   if(busy&&!force)return;
-  const sentAction=action,packet={action:sentAction,strength:Number($('strength').value),speed_unit:'m/s',spin_enabled:spinEnabled,spin_rate:spinRate,client,seq:++seq};
+  const sentAction=action,packet={action:sentAction,strength:Number($('strength').value),speed_unit:'m/s',client,seq:++seq};
+  if(disableSpin)packet.spin_enabled=false;
   busy=true;
   try{
     const r=await timedFetch('/api/command',{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(packet),keepalive:force},700);
     const s=await r.json();if(!r.ok)throw Error(s.error||'发送失败');commandError='';
-  }catch(e){commandError=e.message;$('error').textContent=commandError;action='stop';spinEnabled=false;paint();controls()}
+  }catch(e){commandError=e.message;$('error').textContent=commandError;action='stop';paint();controls()}
   finally{busy=false}
 }
 function stop(){const moving=action!=='stop';action='stop';paint();if(moving)send(true)}
-function emergencyStop(){action='stop';spinEnabled=false;remoteSpin=false;paint();controls();send(true)}
-function stopAll(){if(action!=='stop'||spinEnabled)emergencyStop()}
+function emergencyStop(){action='stop';spinEnabled=false;remoteSpin=false;paint();controls();send(true,true)}
 function start(next){if(!ready||yawBusy||action===next)return;action=next;paint();send(true)}
 async function controlRequest(path,packet){
  const r=await timedFetch(path,{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(packet)},1000);
@@ -73,11 +75,12 @@ async function setSpin(enabled){
  if(!$('spinRate').checkValidity()||(enabled&&rate===0)){commandError='旋转强度须非零且不超过输入框范围';$('error').textContent=commandError;return}
  spinBusy=true;spinEnabled=enabled;spinRate=rate;if(!enabled){action='stop';remoteSpin=false;paint()}controls();
  const packet={enabled,rate,client,seq:++seq};
- try{const s=await controlRequest('/api/spin',packet);if(packet.seq===seq){spinEnabled=!!s.spin?.enabled;remoteSpin=spinEnabled}commandError=''}
+ try{const s=await controlRequest('/api/spin',packet);if(packet.seq===seq){spinEnabled=!!s.spin?.enabled;remoteSpin=spinEnabled;spinDirty=false}commandError=''}
  catch(e){commandError=e.message;$('error').textContent=commandError;action='stop';spinEnabled=false;remoteSpin=false;paint();send(true)}
  finally{spinBusy=false;controls()}
 }
 $('yawAngle').addEventListener('input',()=>{yawDirty=true});
+$('spinRate').addEventListener('input',()=>{spinDirty=true});
 $('yawApply').addEventListener('click',()=>{if($('yawAngle').checkValidity())setYaw(Number($('yawAngle').value));else $('yawAngle').reportValidity()});
 for(const [id,delta] of [['yawMinus',-5],['yawPlus',5]])$(id).addEventListener('click',()=>{
  if(!$('yawAngle').checkValidity())return $('yawAngle').reportValidity();
@@ -102,9 +105,9 @@ document.addEventListener('keydown',e=>{
   const a=keys[e.key];if(a){e.preventDefault();start(a)}
 });
 document.addEventListener('keyup',e=>{if(keys[e.key]){e.preventDefault();stop()}});
-window.addEventListener('blur',stopAll);window.addEventListener('pagehide',stopAll);
-document.addEventListener('visibilitychange',()=>{if(document.hidden)stopAll()});
-setInterval(()=>{if((action!=='stop'||spinEnabled)&&!document.hidden&&!yawBusy)send()},70);
+window.addEventListener('blur',stop);window.addEventListener('pagehide',stop);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stop()});
+setInterval(()=>{if(action!=='stop'&&!document.hidden&&!yawBusy)send()},70);
 async function poll(){
   try{
     const r=await timedFetch('/api/state',{headers:{'Authorization':'Bearer '+token}},800);
@@ -113,15 +116,18 @@ async function poll(){
     $('status').textContent=s.error?'通讯故障':!s.connected?'等待下位机状态':s.control_started?'下位机已连接 · '+names[s.active]:'下位机已连接 · 等待按键';
     $('error').textContent=s.error||commandError;
     $('strength').max=s.max_strength;$('limit').textContent=s.max_strength;
-    $('feedback').textContent='Yaw 下发目标 '+(s.yaw_target_deg??'—')+'° · 回传目标 '+(s.feedback_targets?.[3]??'—')+'°';
+    $('feedback').textContent='Yaw 下发目标 '+(s.yaw_target_deg??'—')+'° · IMU 实测 '+(s.feedback_state?.measured_yaw_deg??'—')+'°';
     if(!yawDirty&&!yawBusy&&document.activeElement!==$('yawAngle')&&Number.isFinite(s.yaw_target_deg))$('yawAngle').value=s.yaw_target_deg;
-    if(s.spin){remoteSpin=!!s.spin.enabled;$('spinRate').min=-s.spin.max_rate;$('spinRate').max=s.spin.max_rate}
-    if(s.control_client&&s.control_client!==client){action='stop';spinEnabled=false;paint()}
-    else if(!spinBusy&&!busy&&s.spin&&!s.spin.enabled)spinEnabled=false;
-    if(!ready)stopAll();
-  }catch(e){ready=false;$('status').textContent='连接中断，已停止';$('error').textContent=e.message;stopAll()}
+    if(s.spin){
+      remoteSpin=!!s.spin.enabled;
+      if(!spinBusy){spinEnabled=remoteSpin;if(!spinDirty&&document.activeElement!==$('spinRate')){$('spinRate').value=s.spin.rate;spinRate=s.spin.rate}}
+      $('spinRate').min=-s.spin.max_rate;$('spinRate').max=s.spin.max_rate;
+    }
+    if(s.control_client&&s.control_client!==client){action='stop';paint()}
+    if(!ready)stop();
+  }catch(e){ready=false;$('status').textContent='网页连接中断：平移停止，小陀螺请以后台状态为准';$('error').textContent=e.message;stop()}
   controls();
 }
-setInterval(()=>{if(Date.now()-lastPoll>1000)stopAll()},100);
+setInterval(()=>{if(Date.now()-lastPoll>1000)stop()},100);
 setInterval(poll,300);poll();
 </script></html>

@@ -72,7 +72,7 @@ for f in ['web.log','web.previous.log']:
 if token is None:
     import secrets
     token=secrets.token_urlsafe(24)
-setup='source /opt/ros/jazzy/setup.bash\nsource "$HOME/Zzj_slam/ws/out/install-livox/setup.bash"\nsource "$HOME/ccc/mapping_install/setup.bash"\n'
+setup='set -e\nsource "$HOME/ccc/ros_env.sh"\n'
 commands={
  'mapping':['ros2','launch',str(root/'mapping_runtime/mapping.launch.py')],
  'web':['python3','-u',str(root/'lidar_mapping_web.py'),'--maps-dir',str(maps)]}

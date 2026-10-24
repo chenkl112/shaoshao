@@ -32,7 +32,7 @@ class Controller:
         self.navigation_lease = None
         self.navigation_sequence = -1
         self.navigation_vector = (0., 0.)
-        self.spin_enabled, self.spin_rate, self.spin_updated = False, .1, 0.
+        self.spin_enabled, self.spin_rate = False, .1
         self.yaw = None
         self.closed = threading.Event()
 
@@ -40,7 +40,13 @@ class Controller:
         return self.config['max_translation_units']/max(self.config['forward_units_per_mps'],self.config['left_units_per_mps'])
 
     def spin_live(self):
-        return self.spin_enabled and self.clock()-self.spin_updated < .2
+        # Spin is explicitly latched by the backend, independent of browser life.
+        # Clear on a fault so fresh feedback cannot silently restart rotation.
+        with self.lock:
+            if (self.closed.is_set() or self.session.error or self.session.state_time is None
+                    or self.clock()-self.session.state_time >= .3):
+                self.spin_enabled = False
+            return self.spin_enabled
 
     def validate_spin(self, enabled, rate):
         if type(enabled) is not bool:raise ValueError('enabled必须为true或false')
@@ -69,6 +75,10 @@ class Controller:
             now = self.clock();s = self.session
             fresh = s.state_time is not None and now-s.state_time < .3
             active = self.action if now-self.updated < .2 else 'stop'
+            feedback = None
+            if s.state:
+                feedback = {'wheel_velocity_valid': all(math.isfinite(v) for v in s.state.values[:3]),
+                            'measured_yaw_deg': s.state.values[3]}
             return {'connected': fresh, 'error': s.error, 'active': active if self.armed else 'stop',
                     'control_started': self.armed, 'strength': self.strength, 'max_strength': self.max_speed(),
                     'speed_unit': 'm/s',
@@ -79,7 +89,7 @@ class Controller:
                     'spin': {'enabled': self.spin_live(), 'rate': self.spin_rate,
                              'max_rate': self.config['max_rot_units']/self.config['rot_units_per_radps'], 'unit': 'command'},
                     'yaw_target_deg': self.yaw, 'last_ack': s.last_ack,
-                    'feedback_targets': s.state.values if s.state else None,
+                    'feedback_state': feedback,
                     'feedback_age_s': round(now-s.state_time,3) if s.state_time is not None else None}
 
     def command(self, data):
@@ -91,13 +101,14 @@ class Controller:
             raise ValueError('速度倍率已更新，请刷新移动网页后操作')
         if type(strength) not in (int,float) or not math.isfinite(strength) or not 0 < strength <= self.max_speed():
             raise ValueError('目标速度超出范围')
-        spin_enabled,spin_rate=data.get('spin_enabled',False),data.get('spin_rate',self.spin_rate)
-        self.validate_spin(spin_enabled,spin_rate)
         with self.lock:
+            explicit_spin = 'spin_enabled' in data
+            spin_enabled,spin_rate=data.get('spin_enabled',self.spin_live()),data.get('spin_rate',self.spin_rate)
+            self.validate_spin(spin_enabled,spin_rate)
             now=self.clock()
-            if not self.accept_manual(client,seq,action!='stop' or spin_enabled):return
+            if not self.accept_manual(client,seq,action!='stop' or (explicit_spin and spin_enabled)):return
             self.action, self.strength, self.updated = action, float(strength), now
-            self.spin_enabled,self.spin_rate,self.spin_updated=spin_enabled,float(spin_rate),now
+            if explicit_spin:self.spin_enabled,self.spin_rate=spin_enabled,float(spin_rate)
             self.armed = True
 
     def set_yaw(self, data):
@@ -175,6 +186,7 @@ class Controller:
                 now=self.clock()
                 data=port.read(min(port.in_waiting,4096))
                 with self.lock:
+                    self.spin_live()  # Observe a feedback gap before accepting a fresh packet.
                     s=self.session;s.receive(data,now)
                     if self.yaw is None and s.state is not None:self.yaw=s.state.values[3]
                     if self.armed and not s.error:
@@ -186,6 +198,7 @@ class Controller:
                         else:
                             packet=s.poll(values,now)
                             if packet and port.write(packet) != len(packet):raise IOError('串口发送不完整')
+                    self.spin_live()  # Latch off immediately after ACK/poll failures.
                 self.closed.wait(.002)
         except Exception as exc:
             with self.lock:self.session.fail(str(exc))

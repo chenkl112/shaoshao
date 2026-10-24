@@ -19,6 +19,7 @@ class NavcarTests(unittest.TestCase):
         import yaml
         config = yaml.safe_load(Path(__file__).with_name('serial.navcar.example.yaml').read_text(encoding='utf-8'))
         config['serial_port'] = '/dev/serial/by-id/never-open-this-test'
+        config['transport'] = 'navcar_uart1_v2'
         with tempfile.TemporaryDirectory() as folder:
             path = Path(folder)/'serial.yaml';path.write_text(yaml.safe_dump(config))
             command = [sys.executable, str(Path(__file__).with_name('chassis_bridge.py')),
@@ -59,7 +60,12 @@ class NavcarTests(unittest.TestCase):
         parser = Parser();parser.feed(status()[:8], 0)
         self.assertEqual(parser.feed(status()[8:], .101), [])
         self.assertEqual(len(parser.feed(status(2), .11)), 1)
-        self.assertEqual(Parser().feed(status(0, (math.nan,0,0,0)), 0), [])
+        parsed=Parser().feed(status(0, (math.nan,math.nan,math.nan,12.5)), 0)
+        self.assertEqual(len(parsed),1)
+        self.assertTrue(all(math.isnan(v) for v in parsed[0].values[:3]))
+        self.assertEqual(parsed[0].values[3],12.5)
+        self.assertEqual(Parser().feed(status(0, (math.nan,0,math.nan,0)), 0), [])
+        self.assertEqual(Parser().feed(status(0, (0,0,0,math.inf)), 0), [])
         wrong = bytearray(status());wrong[2] = 2;wrong[-2:] = struct.pack('<H', crc16_modbus(wrong[2:-2]))
         self.assertEqual(Parser().feed(wrong, 0), [])
 
@@ -110,7 +116,7 @@ class NavcarTests(unittest.TestCase):
         cfg = dict(forward_units_per_mps=10, left_units_per_mps=20,
                    rot_units_per_radps=3, yaw_target_deg=450,
                    max_translation_units=20, max_rot_units=5)
-        self.assertEqual(targets((.1,.2,.3), cfg), (1,-4,-.8999999999999999,90))
+        self.assertEqual(targets((.1,.2,.3), cfg), (1,-4,.8999999999999999,90))
         self.assertEqual(targets((0,0,0), cfg), (0,0,0,90))
         with self.assertRaises(ValueError):targets((100,0,0), cfg)
 

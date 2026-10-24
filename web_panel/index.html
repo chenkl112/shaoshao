@@ -4,23 +4,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>哨哨</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#eeede8;color:#30332f;font:15px system-ui,sans-serif}
-header{padding:20px 26px;background:#f8f7f3;border-bottom:1px solid #cfcec6;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-h1{font-size:20px;font-weight:600;margin:0 0 4px}small{color:#74766d}main{padding:22px;min-width:0;flex:1;max-width:1450px}
+*{box-sizing:border-box}body{margin:0;background:#f4f4f4;color:#111111;font:15px system-ui,sans-serif}
+header{padding:20px 26px;background:#ffffff;border-bottom:1px solid #d4d4d4;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+h1{font-size:20px;font-weight:600;margin:0 0 4px}small{color:#666666}main{padding:22px;min-width:0;flex:1;max-width:1450px}
 .bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
-button{padding:11px 26px;border-radius:3px;border:1px solid #b7baaf;background:#f8f7f3;color:#40463a;font:inherit;cursor:pointer;transition:background .15s,border-color .15s}
-button:hover:not(:disabled){background:#e0e2d8;border-color:#858c77}button.active,button.active:hover:not(:disabled){background:#566447;border-color:#566447;color:#fff}button:focus-visible{outline:2px solid #566447;outline-offset:3px}button:disabled{opacity:.5;cursor:wait}
-label{display:flex;align-items:center;gap:6px;font-size:13px}input[type=number]{width:76px;padding:9px;border:1px solid #b7baaf;border-radius:3px;background:#f8f7f3;color:inherit;font:inherit}
-#status{margin-left:auto;color:#4e5e40}.view{position:relative;border:1px solid #575b52;border-radius:3px;overflow:hidden;background:#252923}
-canvas{width:100%;height:64vh;min-height:350px;display:block;touch-action:none}.hint{position:absolute;bottom:14px;left:18px;color:#c0c5b8;background:#252923e8;padding:4px 7px;font-size:12px;pointer-events:none}
-.stats{display:flex;gap:24px;flex-wrap:wrap;padding:16px 0;border-bottom:1px solid #cfcec6;color:#5e6356;font-variant-numeric:tabular-nums}#error{color:#a13e2e;white-space:pre-wrap}
-#demo{color:#7a5a25;font-size:13px}.note{color:#707268;font-size:13px;line-height:1.8}
+button{padding:11px 26px;border-radius:3px;border:1px solid #b8b8b8;background:#ffffff;color:#222222;font:inherit;cursor:pointer;transition:background .15s,border-color .15s}
+button:hover:not(:disabled){background:#eeeeee;border-color:#777777}button.active,button.active:hover:not(:disabled){background:#111111;border-color:#111111;color:#fff}button:focus-visible{outline:2px solid #111111;outline-offset:3px}button:disabled{opacity:.5;cursor:wait}
+label{display:flex;align-items:center;gap:6px;font-size:13px}input[type=number]{width:76px;padding:9px;border:1px solid #b8b8b8;border-radius:3px;background:#ffffff;color:inherit;font:inherit}
+#status{margin-left:auto;color:#333333}.view{position:relative;border:1px solid #555555;border-radius:3px;overflow:hidden;background:#171717}
+canvas{width:100%;height:64vh;min-height:350px;display:block;touch-action:none}.hint{position:absolute;bottom:14px;left:18px;color:#eeeeee;background:#171717e8;padding:4px 7px;font-size:12px;pointer-events:none}
+.stats{display:flex;gap:24px;flex-wrap:wrap;padding:16px 0;border-bottom:1px solid #d4d4d4;color:#444444;font-variant-numeric:tabular-nums}#error{color:#111111;white-space:pre-wrap}
+#demo{color:#444444;font-size:13px}.note{color:#666666;font-size:13px;line-height:1.8}
 [hidden]{display:none!important}.layout{display:flex;min-height:calc(100vh - 85px)}
-.sidebar{width:190px;flex-shrink:0;padding:24px 14px;background:#f8f7f3;border-right:1px solid #cfcec6}.sidebar p{margin:0 12px 14px;color:#74766d;font-size:12px;letter-spacing:2px}.sidebar nav{display:flex;flex-direction:column;gap:9px}.sidebar button{text-align:left;padding:14px 16px;border-color:transparent;background:transparent}.sidebar button.active{background:#566447}.sidebar button span{display:block;font-size:11px;opacity:.7;margin-top:5px}
-.cloud-tools{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:14px;color:#5e6356}.cloud-tools small{font-size:12px}.cloud-tools input[type=number]{width:84px}.cloud-tools input:invalid{border-color:#a13e2e}
+.sidebar{width:190px;flex-shrink:0;padding:24px 14px;background:#ffffff;border-right:1px solid #d4d4d4}.sidebar p{margin:0 12px 14px;color:#666666;font-size:12px;letter-spacing:2px}.sidebar nav{display:flex;flex-direction:column;gap:9px}.sidebar button{text-align:left;padding:14px 16px;border-color:transparent;background:transparent}.sidebar button.active{background:#111111}.sidebar button span{display:block;font-size:11px;opacity:.7;margin-top:5px}
+.cloud-tools{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:14px;color:#444444}.cloud-tools small{font-size:12px}.cloud-tools input[type=number]{width:84px}.cloud-tools input:invalid{border-color:#111111}
 .view-heading{display:flex;align-items:center;gap:12px;margin-bottom:14px}.view-heading h2{font-size:17px;font-weight:600;margin:0}.view-heading small{flex:1}.view-heading button{padding:8px 14px}
-.empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#c0c5b8;padding:28px;line-height:1.8;background:#252923}.goal-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 0}.goal-bar button{padding:10px 20px}#goGoal{background:#566447;color:#fff;border-color:#566447}#cancelGoal{color:#a13e2e}#navStatus{flex-basis:100%;color:#707268;font-size:13px;line-height:1.7}.map-note{color:#707268;font-size:13px;line-height:1.8}
-@media(max-width:900px){.layout{display:block}.sidebar{width:auto;border-right:0;border-bottom:1px solid #cfcec6;padding:12px 18px}.sidebar p{display:none}.sidebar nav{flex-direction:row}.sidebar button{flex:1;padding:10px 14px}.sidebar button span{display:none}main{padding:16px}.view-heading{flex-wrap:wrap}canvas{height:58vh;min-height:300px}header{padding:16px 18px}}
+.empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#eeeeee;padding:28px;line-height:1.8;background:#171717}.goal-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 0}.goal-bar button{padding:10px 20px}#goGoal{background:#111111;color:#fff;border-color:#111111}#cancelGoal{color:#111111}#navStatus{flex-basis:100%;color:#666666;font-size:13px;line-height:1.7}.map-note{color:#666666;font-size:13px;line-height:1.8}
+@media(max-width:900px){.layout{display:block}.sidebar{width:auto;border-right:0;border-bottom:1px solid #d4d4d4;padding:12px 18px}.sidebar p{display:none}.sidebar nav{flex-direction:row}.sidebar button{flex:1;padding:10px 14px}.sidebar button span{display:none}main{padding:16px}.view-heading{flex-wrap:wrap}canvas{height:58vh;min-height:300px}header{padding:16px 18px}}
+
+:root{color-scheme:light;accent-color:#111}#error{font-weight:600}#cancelGoal{border-color:#555}button:disabled{cursor:not-allowed}
 </style>
 <header><div><h1>哨哨</h1><small>实时点云 · 建图地图</small></div><span id="demo"></span></header>
 <div class="layout">
@@ -168,7 +170,7 @@ function draw(){
  if(activeView!=='live'){requestAnimationFrame(draw);return}
  const dpr=window.devicePixelRatio||1,w=canvas.clientWidth,h=canvas.clientHeight;
  if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr)}
- ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);ctx.strokeStyle='#363c32';ctx.lineWidth=1;
+ ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);ctx.strokeStyle='#383838';ctx.lineWidth=1;
  const gx=Math.round(center[0]),gy=Math.round(center[1]);
  for(let i=-10;i<=10;i++){
   for(const ends of [[[gx+i,gy-10,0],[gx+i,gy+10,0]],[[gx-10,gy+i,0],[gx+10,gy+i,0]]]){
@@ -347,6 +349,12 @@ function switchView(view){
 }
 document.querySelectorAll('[data-view]').forEach(button=>button.onclick=()=>switchView(button.dataset.view));
 $('refreshMap').onclick=refreshMap;$('fitMap').onclick=fitMap;mapCanvas.ondblclick=fitMap;
+mapCanvas.addEventListener('contextmenu',e=>{
+ e.preventDefault();
+ selectedGoal=null;++planRequest;planError='';navigationControls();drawMap();
+ const status=lastState?.navigation?.status;
+ if(['sending','active','canceling'].includes(status)&&!goalRequest)navigationRequest('/api/navigation/cancel',{});
+});
 mapCanvas.onpointerdown=e=>{if(e.button!==0)return;mapDrag={startX:e.clientX,startY:e.clientY,x:e.clientX,y:e.clientY,moved:false};mapCanvas.setPointerCapture(e.pointerId)};
 mapCanvas.onpointermove=e=>{
  if(!mapDrag)return;

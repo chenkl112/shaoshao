@@ -1,5 +1,5 @@
-# 复制为 serial.navcar.yaml，填写实际串口；Navcar UART1 V1 默认只读。
-transport: navcar_uart1_v1
+# 复制为 serial.navcar.yaml，填写实际串口；Navcar UART1 V2 默认只读。
+transport: navcar_uart1_v2
 serial_port: null  # 通过 ls -l /dev/serial/by-id/ 获取，禁止猜测。
 baud: 2000000
 yaw_target_deg: 0.0  # 相对 MCU 启动航向，不是相对底盘的关节角。

@@ -15,13 +15,13 @@ def main():
     p.add_argument('--enable-control', action='store_true', help='Navcar：显式启用控制，默认只读')
     p.add_argument('--no-ros', action='store_true', help='Navcar：不依赖ROS的只读串口监视')
     args = p.parse_args()
-    # Navcar has different units and target-only feedback; never route it through JSONL/yaw odometry.
+    # Navcar has a binary V2 protocol; never route it through JSONL/yaw odometry.
     if args.config.exists():
         import json
         import yaml
         raw = (yaml.safe_load(args.config.read_text()) if args.config.suffix.lower() in ('.yaml', '.yml')
                else json.loads(args.config.read_text()))
-        if isinstance(raw, dict) and raw.get('transport') == 'navcar_uart1_v1':
+        if isinstance(raw, dict) and raw.get('transport') in ('navcar_uart1_v1','navcar_uart1_v2'):
             if args.mock:p.error('Navcar does not use the legacy JSONL mock')
             from navcar_bridge import main as navcar_main
             return navcar_main(['--config',str(args.config)] +

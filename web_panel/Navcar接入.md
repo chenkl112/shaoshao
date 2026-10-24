@@ -1,7 +1,11 @@
-# Navcar UART1 V1 上位机接入
+# Navcar UART1 V2 上位机接入
 
-协议来源：<https://github.com/Li-chee/Navcar-Comm-Protocol>，2026-10-17 版。
-对照提交：`4eb14adf5d7bc463dca50c092a1b3be66f77ef9a`。
+## 当前栅格设置（2026-10-20）
+
+按用户要求，静态点云导出、二维建图、全局和局部代价地图统一为 **0.025 m（2.5 cm）**。下面此前的 1 cm 设置属于历史记录。静态确认仍使用 5 cm 证据网格，确认后在 2.5 cm 网格保留实测点，保留去顶和动态过滤。已有地图不改写分辨率；新建图生效。导航接受 2.5 cm 或更细的真实地图。定位标准差门控和车体参数不随栅格修改。
+
+
+协议来源：<https://github.com/Li-chee/Navcar-Comm-Protocol>，V2。
 实际下位机使用该二进制协议，旧 `serial_jsonl_v1` 参考文档不适用。
 
 串口 2000000、8N1、无流控，3.3V TTL 共地；MCU RX=PB7、TX=PA9。
@@ -22,7 +26,7 @@ python3 web_panel/navcar_bridge.py --check-config
 python3 web_panel/navcar_bridge.py --no-ros
 ```
 
-默认只读，不发送控制帧，不接管遥控器。每秒显示5次最新目标及状态年龄。
+默认只读，不发送控制帧，不接管遥控器。每秒显示5次最新状态及状态年龄。
 Ctrl+C 退出只读监视也不发送任何命令。只读验证仅需 Python3、PyYAML、pyserial。
 状态 `feedback_kind=targets_only`，不得将四个目标当作传感器实测值。
 已有桥接入口也可用 `python3 web_panel/chassis_bridge.py --config web_panel/serial.navcar.yaml --no-ros`，
@@ -36,7 +40,7 @@ python3 web_panel/navcar_bridge.py
 ```
 
 状态发布到 `/navcar/target_feedback`（std_msgs/String，JSON），包括序号、
-四个原生目标、状态年龄、ACK、控制是否启用；不发布 `/yaw/joint_states` 或 `/wheel/odom`。
+IMU 实测 yaw、轮速有效位、状态年龄、ACK、控制是否启用；不发布 `/yaw/joint_states` 或 `/wheel/odom`。
 
 ## 运动适配与待测参数
 
@@ -149,7 +153,7 @@ POST /api/spin
 方向释放时发送 `action:"stop"` 并保留 `spin_enabled:true` 可继续旋转；
 总停止发送 `action:"stop",spin_enabled:false`。
 `GET /api/state` 的 `spin` 返回当前开关、指令强度和上限，`yaw_target_deg`为上位机目标，
-`feedback_targets[3]`为下位机回显的目标；不能据此判断电机已到位。
+`feedback_state.measured_yaw_deg`为 IMU 实测角；不是云台相对底盘的关节角。
 
 ## 雷达坐标下的二维平移导航
 
@@ -244,3 +248,30 @@ LIO 内部匹配的 `filter_size_surf` / `filter_size_map` 保留 0.15 m：静�
 点击“开始建图”才启动FAST-LIO并创建新地图；“停止建图并保存”保存后回到待机，雷达继续工作。
 重复运行启动入口不会重复启动进程，也不会结束已有建图。
 8081移动页独立运行：`~/ccc/start_move_web.sh`。目标速度上限3.0米/秒，默认0.10米/秒。
+
+
+### 1 cm 导出地图几乎为空的修正（2026-10-20）
+
+MID360 非重复扫描和测距抖动会使静止墙面的回波落入不同的 1 cm 小格。
+静态确认与导出精度共用 1 cm 网格时，同一小格反复漏扫，确认不断重置；实车地图仅保存约 10 个点。
+现在使用 5 cm 网格累计多帧证据，保持至少 6 帧、1.5 秒确认、断流重置和可见自由射线清除，
+只在证据确认后接纳当帧实测点，按 1 cm 网格保留原始坐标。输出没有插值补点，二维未知区域仍保留未知。
+此处的 1 cm 是导出采样间距，不表示测量或定位误差为 1 cm。实时避障点云不经过静态导出过滤。
+旧的空地图不能由这次修正恢复，需要重新开始建图。
+
+### 运动时定位门槛抖动修正（2026-10-20）
+
+实车移动后 AMCL 位置标准差约 2–4 cm，原 1 cm 门槛会将输出压成零，最终触发 105。
+`robot.yaml` 中 `navigation.localization_max_position_std_m: 0.05` 为进入/恢复门槛，
+`localization_stop_position_std_m: 0.075` 为已定位后的暂停门槛。
+两个门槛采用迟滞，失效后必须回到 5 cm 内才能恢复；无效方差、错误坐标系、方向不确定度超限仍立即拒绝。
+原始不确定度如实显示，阈值不表示绝对定位精度。地图分辨率保持 2.5 cm。
+车体外形、碰撞检查、未知区规则、速度上限和指令超时保持原设置。
+修改配置后重启网页/地图定位生效；不自动恢复旧运动目标。
+
+### 车体对边距更正（2026-10-20）
+
+用户更正正八边形对边距为 540 mm，替代此前 510 mm。
+robot.across_flats_m 改为 0.540，外接圆半径向上取整为 0.292246 m。
+保留 0.02 m 外扩，碰撞轮廓轴向外框约 62.449 cm；膨胀半径为 0.492246 m。
+不缩小实测车体来适配窄通道；地图坐标和已保存地图不缩放。

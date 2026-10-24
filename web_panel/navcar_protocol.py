@@ -1,4 +1,4 @@
-"""Navcar UART1 V1 codec and single-flight ACK session; no ROS/serial dependency."""
+"""Navcar UART1 V2 codec and single-flight ACK session; no ROS/serial dependency."""
 from dataclasses import dataclass
 import math
 import struct
@@ -81,7 +81,10 @@ class Parser:
                 packets.append(Packet(kind, seq, (payload[0],)))
             elif kind == STATE and size == 16:
                 values = struct.unpack('<4f', payload)
-                if all(math.isfinite(v) for v in values):
+                speeds = values[:3]
+                speeds_valid = (all(math.isfinite(v) for v in speeds) or
+                                all(math.isnan(v) for v in speeds))
+                if speeds_valid and math.isfinite(values[3]):
                     packets.append(Packet(kind, seq, values))
         return packets
 
@@ -144,9 +147,8 @@ class Session:
 
 
 def stop_confirmed(session, after):
-    """Success requires a NEW accepted zero command and its periodic target echo."""
+    """Success requires an accepted zero command and a subsequent V2 state frame."""
     return (not session.error and session.pending is None and session.last_ack == 0
             and session.ack_time is not None and session.ack_time >= after
             and session.state_time is not None and session.state_time >= session.ack_time
-            and session.state.sequence == ((session.sequence - 1) & 65535)
-            and all(v == 0 for v in session.state.values[:3]))
+            and session.state.sequence == ((session.sequence - 1) & 65535))

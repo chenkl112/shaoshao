@@ -154,6 +154,33 @@ int main(int argc,char **argv) {
     for(int i=0;i<10;++i){centimetre.update(close_surfaces,origin,40.+i*.2);five_cm.update(close_surfaces,origin,40.+i*.2);}
     centimetre.snapshot(out);assert(out.size()==2);
     five_cm.snapshot(out);assert(out.size()==1);
+    // Real non-repetitive scans revisit a static surface, not the same exact
+    // 1 cm voxel. Four nearby returns repeat every .8 s; per-voxel confirmation
+    // used to reset forever and export an almost empty map.
+    StaticMapFilter<Point> jitter(.01);
+    for(int i=0;i<20;++i) {
+        const float x=4.006f+(i%4)*.01f;
+        assert(jitter.update(cloud({p(x,.025f,.025f),p(2.011f+i*.15f,.525f,.525f)}),
+                             {{0,.025,.025}},50.+i*.2));
+        jitter.snapshot(out);
+        if(i<8)assert(out.empty()); // still require six scans and 1.5 seconds
+    }
+    jitter.snapshot(out);assert(out.size()==4);
+    for(const auto &v:out)assert(v.x>4.&&v.x<4.05&&v.y<.1); // no moving trail
+    assert(!jitter.update(cloud({p(9)}),origin,53.8)); // duplicate sensor stamp
+    assert(!jitter.update(cloud({p(9)}),origin,51.)); // out of order
+    jitter.update(Cloud{},origin,100.);jitter.snapshot(out);assert(out.size()==4);
+    // Occluding foreground cannot erase the confirmed background surface.
+    jitter.update(cloud({p(2.025f,.025f,.025f)}),{{0,.025,.025}},100.2);
+    jitter.snapshot(out);assert(out.size()==4);
+    jitter.update(cloud({p(8.025f,.025f,.025f)}),{{0,.025,.025}},100.4);
+    jitter.snapshot(out);assert(out.size()==4);
+    jitter.update(cloud({p(8.025f,.025f,.025f)}),{{0,.025,.025}},100.6);
+    jitter.snapshot(out);assert(out.empty());
+    StaticMapFilter<Point> fine_bounded(.01,1.5,3);
+    for(int i=0;i<15;++i)
+        fine_bounded.update(cloud({p(4.006f+(i%4)*.01f,.025f,.025f)}),origin,110.+i*.2);
+    fine_bounded.snapshot(out);assert(out.size()<=3);assert(fine_bounded.full());
 #ifdef SCURM_TEST_PCL
     assert(argc==2);
     moving.snapshot(out);

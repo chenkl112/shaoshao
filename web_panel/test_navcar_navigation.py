@@ -12,6 +12,67 @@ from navcar_settings import navigation_speed,load_navigation_speed,limit_transla
 
 
 class NavigationTests(unittest.TestCase):
+    def test_localization_hysteresis_handles_real_motion_and_recovery(self):
+        from types import SimpleNamespace as NS
+        import threading
+        import numpy as np
+        from navcar_navigation import NavigationBridge
+        from navcar_settings import navigation_options
+        options=navigation_options({})
+        self.assertEqual(options['position_std_limit'],.05)
+        self.assertEqual(options['position_std_stop_limit'],.075)
+        panel=NS(lock=threading.RLock(),nav_localized=False,
+                 navigation_control=NS(frames=options))
+        bridge=NS(panel=panel)
+        def update(std, yaw=.04, frame='map'):
+            covariance=np.zeros(36)
+            covariance[0]=covariance[7]=std*std;covariance[35]=yaw*yaw
+            if math.isnan(std):covariance[0]=float('nan')
+            msg=NS(header=NS(frame_id=frame),pose=NS(covariance=covariance))
+            NavigationBridge.localized(bridge,msg)
+            self.assertIs(type(panel.nav_localized),bool)
+            return panel.nav_localized
+        self.assertFalse(update(.06))
+        for std in (.0,.024,.042,.06,.074):self.assertTrue(update(std))
+        self.assertFalse(update(.076))
+        self.assertFalse(update(.06))
+        self.assertTrue(update(.049))
+        self.assertFalse(update(.03,yaw=.31))
+        self.assertFalse(update(.06))
+        self.assertTrue(update(.03))
+        self.assertFalse(update(float('nan')))
+        self.assertTrue(update(.03))
+        self.assertFalse(update(.03,frame='odom'))
+        self.assertFalse(update(.06))
+        self.assertTrue(update(.03))
+        covariance=np.zeros(36);covariance[0]=-1e-6
+        msg=NS(header=NS(frame_id='map'),pose=NS(covariance=covariance))
+        NavigationBridge.localized(bridge,msg);self.assertFalse(panel.nav_localized)
+
+    def test_localization_limits_validate_and_can_keep_strict_profile(self):
+        from navcar_settings import navigation_options
+        cfg={'navigation':{'localization_max_position_std_m':.01,
+                           'localization_stop_position_std_m':.015}}
+        self.assertEqual(navigation_options(cfg)['position_std_limit'],.01)
+        for enter,stop in ((True,.075),(.05,False),(float('nan'),.075),(.05,float('inf')),
+                           (.05,.04),(.2,.2),(0,.075),(.05,.16)):
+            with self.assertRaises(ValueError):
+                navigation_options({'navigation':{'localization_max_position_std_m':enter,
+                                                  'localization_stop_position_std_m':stop}})
+
+    def test_ros_numpy_covariance_is_json_serializable(self):
+        import json
+        import numpy as np
+        for variance, expected in ((0., True), (.000121, False), (-1e-6, False)):
+            covariance=np.zeros(36,dtype=np.float64)
+            covariance[0]=covariance[7]=variance
+            covariance[35]=.01
+            quality=localization_quality('map',covariance)
+            self.assertIs(type(quality['ready']),bool)
+            self.assertEqual(quality['ready'],expected)
+            payload=json.dumps({'navigation':{'localization':quality}},allow_nan=False)
+            self.assertIs(json.loads(payload)['navigation']['localization']['ready'],expected)
+
     def test_shared_speed_limits_diagonal_and_uart_conversion_once(self):
         config={'navigation':{'max_speed_mps':.5}}
         with tempfile.TemporaryDirectory() as temp:
@@ -163,7 +224,7 @@ class NavigationTests(unittest.TestCase):
             self.assertEqual(ctrl['critics'][0],'BaseObstacle')
             self.assertEqual(params['amcl']['ros__parameters']['initial_pose']['x'],1.)
             cost=params['global_costmap']['global_costmap']['ros__parameters']
-            self.assertEqual(cost['resolution'],.01)
+            self.assertEqual(cost['resolution'],.025)
             self.assertAlmostEqual(cost['robot_radius'],radius)
             self.assertEqual(cost['robot_base_frame'],'navcar_imu')
             self.assertFalse(yaml.safe_load((out/'fast_lio.yaml').read_text())['/**']['ros__parameters']['pcd_save']['pcd_save_en'])
