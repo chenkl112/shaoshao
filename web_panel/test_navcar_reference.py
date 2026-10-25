@@ -42,7 +42,8 @@ class ReferenceTests(unittest.TestCase):
                        child_frame_id='navcar_imu',
                        pose=NS(pose=NS(position=NS(x=x,y=y,z=.3),
                                        orientation=NS(x=0.,y=0.,z=math.sin(angle/2),w=math.cos(angle/2))),covariance=[0.]*36),
-                       twist=NS(twist=NS(linear=NS(x=0.,y=0.,z=0.),angular=NS(x=0.,y=0.,z=0.))))
+                       twist=NS(twist=NS(linear=NS(x=offset[1],y=-offset[0],z=0.),
+                                             angular=NS(x=0.,y=0.,z=1.)),covariance=[0.]*36))
                 NavigationBridge.odom(bridge,msg)
         self.assertEqual(len(published),3)
         for msg in published:
@@ -115,8 +116,11 @@ class ReferenceTests(unittest.TestCase):
             (maps/'site.yaml').write_text('image: site.png\nresolution: 0.025\n')
             output=build_navigation_config(root,maps,{'x':1.,'y':2.,'yaw':0.})
             frames=yaml.safe_load((output/'frames.yaml').read_text())
+            self.assertEqual(frames['collision_radius'],.297658)
             self.assertNotIn('narrow',frames)
             params=yaml.safe_load((output/'nav2.yaml').read_text())
+            self.assertEqual(frames['localization_map_yaml'],params['map_server']['ros__parameters']['yaml_filename'])
+            self.assertEqual(Path(frames['localization_map_yaml']),maps/'site.yaml')
             fast=yaml.safe_load((output/'fast_lio.yaml').read_text())['/**']['ros__parameters']
             self.assertEqual(fast['preprocess']['blind'],.2)
             self.assertFalse(fast['map_filter']['dynamic_enabled'])
@@ -127,8 +131,8 @@ class ReferenceTests(unittest.TestCase):
                 cost=params[name][name]['ros__parameters']
                 self.assertEqual(cost['robot_base_frame'],'navcar_center')
                 self.assertEqual(cost['robot_radius'],.297658)
-                self.assertEqual(cost['footprint_padding'],.02)
-                self.assertEqual(cost['resolution'],.025)
+                self.assertEqual(cost['footprint_padding'],0.)
+                self.assertEqual(cost['resolution'],.01 if name=='local_costmap' else .025)
                 self.assertFalse(cost['obstacle_layer']['scan']['inf_is_valid'])
             scan=params['navigation_scan']['ros__parameters']
             self.assertEqual(scan['target_frame'],'navcar_lidar')
@@ -143,7 +147,7 @@ class ReferenceTests(unittest.TestCase):
             self.assertEqual(controller['max_speed_xy'],load_navigation_speed(path))
             self.assertEqual(controller['max_speed_xy'],.5)
             self.assertEqual(controller['max_vel_theta'],0.)
-            self.assertEqual(controller['critics'][0],'BaseObstacle')
+            self.assertEqual(controller['critics'][0],'ObstacleFootprint')
             self.assertNotIn('&id',(output/'nav2.yaml').read_text())
 
     def test_global_speed_reaches_uart_once_and_localization_gate_is_tight(self):

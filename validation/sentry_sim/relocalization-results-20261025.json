@@ -1,0 +1,3632 @@
+{
+  "passed": true,
+  "simulation_cases": 20,
+  "unit_tests": 142,
+  "checks": [
+    {
+      "case": "smooth80",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "smooth80",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "smooth80",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "smooth80",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "smooth80",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "smooth80",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "smooth80",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "smooth80",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "smooth80",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "smooth80",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "smooth80",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow75",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow75",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow75",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow75",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow75",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "narrow75",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "narrow75",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow75",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow75",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow75",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow75",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "narrow65",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "narrow65",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65-offset",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65-offset",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65-offset",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65-offset",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65-offset",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "narrow65-offset",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "narrow65-offset",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65-offset",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65-offset",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65-offset",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "narrow65-offset",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "reject58",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "reject58",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "reject58",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "reject58",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "reject58",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "reject58",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "reject58",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "reject58",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "reject58",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "reject58",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "reject58",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "stuck80",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "stuck80",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "stuck80",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "stuck80",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "stuck80",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "stuck80",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "stuck80",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "stuck80",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "stuck80",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "stuck80",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "stuck80",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "localization80",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "localization80",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "localization80",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "localization80",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "localization80",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "localization80",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "localization80",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "localization80",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "localization80",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "localization80",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "localization80",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "cancel80",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "cancel80",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "cancel80",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "cancel80",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "cancel80",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "cancel80",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "cancel80",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "cancel80",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "cancel80",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "cancel80",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "cancel80",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "slow-status80",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "slow-status80",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "slow-status80",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "slow-status80",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "slow-status80",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "slow-status80",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "slow-status80",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "slow-status80",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "slow-status80",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "slow-status80",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "slow-status80",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-blind-right",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-blind-right",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-blind-right",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-blind-right",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-blind-right",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "kidnap-blind-right",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "kidnap-blind-right",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-blind-right",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-blind-right",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-blind-right",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-blind-right",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-reset-turn",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-reset-turn",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-reset-turn",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-reset-turn",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-reset-turn",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "kidnap-reset-turn",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "kidnap-reset-turn",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-reset-turn",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-reset-turn",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-reset-turn",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-reset-turn",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-tracked-left",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-tracked-left",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-tracked-left",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-tracked-left",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-tracked-left",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "kidnap-tracked-left",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "kidnap-tracked-left",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-tracked-left",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-tracked-left",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-tracked-left",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-tracked-left",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-narrow65",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-narrow65",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-narrow65",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-narrow65",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-narrow65",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "kidnap-narrow65",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "kidnap-narrow65",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-narrow65",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-narrow65",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-narrow65",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-narrow65",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-twice",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-twice",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-twice",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-twice",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-twice",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "kidnap-twice",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "kidnap-twice",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-twice",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-twice",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-twice",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-twice",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-cancel",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-cancel",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-cancel",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-cancel",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-cancel",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "kidnap-cancel",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "kidnap-cancel",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-cancel",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-cancel",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-cancel",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-cancel",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-no-scan",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-no-scan",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-no-scan",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-no-scan",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-no-scan",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "kidnap-no-scan",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+      "matches": false,
+      "inactive_for_this_case": true
+    },
+    {
+      "case": "kidnap-no-scan",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-no-scan",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-no-scan",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-no-scan",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "kidnap-no-scan",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-twice",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-twice",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-twice",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-twice",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-twice",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-twice",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-twice",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-twice",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-twice",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-twice",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-twice",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-narrow65",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-narrow65",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-narrow65",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-narrow65",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-narrow65",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-narrow65",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-narrow65",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-narrow65",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-narrow65",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-narrow65",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-narrow65",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-reset",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-reset",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-reset",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-reset",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-reset",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-reset",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-reset",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-reset",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-reset",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-reset",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-reset",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-no-scan",
+      "file": "web_panel/navigation_runtime.py",
+      "sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "recorded_sha256": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-no-scan",
+      "file": "web_panel/navigation_recovery.py",
+      "sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "recorded_sha256": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-no-scan",
+      "file": "web_panel/navcar_navigation.py",
+      "sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "recorded_sha256": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-no-scan",
+      "file": "web_panel/global_relocalization.py",
+      "sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "recorded_sha256": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-no-scan",
+      "file": "web_panel/pointcloud_relocalization.py",
+      "sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "recorded_sha256": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-no-scan",
+      "file": "web_panel/pointcloud_index.py",
+      "sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "recorded_sha256": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-no-scan",
+      "file": "web_panel/server.py",
+      "sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "recorded_sha256": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-no-scan",
+      "file": "deployment/lidar_mapping_web.py",
+      "sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "recorded_sha256": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-no-scan",
+      "file": "validation/sentry_sim/scene.py",
+      "sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "recorded_sha256": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-no-scan",
+      "file": "validation/sentry_sim/cloud_scene.py",
+      "sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "recorded_sha256": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+      "matches": true,
+      "inactive_for_this_case": false
+    },
+    {
+      "case": "pcd-no-scan",
+      "file": "validation/sentry_sim/run.py",
+      "sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "recorded_sha256": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5",
+      "matches": true,
+      "inactive_for_this_case": false
+    }
+  ],
+  "results": [
+    {
+      "name": "smooth80",
+      "exit_code": 0,
+      "case": "smooth",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": null,
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "2d_scan",
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+        "web_panel/pointcloud_index.py": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.9313167480062567,
+        -2.0126632985145907,
+        5.714148126048242e-23
+      ],
+      "recovery_states": [
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": false,
+      "elapsed_s": 27.360490844002925,
+      "min_physical_clearance_m": 0.08798731735983734,
+      "safety_stops": [],
+      "global_states": [
+        "idle"
+      ],
+      "passage": {
+        "max_center_offset_m": 0.01392363196321389,
+        "max_body_speed_mps": 0.1814380259744642,
+        "min_physical_clearance_m": 0.08841836803678604
+      },
+      "motion": {
+        "max_speed_mps": 0.32938428247129253,
+        "max_acceleration_mps2": 0.2500386844845174,
+        "max_jerk_mps3": 0.6519151905002264,
+        "normal_max_acceleration_mps2": 0.2500386844845174,
+        "normal_max_jerk_mps3": 0.6519151905002264
+      },
+      "uninterrupted_motion": true
+    },
+    {
+      "name": "narrow75",
+      "exit_code": 0,
+      "case": "narrow",
+      "width_m": 0.75,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": null,
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "2d_scan",
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+        "web_panel/pointcloud_index.py": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.9196856385556598,
+        -2.0097225815088913,
+        -1.1192594994155279e-22
+      ],
+      "recovery_states": [
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": false,
+      "elapsed_s": 37.05433008004911,
+      "min_physical_clearance_m": 0.06711969821941488,
+      "safety_stops": [],
+      "global_states": [
+        "idle"
+      ],
+      "passage": {
+        "max_center_offset_m": 0.010222301780585141,
+        "max_body_speed_mps": 0.1100266317158488,
+        "min_physical_clearance_m": 0.06711969821941488
+      },
+      "motion": {
+        "max_speed_mps": 0.3162711363981642,
+        "max_acceleration_mps2": 0.2509074260221693,
+        "max_jerk_mps3": 0.6386475831107992,
+        "normal_max_acceleration_mps2": 0.2509074260221693,
+        "normal_max_jerk_mps3": 0.6386475831107992
+      },
+      "uninterrupted_motion": true
+    },
+    {
+      "name": "narrow65",
+      "exit_code": 0,
+      "case": "narrow",
+      "width_m": 0.65,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": null,
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "2d_scan",
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+        "web_panel/pointcloud_index.py": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.967923719395636,
+        -2.010109171431718,
+        -2.443698432900587e-23
+      ],
+      "recovery_states": [
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": false,
+      "elapsed_s": 49.09978797001531,
+      "min_physical_clearance_m": 0.017124060195943924,
+      "safety_stops": [],
+      "global_states": [
+        "idle"
+      ],
+      "passage": {
+        "max_center_offset_m": 0.010217939804056275,
+        "max_body_speed_mps": 0.07999766959191791,
+        "min_physical_clearance_m": 0.017124060195943924
+      },
+      "motion": {
+        "max_speed_mps": 0.27966896338312014,
+        "max_acceleration_mps2": 0.2500371234055585,
+        "max_jerk_mps3": 0.6446500918279384,
+        "normal_max_acceleration_mps2": 0.2500371234055585,
+        "normal_max_jerk_mps3": 0.6446500918279384
+      },
+      "uninterrupted_motion": true
+    },
+    {
+      "name": "narrow65-offset",
+      "exit_code": 0,
+      "case": "narrow",
+      "width_m": 0.65,
+      "start_offset_m": 0.04,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": null,
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "2d_scan",
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+        "web_panel/pointcloud_index.py": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.9233119338310947,
+        -2.0095654499716105,
+        1.2767239671707714e-22
+      ],
+      "recovery_states": [
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": false,
+      "elapsed_s": 48.830992834002245,
+      "min_physical_clearance_m": 0.01711409302931366,
+      "safety_stops": [],
+      "global_states": [
+        "idle"
+      ],
+      "passage": {
+        "max_center_offset_m": 0.01022790697068654,
+        "max_body_speed_mps": 0.0799978060632147,
+        "min_physical_clearance_m": 0.01711409302931366
+      },
+      "motion": {
+        "max_speed_mps": 0.29400299217431397,
+        "max_acceleration_mps2": 0.2500349549310952,
+        "max_jerk_mps3": 0.6043959626286305,
+        "normal_max_acceleration_mps2": 0.2500349549310952,
+        "normal_max_jerk_mps3": 0.6043959626286305
+      },
+      "uninterrupted_motion": true
+    },
+    {
+      "name": "reject58",
+      "exit_code": 0,
+      "case": "reject",
+      "width_m": 0.58,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": null,
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "2d_scan",
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+        "web_panel/pointcloud_index.py": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "recovering",
+      "final_pose": [
+        0.0,
+        -2.0,
+        0.0
+      ],
+      "recovery_states": [
+        "running",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 2.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 2.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": false,
+      "elapsed_s": 12.00210928398883,
+      "min_physical_clearance_m": 0.7435432293500235,
+      "safety_stops": [],
+      "global_states": [
+        "idle"
+      ],
+      "motion": {
+        "max_speed_mps": 0.0,
+        "max_acceleration_mps2": 0.0,
+        "max_jerk_mps3": 0.0,
+        "normal_max_acceleration_mps2": 0.0,
+        "normal_max_jerk_mps3": 0.0
+      },
+      "uninterrupted_motion": true
+    },
+    {
+      "name": "stuck80",
+      "exit_code": 0,
+      "case": "stuck",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": null,
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "2d_scan",
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+        "web_panel/pointcloud_index.py": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.9023834685627308,
+        -2.0128793490024295,
+        6.530669561262732e-22
+      ],
+      "recovery_states": [
+        "recovering",
+        "recovery_stopping",
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": true,
+      "elapsed_s": 43.08709645899944,
+      "min_physical_clearance_m": 0.08764475628381879,
+      "safety_stops": [
+        {
+          "time": 312197.509203143,
+          "reason": "final_permission",
+          "status": "canceling",
+          "motion": "permission:canceling",
+          "odom_age": 0.009549314039759338,
+          "grid_age": 0.05094104300951585,
+          "localization_age": 0.37101286597317085,
+          "scan_age": 0.07069702498847619
+        }
+      ],
+      "global_states": [
+        "idle"
+      ],
+      "passage": {
+        "max_center_offset_m": 0.013828840723040248,
+        "max_body_speed_mps": 0.1725438995987261,
+        "min_physical_clearance_m": 0.08851315927695969
+      },
+      "motion": {
+        "max_speed_mps": 0.33005199197742147,
+        "max_acceleration_mps2": 8.829369850445826,
+        "max_jerk_mps3": 438.68614744655963,
+        "normal_max_acceleration_mps2": 0.25025950855168905,
+        "normal_max_jerk_mps3": 0.6484160497527149
+      },
+      "uninterrupted_motion": false
+    },
+    {
+      "name": "localization80",
+      "exit_code": 0,
+      "case": "localization",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": null,
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "2d_scan",
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+        "web_panel/pointcloud_index.py": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.9302506820000174,
+        -2.000424439319508,
+        -1.4845552318279636e-21
+      ],
+      "recovery_states": [
+        "relocalizing",
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": true,
+      "elapsed_s": 31.162288514024112,
+      "min_physical_clearance_m": 0.0938898178429024,
+      "safety_stops": [
+        {
+          "time": 312242.089090779,
+          "reason": "final_permission",
+          "status": "active",
+          "motion": "braking_space",
+          "odom_age": 0.01324571605073288,
+          "grid_age": 0.04857024602824822,
+          "localization_age": 0.23261958197690547,
+          "scan_age": 0.13344651303486899
+        }
+      ],
+      "global_states": [
+        "idle"
+      ],
+      "passage": {
+        "max_center_offset_m": 0.008349718779515847,
+        "max_body_speed_mps": 0.18038780220684716,
+        "min_physical_clearance_m": 0.09399228122048409
+      },
+      "motion": {
+        "max_speed_mps": 0.33113529027376754,
+        "max_acceleration_mps2": 7.1412741950849234,
+        "max_jerk_mps3": 331.32088092201025,
+        "normal_max_acceleration_mps2": 0.25005909731318793,
+        "normal_max_jerk_mps3": 0.6092722590526315
+      },
+      "uninterrupted_motion": false
+    },
+    {
+      "name": "cancel80",
+      "exit_code": 0,
+      "case": "cancel",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": null,
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "2d_scan",
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+        "web_panel/pointcloud_index.py": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "canceled",
+      "final_pose": [
+        0.21582504875394376,
+        -2.0,
+        0.0
+      ],
+      "recovery_states": [
+        "canceled",
+        "running",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": true,
+      "elapsed_s": 5.192548560036812,
+      "min_physical_clearance_m": 0.5826432860161882,
+      "safety_stops": [
+        {
+          "time": 312278.106415092,
+          "reason": "final_permission",
+          "status": "canceling",
+          "motion": "permission:canceling",
+          "odom_age": 0.008091387047898024,
+          "grid_age": 0.1384229669929482,
+          "localization_age": 0.08806608500890434,
+          "scan_age": 0.08806492201983929
+        }
+      ],
+      "global_states": [
+        "idle"
+      ],
+      "motion": {
+        "max_speed_mps": 0.2548295885751706,
+        "max_acceleration_mps2": 12.279993983801077,
+        "max_jerk_mps3": 527.6402900568588,
+        "normal_max_acceleration_mps2": 0.2504126483349536,
+        "normal_max_jerk_mps3": 0.6040911464306452
+      },
+      "uninterrupted_motion": false
+    },
+    {
+      "name": "slow-status80",
+      "exit_code": 0,
+      "case": "smooth",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.25,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": null,
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "2d_scan",
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+        "web_panel/pointcloud_index.py": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.9437215294356633,
+        -2.0111319688267204,
+        -6.414436026787632e-22
+      ],
+      "recovery_states": [
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": false,
+      "elapsed_s": 26.431766686961055,
+      "min_physical_clearance_m": 0.08944985974876718,
+      "safety_stops": [],
+      "global_states": [
+        "idle"
+      ],
+      "passage": {
+        "max_center_offset_m": 0.011272014444558387,
+        "max_body_speed_mps": 0.1808755364487344,
+        "min_physical_clearance_m": 0.09106998555544155
+      },
+      "motion": {
+        "max_speed_mps": 0.33068436104185406,
+        "max_acceleration_mps2": 0.25042658775702187,
+        "max_jerk_mps3": 0.6443660325695335,
+        "normal_max_acceleration_mps2": 0.25042658775702187,
+        "normal_max_jerk_mps3": 0.6443660325695335
+      },
+      "uninterrupted_motion": true
+    },
+    {
+      "name": "kidnap-blind-right",
+      "exit_code": 0,
+      "case": "kidnap",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": "blind",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "2d_scan",
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+        "web_panel/pointcloud_index.py": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.9999374928278626,
+        -2.0204974347249407,
+        -1.1
+      ],
+      "recovery_states": [
+        "relocalizing",
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": true,
+      "elapsed_s": 19.36384447501041,
+      "min_physical_clearance_m": 0.4224946773090077,
+      "safety_stops": [
+        {
+          "time": 312323.315765038,
+          "reason": "final_permission",
+          "status": "active",
+          "motion": "permission:正在匹配建图地图，等待位置和朝向确认",
+          "odom_age": 0.010430107999127358,
+          "grid_age": 0.1263737720437348,
+          "localization_age": 0.09022418002132326,
+          "scan_age": 0.09022450901102275
+        }
+      ],
+      "global_states": [
+        "confirming",
+        "idle",
+        "refreshing_costmaps",
+        "required",
+        "searching",
+        "verified",
+        "verifying"
+      ],
+      "relocations": [
+        {
+          "time": 312323.167550547,
+          "destination": [
+            4.0,
+            -3.0,
+            -1.1
+          ],
+          "odometry_mode": "blind",
+          "generation_before": 0,
+          "verified_at": 312327.609961597,
+          "position_error_m": 0.007257839688200557,
+          "yaw_error_rad": 0.004729361959101119
+        }
+      ],
+      "motion": {
+        "max_speed_mps": 0.35012403748404125,
+        "max_acceleration_mps2": 8.209442014443985,
+        "max_jerk_mps3": 408.70282589622343,
+        "normal_max_acceleration_mps2": 0.2511698765160252,
+        "normal_max_jerk_mps3": 0.6185913508284292
+      },
+      "uninterrupted_motion": false
+    },
+    {
+      "name": "kidnap-reset-turn",
+      "exit_code": 0,
+      "case": "kidnap",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": "reset",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "2d_scan",
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+        "web_panel/pointcloud_index.py": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.981622536302865,
+        -2.013480725956049,
+        2.8
+      ],
+      "recovery_states": [
+        "relocalizing",
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": true,
+      "elapsed_s": 69.03445134701906,
+      "min_physical_clearance_m": 0.018378137825222796,
+      "safety_stops": [
+        {
+          "time": 312348.550250674,
+          "reason": "final_permission",
+          "status": "active",
+          "motion": "permission:正在匹配建图地图，等待位置和朝向确认",
+          "odom_age": 0.005113577994052321,
+          "grid_age": 0.12900373304728419,
+          "localization_age": 0.34541071200510487,
+          "scan_age": 0.22487320902291685
+        },
+        {
+          "time": 312396.19886524,
+          "reason": "final_permission",
+          "status": "active",
+          "motion": "permission:正在匹配建图地图，等待位置和朝向确认",
+          "odom_age": 0.013642710982821882,
+          "grid_age": 0.08278779097599909,
+          "localization_age": 0.09352290898095816,
+          "scan_age": 0.09353065298637375
+        }
+      ],
+      "global_states": [
+        "confirming",
+        "idle",
+        "refreshing_costmaps",
+        "required",
+        "searching",
+        "verified",
+        "verifying"
+      ],
+      "relocations": [
+        {
+          "time": 312348.536384904,
+          "destination": [
+            0.0,
+            -0.5,
+            2.8
+          ],
+          "odometry_mode": "reset",
+          "generation_before": 0,
+          "verified_at": 312353.712431091,
+          "position_error_m": 0.0015642807705094246,
+          "yaw_error_rad": 0.002213169670018278
+        }
+      ],
+      "passage": {
+        "max_center_offset_m": 0.0289398330720958,
+        "max_body_speed_mps": 0.1061683905831806,
+        "min_physical_clearance_m": 0.07340216692790413
+      },
+      "motion": {
+        "max_speed_mps": 0.39080015958003606,
+        "max_acceleration_mps2": 12.949968241660079,
+        "max_jerk_mps3": 645.570269897497,
+        "normal_max_acceleration_mps2": 0.25130233739647206,
+        "normal_max_jerk_mps3": 0.640994717588521
+      },
+      "uninterrupted_motion": false
+    },
+    {
+      "name": "kidnap-tracked-left",
+      "exit_code": 0,
+      "case": "kidnap",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": "tracked",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "2d_scan",
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+        "web_panel/pointcloud_index.py": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.888119664311764,
+        -1.9972609176405944,
+        1.57
+      ],
+      "recovery_states": [
+        "relocalizing",
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": true,
+      "elapsed_s": 49.23074792098487,
+      "min_physical_clearance_m": 0.08833710859912353,
+      "safety_stops": [
+        {
+          "time": 312423.755361464,
+          "reason": "final_permission",
+          "status": "active",
+          "motion": "permission:正在匹配建图地图，等待位置和朝向确认",
+          "odom_age": 0.005418645974714309,
+          "grid_age": 0.10089411499211565,
+          "localization_age": 0.3253227599780075,
+          "scan_age": 0.22651134798070416
+        }
+      ],
+      "global_states": [
+        "confirming",
+        "idle",
+        "refreshing_costmaps",
+        "required",
+        "searching",
+        "verified",
+        "verifying"
+      ],
+      "relocations": [
+        {
+          "time": 312423.737593758,
+          "destination": [
+            -3.8,
+            -3.1,
+            1.57
+          ],
+          "odometry_mode": "tracked",
+          "generation_before": 0,
+          "verified_at": 312429.236108218,
+          "position_error_m": 0.0082987584547668,
+          "yaw_error_rad": 0.0006478934193443475
+        }
+      ],
+      "passage": {
+        "max_center_offset_m": 0.012845187830559546,
+        "max_body_speed_mps": 0.17529303827831355,
+        "min_physical_clearance_m": 0.08949681216944039
+      },
+      "motion": {
+        "max_speed_mps": 0.39974786996997563,
+        "max_acceleration_mps2": 8.104634815574602,
+        "max_jerk_mps3": 402.9972519944638,
+        "normal_max_acceleration_mps2": 0.2529606758870717,
+        "normal_max_jerk_mps3": 0.6244031969282998
+      },
+      "uninterrupted_motion": false
+    },
+    {
+      "name": "kidnap-narrow65",
+      "exit_code": 0,
+      "case": "kidnap",
+      "width_m": 0.65,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": "blind",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "2d_scan",
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+        "web_panel/pointcloud_index.py": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.916273511964799,
+        -2.0009903255167463,
+        1.57
+      ],
+      "recovery_states": [
+        "relocalizing",
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": true,
+      "elapsed_s": 34.062004456995055,
+      "min_physical_clearance_m": 0.014017455457618677,
+      "safety_stops": [
+        {
+          "time": 312481.032540597,
+          "reason": "final_permission",
+          "status": "active",
+          "motion": "permission:正在匹配建图地图，等待位置和朝向确认",
+          "odom_age": 0.015874610049650073,
+          "grid_age": 0.15374430298106745,
+          "localization_age": 0.3358286250149831,
+          "scan_age": 0.07576198800234124
+        }
+      ],
+      "global_states": [
+        "confirming",
+        "idle",
+        "refreshing_costmaps",
+        "required",
+        "searching",
+        "verified",
+        "verifying"
+      ],
+      "relocations": [
+        {
+          "time": 312480.909618682,
+          "destination": [
+            2.0,
+            -2.0,
+            1.57
+          ],
+          "odometry_mode": "blind",
+          "generation_before": 0,
+          "verified_at": 312485.355259872,
+          "position_error_m": 0.024423326652592947,
+          "yaw_error_rad": 0.013281903803069373
+        }
+      ],
+      "passage": {
+        "max_center_offset_m": 0.0133245445423813,
+        "max_body_speed_mps": 0.07999978823857266,
+        "min_physical_clearance_m": 0.014017455457618677
+      },
+      "motion": {
+        "max_speed_mps": 0.2794400480553006,
+        "max_acceleration_mps2": 3.9391939041923703,
+        "max_jerk_mps3": 194.68875326845816,
+        "normal_max_acceleration_mps2": 0.25007707149371217,
+        "normal_max_jerk_mps3": 0.6164711905960581
+      },
+      "uninterrupted_motion": false
+    },
+    {
+      "name": "kidnap-twice",
+      "exit_code": 0,
+      "case": "kidnap",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": "blind",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "2d_scan",
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+        "web_panel/pointcloud_index.py": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.8818656016243325,
+        -1.9903282619895302,
+        1.57
+      ],
+      "recovery_states": [
+        "pausing",
+        "relocalizing",
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": true,
+      "elapsed_s": 54.271896005026065,
+      "min_physical_clearance_m": 0.08966331188484444,
+      "safety_stops": [
+        {
+          "time": 312519.308253024,
+          "reason": "final_permission",
+          "status": "active",
+          "motion": "permission:正在匹配建图地图，等待位置和朝向确认",
+          "odom_age": 0.009724662988446653,
+          "grid_age": 0.11512058903463185,
+          "localization_age": 0.08949805604061112,
+          "scan_age": 0.08949554502032697
+        },
+        {
+          "time": 312525.290594708,
+          "reason": "final_permission",
+          "status": "active",
+          "motion": "permission:正在匹配建图地图，等待位置和朝向确认",
+          "odom_age": 0.011656056973151863,
+          "grid_age": 0.19582261104369536,
+          "localization_age": 0.27168553200317547,
+          "scan_age": 0.07213238201802596
+        },
+        {
+          "time": 312554.3940333,
+          "reason": "output_deadline",
+          "status": "active",
+          "motion": "output_deadline",
+          "odom_age": 0.2547466490068473,
+          "grid_age": 0.40129399398574606,
+          "localization_age": 0.37541104102274403,
+          "scan_age": 0.3754215450026095
+        }
+      ],
+      "global_states": [
+        "confirming",
+        "idle",
+        "refreshing_costmaps",
+        "required",
+        "searching",
+        "verified",
+        "verifying"
+      ],
+      "relocations": [
+        {
+          "time": 312519.149092333,
+          "destination": [
+            4.0,
+            -3.0,
+            -1.1
+          ],
+          "odometry_mode": "blind",
+          "generation_before": 0,
+          "verified_at": 312523.588393857,
+          "position_error_m": 0.007103060653681615,
+          "yaw_error_rad": 0.008837006916127876
+        },
+        {
+          "time": 312525.131316305,
+          "destination": [
+            -3.8,
+            -3.1,
+            1.57
+          ],
+          "odometry_mode": "blind",
+          "generation_before": 1,
+          "verified_at": 312529.579487713,
+          "position_error_m": 0.007891166114704433,
+          "yaw_error_rad": 0.003826867321124139
+        }
+      ],
+      "passage": {
+        "max_center_offset_m": 0.01267868811515549,
+        "max_body_speed_mps": 0.1681742132754109,
+        "min_physical_clearance_m": 0.08966331188484444
+      },
+      "motion": {
+        "max_speed_mps": 0.3999852732763212,
+        "max_acceleration_mps2": 11.62145598092234,
+        "max_jerk_mps3": 581.3654188784953,
+        "normal_max_acceleration_mps2": 0.25309154408094164,
+        "normal_max_jerk_mps3": 0.6983517626850615
+      },
+      "uninterrupted_motion": false
+    },
+    {
+      "name": "kidnap-cancel",
+      "exit_code": 0,
+      "case": "kidnap",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": "blind",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "2d_scan",
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+        "web_panel/pointcloud_index.py": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "canceled",
+      "final_pose": [
+        3.999999999999999,
+        -2.9999999999999996,
+        -1.1
+      ],
+      "recovery_states": [
+        "canceled",
+        "relocalizing",
+        "running",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": true,
+      "elapsed_s": 9.277542396972422,
+      "min_physical_clearance_m": 0.4202148378342956,
+      "safety_stops": [
+        {
+          "time": 312579.347796233,
+          "reason": "final_permission",
+          "status": "active",
+          "motion": "permission:正在匹配建图地图，等待位置和朝向确认",
+          "odom_age": 0.0028718620305880904,
+          "grid_age": 0.12980857701040804,
+          "localization_age": 0.10348314099246636,
+          "scan_age": 0.10347481304779649
+        }
+      ],
+      "global_states": [
+        "confirming",
+        "idle",
+        "refreshing_costmaps",
+        "required",
+        "searching",
+        "verified",
+        "verifying"
+      ],
+      "relocations": [
+        {
+          "time": 312579.206137313,
+          "destination": [
+            4.0,
+            -3.0,
+            -1.1
+          ],
+          "odometry_mode": "blind",
+          "generation_before": 0,
+          "verified_at": 312584.550230502,
+          "position_error_m": 0.007114149825619956,
+          "yaw_error_rad": 0.008746183347042802
+        }
+      ],
+      "motion": {
+        "max_speed_mps": 0.24569299417659032,
+        "max_acceleration_mps2": 6.4464251589345265,
+        "max_jerk_mps3": 311.32656572883144,
+        "normal_max_acceleration_mps2": 0.2506291729384643,
+        "normal_max_jerk_mps3": 0.605991677308458
+      },
+      "uninterrupted_motion": false
+    },
+    {
+      "name": "kidnap-no-scan",
+      "exit_code": 0,
+      "case": "kidnap",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": "blind",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "2d_scan",
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "b12b1d4b2bcc2c68d670660bc7a4d5b9d4eadeb93497ffec0ecd115533a8db81",
+        "web_panel/pointcloud_index.py": "aaa7b61fc9a77933cb020e3e1218670bd6a605e2ed46b0e92f1a4253eca1b1e8",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "recovering",
+      "final_pose": [
+        4.000729806669004,
+        -3.0014603151051884,
+        -1.1
+      ],
+      "recovery_states": [
+        "relocalizing",
+        "running",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": true,
+      "elapsed_s": 15.341035454999655,
+      "min_physical_clearance_m": 0.42385631438238747,
+      "safety_stops": [
+        {
+          "time": 312594.105787843,
+          "reason": "final_permission",
+          "status": "active",
+          "motion": "permission:正在匹配建图地图，等待位置和朝向确认",
+          "odom_age": 0.014299597998615354,
+          "grid_age": 0.19968542701099068,
+          "localization_age": 0.35521794005762786,
+          "scan_age": 0.07499206700595096
+        }
+      ],
+      "global_states": [
+        "idle",
+        "insufficient_scan",
+        "required"
+      ],
+      "relocations": [
+        {
+          "time": 312593.960008653,
+          "destination": [
+            4.0,
+            -3.0,
+            -1.1
+          ],
+          "odometry_mode": "blind",
+          "generation_before": 0
+        }
+      ],
+      "motion": {
+        "max_speed_mps": 0.24985085961793785,
+        "max_acceleration_mps2": 8.119271797859437,
+        "max_jerk_mps3": 402.05203573064296,
+        "normal_max_acceleration_mps2": 0.2501449105323057,
+        "normal_max_jerk_mps3": 0.6055569963618557
+      },
+      "uninterrupted_motion": false
+    },
+    {
+      "name": "pcd-twice",
+      "case": "kidnap",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": "blind",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "pcd_gicp",
+      "pointcloud_fixture": {
+        "virtual_keyframes": 361,
+        "pcd_points": 474242
+      },
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+        "web_panel/pointcloud_index.py": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.924855837909755,
+        -2.016404108145431,
+        1.57
+      ],
+      "recovery_states": [
+        "pausing",
+        "relocalizing",
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": -0.005991173833334607,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": -0.005991173833334607,
+        "frame": "map"
+      },
+      "injected": true,
+      "elapsed_s": 54.68082631297875,
+      "min_physical_clearance_m": 0.08654810688310444,
+      "safety_stops": [
+        {
+          "time": 313779.321695448,
+          "reason": "final_permission",
+          "status": "active",
+          "motion": "permission:正在匹配建图地图，等待位置和朝向确认",
+          "odom_age": 0.012113320000935346,
+          "grid_age": 0.22268087998963892,
+          "localization_age": 0.2720646900124848,
+          "scan_age": 0.0669813200365752
+        },
+        {
+          "time": 313784.923438589,
+          "reason": "final_permission",
+          "status": "active",
+          "motion": "braking_space",
+          "odom_age": 0.013666618964634836,
+          "grid_age": 0.22430590901058167,
+          "localization_age": 0.17382518202066422,
+          "scan_age": 0.17382595397066325
+        },
+        {
+          "time": 313785.025368119,
+          "reason": "final_permission",
+          "status": "active",
+          "motion": "permission:正在匹配建图地图，等待位置和朝向确认",
+          "odom_age": 0.015567713999189436,
+          "grid_age": 0.1261484650312923,
+          "localization_age": 0.07569822599180043,
+          "scan_age": 0.07569874502951279
+        }
+      ],
+      "global_states": [
+        "confirming",
+        "refreshing_costmaps",
+        "required",
+        "searching",
+        "verified",
+        "verifying"
+      ],
+      "relocations": [
+        {
+          "time": 313779.244258806,
+          "destination": [
+            4.0,
+            -3.0,
+            -1.1
+          ],
+          "odometry_mode": "blind",
+          "generation_before": 0,
+          "verified_at": 313783.357490515,
+          "position_error_m": 0.002575637231460877,
+          "yaw_error_rad": 0.004254879792492394
+        },
+        {
+          "time": 313784.90919715,
+          "destination": [
+            -3.8,
+            -3.1,
+            1.57
+          ],
+          "odometry_mode": "blind",
+          "generation_before": 1,
+          "verified_at": 313789.34767018,
+          "position_error_m": 0.00938790778002238,
+          "yaw_error_rad": 0.005528782266124522
+        }
+      ],
+      "passage": {
+        "max_center_offset_m": 0.015075463057843574,
+        "max_body_speed_mps": 0.16264948827601575,
+        "min_physical_clearance_m": 0.08726653694215636
+      },
+      "motion": {
+        "max_speed_mps": 0.3998062735739869,
+        "max_acceleration_mps2": 8.439054981310232,
+        "max_jerk_mps3": 412.01579971980306,
+        "normal_max_acceleration_mps2": 0.25013187794855657,
+        "normal_max_jerk_mps3": 0.6472560246793843
+      },
+      "uninterrupted_motion": false
+    },
+    {
+      "name": "pcd-narrow65",
+      "case": "kidnap",
+      "width_m": 0.65,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": "blind",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "pcd_gicp",
+      "pointcloud_fixture": {
+        "virtual_keyframes": 363,
+        "pcd_points": 475591
+      },
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+        "web_panel/pointcloud_index.py": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.9029063963622077,
+        -2.001702710334896,
+        1.57
+      ],
+      "recovery_states": [
+        "relocalizing",
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0025951723713551586,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0025951723713551586,
+        "frame": "map"
+      },
+      "injected": true,
+      "elapsed_s": 32.42128580802819,
+      "min_physical_clearance_m": 0.0148886580595049,
+      "safety_stops": [
+        {
+          "time": 313737.63188513,
+          "reason": "final_permission",
+          "status": "active",
+          "motion": "permission:正在匹配建图地图，等待位置和朝向确认",
+          "odom_age": 0.013641452067531645,
+          "grid_age": 0.11734753102064133,
+          "localization_age": 0.31339546805247664,
+          "scan_age": 0.09371640102472156
+        },
+        {
+          "time": 313741.626848003,
+          "reason": "sampling_latency",
+          "status": "active",
+          "motion": "output_deadline",
+          "odom_age": 0.008185444981791079,
+          "grid_age": 0.21170698897913098,
+          "localization_age": 0.08777354197809473,
+          "scan_age": 0.08778768702177331
+        }
+      ],
+      "global_states": [
+        "confirming",
+        "refreshing_costmaps",
+        "required",
+        "searching",
+        "verified",
+        "verifying"
+      ],
+      "relocations": [
+        {
+          "time": 313737.524713168,
+          "destination": [
+            2.0,
+            -2.0,
+            1.57
+          ],
+          "odometry_mode": "blind",
+          "generation_before": 0,
+          "verified_at": 313740.84490614,
+          "position_error_m": 0.003212438210185072,
+          "yaw_error_rad": 0.010451448511950012
+        }
+      ],
+      "passage": {
+        "max_center_offset_m": 0.0124533419404953,
+        "max_body_speed_mps": 0.07999948408587332,
+        "min_physical_clearance_m": 0.0148886580595049
+      },
+      "motion": {
+        "max_speed_mps": 0.27912188388440873,
+        "max_acceleration_mps2": 3.9775857901516667,
+        "max_jerk_mps3": 191.43261861283406,
+        "normal_max_acceleration_mps2": 0.2500635923946021,
+        "normal_max_jerk_mps3": 0.7156257754754691
+      },
+      "uninterrupted_motion": false
+    },
+    {
+      "name": "pcd-reset",
+      "case": "kidnap",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": "reset",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "pcd_gicp",
+      "pointcloud_fixture": {
+        "virtual_keyframes": 361,
+        "pcd_points": 474242
+      },
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+        "web_panel/pointcloud_index.py": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.976892999813758,
+        -2.034198014591996,
+        2.8
+      ],
+      "recovery_states": [
+        "relocalizing",
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": -0.005123775334858918,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": -0.005123775334858918,
+        "frame": "map"
+      },
+      "injected": true,
+      "elapsed_s": 50.92920748301549,
+      "min_physical_clearance_m": 0.05140110919478452,
+      "safety_stops": [
+        {
+          "time": 313672.783609278,
+          "reason": "final_permission",
+          "status": "active",
+          "motion": "permission:正在匹配建图地图，等待位置和朝向确认",
+          "odom_age": 0.008866272983141243,
+          "grid_age": 0.12370812997687608,
+          "localization_age": 0.26890485698822886,
+          "scan_age": 0.2285109319491312
+        }
+      ],
+      "global_states": [
+        "confirming",
+        "refreshing_costmaps",
+        "required",
+        "searching",
+        "verified",
+        "verifying"
+      ],
+      "relocations": [
+        {
+          "time": 313672.771075428,
+          "destination": [
+            0.0,
+            -0.5,
+            2.8
+          ],
+          "odometry_mode": "reset",
+          "generation_before": 0,
+          "verified_at": 313677.017637896,
+          "position_error_m": 0.002212126854676522,
+          "yaw_error_rad": 0.008613125060264348
+        }
+      ],
+      "passage": {
+        "max_center_offset_m": 0.01448845602320148,
+        "max_body_speed_mps": 0.13259537119140963,
+        "min_physical_clearance_m": 0.08785354397679845
+      },
+      "motion": {
+        "max_speed_mps": 0.39494615801239924,
+        "max_acceleration_mps2": 8.370503747200052,
+        "max_jerk_mps3": 416.50045387484136,
+        "normal_max_acceleration_mps2": 0.25101916657409123,
+        "normal_max_jerk_mps3": 0.6345237574001584
+      },
+      "uninterrupted_motion": false
+    },
+    {
+      "name": "pcd-no-scan",
+      "case": "kidnap",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "odometry_fault_mode": "blind",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "localization_backend": "pcd_gicp",
+      "pointcloud_fixture": {
+        "virtual_keyframes": 361,
+        "pcd_points": 474242
+      },
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "1682f4dd3848a54c4da3dce8905c6db5d783ed0b5dc60f8c665dd71ccee8fba9",
+        "web_panel/navigation_recovery.py": "3f695bc130b4e65fcfc601b0d8c1f8030cf9082a1f381af1a31d975eee661b41",
+        "web_panel/navcar_navigation.py": "1597675bd84dedd1f0b81c34570bd095dc15daa2f12ca7bd96446e8b739b3638",
+        "web_panel/global_relocalization.py": "21a7e9c21431d7c26ddb53e7da96780f2a57b114e95ac2111143698780699aa2",
+        "web_panel/pointcloud_relocalization.py": "24d2f7687c9c03628e916e2936da9aaa7153bf98f371c5e7d6e9de602a6084ee",
+        "web_panel/pointcloud_index.py": "59090304b64c6918ec3ed6cab83eaaf1f01436b484ec1d7a6b0ba0628a40e906",
+        "web_panel/server.py": "35a3979c108621288fad90eca5863a995a08ba0f2ce6fa34f628a7ac9a2b0253",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/cloud_scene.py": "8f6b5d74765e15a6502e0fef8742ea47cf9ce2c4e0063aefc10ee4f6b8235124",
+        "validation/sentry_sim/run.py": "3d612be55828520ff5ff400bdddea9f5823fee0342af80ef0024bef2bcae74b5"
+      },
+      "status": "recovering",
+      "final_pose": [
+        4.00031256899573,
+        -3.0006138427839613,
+        -1.1
+      ],
+      "recovery_states": [
+        "relocalizing",
+        "running"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": -0.005991173799006201,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": -0.005991173799006201,
+        "frame": "map"
+      },
+      "injected": true,
+      "elapsed_s": 14.830851566977799,
+      "min_physical_clearance_m": 0.4188852984452959,
+      "safety_stops": [
+        {
+          "time": 313845.014325664,
+          "reason": "final_permission",
+          "status": "active",
+          "motion": "permission:正在匹配建图地图，等待位置和朝向确认",
+          "odom_age": 0.01773194596171379,
+          "grid_age": 0.054408841009717435,
+          "localization_age": 0.3575439300038852,
+          "scan_age": 0.07775317796040326
+        }
+      ],
+      "global_states": [
+        "insufficient_cloud",
+        "required",
+        "verified"
+      ],
+      "relocations": [
+        {
+          "time": 313844.856322842,
+          "destination": [
+            4.0,
+            -3.0,
+            -1.1
+          ],
+          "odometry_mode": "blind",
+          "generation_before": 0
+        }
+      ],
+      "motion": {
+        "max_speed_mps": 0.24584385529155142,
+        "max_acceleration_mps2": 8.42279932442665,
+        "max_jerk_mps3": 411.6790667333033,
+        "normal_max_acceleration_mps2": 0.25002928681196374,
+        "normal_max_jerk_mps3": 0.6018868100260971
+      },
+      "uninterrupted_motion": false
+    }
+  ]
+}

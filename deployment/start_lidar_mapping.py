@@ -57,6 +57,7 @@ c['filter_size_surf']=c['filter_size_map']=.15
 c['preprocess']['lidar_type']=1
 c['preprocess']['blind']=navigation['min_range']
 c['common']['send_odom_base_tf']=False
+c.setdefault('publish',{})['scan_bodyframe_pub_en']=True
 c['mapping']['extrinsic_est_en']=False
 c['mapping']['extrinsic_T']=[-.011,-.02329,.04412]
 c['mapping']['extrinsic_R']=[1.,0.,0.,0.,1.,0.,0.,0.,1.]

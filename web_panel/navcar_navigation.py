@@ -15,7 +15,8 @@ from urllib.request import Request, urlopen
 import yaml
 from robot_io import finite_number, sample_monotonic_time
 from navcar_settings import navigation_speed, limit_translation
-from navcar_reference import navigation_frames,shift_pose,initial_reference_pose,shift_planar_covariance
+from navcar_reference import navigation_frames,shift_pose,initial_reference_pose,shift_planar_covariance,shift_body_twist
+from navigation_recovery import RecoveryBridgeMixin
 
 
 def localization_quality(frame, covariance,position_std_limit=.01, *, previous_ready=False, stop_std_limit=None):
@@ -84,7 +85,7 @@ def navigation_geometry(config,lidar_to_imu_xyz=None):
 
 
 def build_navigation_config(root, maps, initial_pose=None):
-    root,maps=Path(root),Path(maps)
+    root,maps=Path(root).resolve(),Path(maps).resolve()
     repo=root/'shaoshao/web_panel'
     config=yaml.safe_load((repo/'robot.yaml').read_text())
     speed=navigation_speed(config)
@@ -94,6 +95,11 @@ def build_navigation_config(root, maps, initial_pose=None):
     p=lio['/**']['ros__parameters']
     radius,height=navigation_geometry(config,p['mapping']['extrinsic_T'])
     frames=navigation_frames(config,p);base=frames['base_frame']
+    frames['collision_radius']=radius
+    frames['localization_map_yaml']=str(maps/'site.yaml')
+    frames['localization_backend']='pcd_gicp' if (maps/'site.pcd').is_file() else '2d_scan'
+    frames['lidar_to_imu_xyz']=list(p['mapping']['extrinsic_T'])
+    frames['lidar_to_imu_rotation']=list(p['mapping'].get('extrinsic_R',[1.,0.,0.,0.,1.,0.,0.,0.,1.]))
     metadata=yaml.safe_load((maps/'site.yaml').read_text())
     resolution=metadata.get('resolution') if isinstance(metadata,dict) else None
     if not finite_number(resolution) or not 0 < resolution <= frames['resolution']+1e-9:
@@ -117,11 +123,16 @@ def build_navigation_config(root, maps, initial_pose=None):
                       'max_obstacle_height':2.,'raytrace_max_range':15.,'raytrace_min_range':min_range,
                       'obstacle_max_range':10.,'obstacle_min_range':min_range,'inf_is_valid':False}}
     inflation={'plugin':'nav2_costmap_2d::InflationLayer','cost_scaling_factor':5.,'inflation_radius':radius+.2}
+    static={'plugin':'nav2_costmap_2d::StaticLayer','map_subscribe_transient_local':True}
     local={**common,'global_frame':'navcar_odom','robot_base_frame':base,'update_frequency':10.,
-           'publish_frequency':1.,'rolling_window':True,'width':2,
-           'height':2,'resolution':resolution,
-           'robot_radius':radius,'footprint_padding':.02,'transform_tolerance':.3,
-           'plugins':['obstacle_layer','inflation_layer'],'obstacle_layer':obstacle,'inflation_layer':inflation}
+           'publish_frequency':10.,'rolling_window':True,'width':4,
+           # Finer local control avoids losing another whole 2.5 cm wall cell
+           # when the saved map is transformed into the moving odometry frame.
+           # The saved map and the global costmap keep their real resolution.
+           'height':4,'resolution':min(resolution,.01),'always_send_full_costmap':True,'track_unknown_space':True,
+           'robot_radius':radius,'footprint_padding':0.,'transform_tolerance':.3,
+           'plugins':['static_layer','obstacle_layer','inflation_layer'],'static_layer':static,
+           'obstacle_layer':obstacle,'inflation_layer':inflation}
     glob={**local,'global_frame':'map','rolling_window':False,'update_frequency':1.,'resolution':resolution,
           'track_unknown_space':True,'plugins':['static_layer','obstacle_layer','inflation_layer'],
           'static_layer':{'plugin':'nav2_costmap_2d::StaticLayer','map_subscribe_transient_local':True}}
@@ -138,13 +149,17 @@ def build_navigation_config(root, maps, initial_pose=None):
         'update_min_d':.02,'update_min_a':.02,'resample_interval':1,'set_initial_pose':True,
         'initial_pose':{'x':float(initial_pose['x']),'y':float(initial_pose['y']),'z':0.,'yaw':float(initial_pose['yaw'])}}},
       'planner_server':{'ros__parameters':{**common,'expected_planner_frequency':1.,'planner_plugins':['GridBased'],
-        'GridBased':{'plugin':'nav2_navfn_planner::NavfnPlanner','tolerance':.02,'use_astar':True,'allow_unknown':False}}},
+        'GridBased':{'plugin':'nav2_smac_planner::SmacPlanner2D','tolerance':.02,'allow_unknown':False,
+                     'downsample_costmap':False,'max_iterations':1000000,'max_on_approach_iterations':1000,
+                     'max_planning_time':1.,'cost_travel_multiplier':6.,'use_final_approach_orientation':False,
+                     'smoother':{'max_iterations':100,'w_smooth':.3,'w_data':.2,'tolerance':1.e-10}}}},
       'controller_server':{'ros__parameters':{**common,'controller_frequency':20.,'odom_topic':'/navcar/odom',
         'enable_stamped_cmd_vel':False,'min_x_velocity_threshold':.001,'min_y_velocity_threshold':.001,
         'min_theta_velocity_threshold':.001,'failure_tolerance':.3,'progress_checker_plugins':['progress_checker'],
         'goal_checker_plugins':['goal_checker'],'controller_plugins':['FollowPath'],
         'progress_checker':{'plugin':'nav2_controller::SimpleProgressChecker','required_movement_radius':.01,'movement_time_allowance':20.},
-        'goal_checker':{'plugin':'nav2_controller::SimpleGoalChecker','xy_goal_tolerance':.20,'yaw_goal_tolerance':6.3,'stateful':True},
+        'goal_checker':{'plugin':'nav2_controller::StoppedGoalChecker','xy_goal_tolerance':.10,'yaw_goal_tolerance':6.3,
+                        'trans_stopped_velocity':.025,'rot_stopped_velocity':.1,'stateful':True},
         'FollowPath':{'plugin':'dwb_core::DWBLocalPlanner','min_vel_x':-speed,'max_vel_x':speed,
           'min_vel_y':-speed,'max_vel_y':speed,'min_speed_xy':0.,'max_speed_xy':speed,'min_speed_theta':0.,'max_vel_theta':0.,
           'acc_lim_x':.3,'acc_lim_y':.3,'acc_lim_theta':.3,'decel_lim_x':-.3,'decel_lim_y':-.3,'decel_lim_theta':-.3,
@@ -155,7 +170,11 @@ def build_navigation_config(root, maps, initial_pose=None):
           # makes entering even the outer inflation band cost more than progress,
           # so DWB repeatedly selects zero. Keep collision rejection enabled while
           # balancing nonlethal inflation against this short, slow trajectory.
-          'critics':['BaseObstacle','PathDist','GoalDist'],'BaseObstacle.scale':.001,'PathDist.scale':32.,'GoalDist.scale':24.}}},
+          # Check the complete footprint while choosing a trajectory, so an
+          # approach from a new heading does not keep requesting corner cuts
+          # that the output's exact swept-hull guard must reject.
+          'critics':['ObstacleFootprint','BaseObstacle','PathDist','GoalDist'],
+          'ObstacleFootprint.scale':.001,'BaseObstacle.scale':.001,'PathDist.scale':48.,'GoalDist.scale':24.}}},
       'local_costmap':{'local_costmap':{'ros__parameters':local}},
       'global_costmap':{'global_costmap':{'ros__parameters':glob}},
       'bt_navigator':{'ros__parameters':{**common,'global_frame':'map','robot_base_frame':base,
@@ -197,12 +216,15 @@ class NavigationControl:
     def _start(self):
         try:
             from ament_index_python.packages import get_package_prefix
-            for name in ('nav2_controller','nav2_planner','nav2_amcl','nav2_bt_navigator','pointcloud_to_laserscan'):
+            for name in ('nav2_controller','nav2_planner','nav2_smac_planner','nav2_amcl','nav2_bt_navigator','pointcloud_to_laserscan'):
                 get_package_prefix(name)
             output=build_navigation_config(self.root,self.mapping.maps_dir,self.initial_pose)
             params=yaml.safe_load((output/'nav2.yaml').read_text())
             self.max_speed=params['controller_server']['ros__parameters']['FollowPath']['max_speed_xy']
             self.frames=yaml.safe_load((output/'frames.yaml').read_text())
+            if self.frames.get('localization_backend')=='pcd_gicp':
+                try:__import__('small_gicp')
+                except ImportError as exc:raise RuntimeError('点云重定位需要 small-gicp；请按 deployment/README.md 安装定位依赖') from exc
             if self.mapping.is_running():
                 self.mapping.request_stop()
             deadline=time.monotonic()+60
@@ -212,6 +234,7 @@ class NavigationControl:
             with self.panel.lock:
                 self.panel.nav_localized=False;self.panel.map_pose_time=0.;self.panel.commands.clear()
                 if self.panel.bridge:self.panel.bridge.previous_odom=None
+                if self.panel.bridge:self.panel.bridge.reset_recovery()
                 if self.panel.bridge:self.panel.bridge.localization_info={'ready':False,'message':'等待雷达匹配已保存地图'}
                 self.panel.clear_navigation_plan();self.panel.navigation_costmap={'available':False}
                 self.panel.cloud_time=self.panel.odom_time=0.
@@ -276,16 +299,19 @@ class NavigationControl:
         self._stop()
 
 
-class NavigationBridge:
+class NavigationBridge(RecoveryBridgeMixin):
     def __init__(self,node,panel,root):
         from geometry_msgs.msg import Twist,PoseWithCovarianceStamped
         from nav_msgs.msg import Odometry,Path as NavPath,OccupancyGrid
         from nav2_msgs.action import NavigateToPose,ComputePathToPose
         from rclpy.action import ActionClient
+        from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
         from tf2_ros import Buffer,TransformListener
         self.node,self.panel,self.root=node,panel,Path(root)
-        self.client=ActionClient(node,NavigateToPose,'/navigate_to_pose')
-        self.planner=ActionClient(node,ComputePathToPose,'/compute_path_to_pose')
+        self.callbacks={name:MutuallyExclusiveCallbackGroup() for name in
+                        ('motion','localization','visualization','grid','scan','cloud','supervision','actions')}
+        self.client=ActionClient(node,NavigateToPose,'/navigate_to_pose',callback_group=self.callbacks['actions'])
+        self.planner=ActionClient(node,ComputePathToPose,'/compute_path_to_pose',callback_group=self.callbacks['actions'])
         self.tf=Buffer();self.listener=TransformListener(self.tf,node)
         self.serial_ready=False;self.serial_checked=0.
         self.localization_info={'ready':False,'message':'等待雷达匹配已保存地图'}
@@ -295,14 +321,18 @@ class NavigationBridge:
         self.previous_odom=None
         self.goal_stamp_ns=0
         from rclpy.qos import QoSProfile,DurabilityPolicy
-        self.subs=[node.create_subscription(Twist,'/navcar/cmd_vel_auto',self.command,1),
+        self.subs=[node.create_subscription(Twist,'/navcar/cmd_vel_auto',self.command,1,callback_group=self.callbacks['motion']),
                    node.create_subscription(PoseWithCovarianceStamped,'/amcl_pose',self.localized,
-                                            QoSProfile(depth=1,durability=DurabilityPolicy.TRANSIENT_LOCAL)),
-                   node.create_subscription(Odometry,'/navcar/state_estimation',self.odom,10),
-                   node.create_subscription(NavPath,'/plan',self.path,10),
+                                            QoSProfile(depth=1,durability=DurabilityPolicy.TRANSIENT_LOCAL),
+                                            callback_group=self.callbacks['localization']),
+                   node.create_subscription(Odometry,'/navcar/state_estimation',self.odom,1,callback_group=self.callbacks['motion']),
+                   node.create_subscription(NavPath,'/plan',self.path,1,callback_group=self.callbacks['visualization']),
                    node.create_subscription(OccupancyGrid,'/global_costmap/costmap',self.costmap,
-                                            QoSProfile(depth=1,durability=DurabilityPolicy.TRANSIENT_LOCAL))]
-        self.timer=node.create_timer(.1,self.tick)
+                                            QoSProfile(depth=1,durability=DurabilityPolicy.TRANSIENT_LOCAL),
+                                            callback_group=self.callbacks['visualization'])]
+        self.init_recovery()
+        self.timer=node.create_timer(.1,self.tick,callback_group=self.callbacks['supervision'])
+        self.status_thread=threading.Thread(target=self.poll_status,daemon=True);self.status_thread.start()
         self.thread=threading.Thread(target=self.output,daemon=True);self.thread.start()
 
     def request(self,path,data=None):
@@ -310,11 +340,38 @@ class NavigationBridge:
                     headers={'Authorization':'Bearer '+self.token,'Content-Type':'application/json'})
         with urlopen(req,timeout=.25) as response:return json.load(response)
 
+    def poll_status(self):
+        # A slow HTTP status response must not stall the motion heartbeat.
+        p=self.panel
+        while not self.done.is_set():
+            with p.lock:
+                lease,serial=self.lease,p.nav_serial
+            try:
+                state=self.request('/api/state')
+                with p.lock:
+                    self.serial_ready=bool(state['connected'] and not state['error'])
+                    self.serial_checked=time.monotonic()
+                    same_lease=lease is not None and lease==self.lease and serial==p.nav_serial
+                    revoked=same_lease and state.get('control_source')!='navigation'
+                    if revoked:
+                        p.cancel_navigation()
+                        canceled_serial=p.nav_serial
+                if revoked:self.release(expected_lease=lease,expected_serial=canceled_serial)
+            except Exception:
+                with p.lock:
+                    self.serial_ready=False;self.serial_checked=time.monotonic()
+                    if p.nav_status in ('sending','active','recovering'):
+                        p.cancel_navigation();p.nav_message='导航已停止：下位机状态查询失败';p.nav_hold=True
+            if self.done.wait(.2):return
+
     def send_goal(self,target,feedback):
         from nav2_msgs.action import NavigateToPose
         with self.io_lock:
-            self.release()
-            self.lease=self.request('/api/navigation/acquire',{})['lease'];self.seq=0
+            if self.resuming:
+                if not self.lease:raise RuntimeError('导航授权已撤销，原任务不能自动续行')
+            else:
+                self.release()
+                self.lease=self.request('/api/navigation/acquire',{})['lease'];self.seq=0
         goal=NavigateToPose.Goal();goal.pose.header.frame_id='map'
         now=self.node.get_clock().now();self.goal_stamp_ns=now.nanoseconds;goal.pose.header.stamp=now.to_msg()
         goal.pose.pose.position.x=target['x'];goal.pose.pose.position.y=target['y']
@@ -351,15 +408,21 @@ class NavigationBridge:
         pos,q=msg.info.origin.position,msg.info.origin.orientation
         origin=[pos.x,pos.y,math.atan2(2*(q.w*q.z+q.x*q.y),1-2*(q.y*q.y+q.z*q.z))]
         if not all(math.isfinite(v) for v in origin):return
+        sampled=sample_monotonic_time(msg.header.stamp,self.node.get_clock().now().nanoseconds,time.monotonic(),2.)
         # 99 is the inscribed collision margin; 100 is a measured/static obstacle.
-        blocked=[i for i,v in enumerate(msg.data) if v==99]
-        lethal=[i for i,v in enumerate(msg.data) if v==100]
+        import numpy as np
+        costs=np.asarray(msg.data)
+        blocked=np.flatnonzero(costs==99).tolist()
+        lethal=np.flatnonzero(costs==100).tolist()
         with self.panel.lock:
+            if sampled is not None:self.global_costmap_at=sampled
             self.panel.navigation_costmap={'available':True,'frame':'map','resolution':msg.info.resolution,
                 'width':msg.info.width,'height':msg.info.height,'origin':origin,'blocked':blocked,'lethal':lethal}
 
-    def release(self):
+    def release(self, *, expected_lease=None, expected_serial=None):
         with self.io_lock:
+            if expected_lease is not None and (self.lease!=expected_lease or self.panel.nav_serial!=expected_serial):
+                return
             lease,self.lease=self.lease,None
             if lease:
                 try:self.request('/api/navigation/release',{'lease':lease})
@@ -376,11 +439,20 @@ class NavigationBridge:
         p=self.panel
         # AMCL is the localization source; MCU target echoes are never used as observations.
         with p.lock:
+            if hasattr(self,'localization_stamp'):
+                stamp=msg.header.stamp.sec*10**9+msg.header.stamp.nanosec
+                sampled=sample_monotonic_time(msg.header.stamp,self.node.get_clock().now().nanoseconds,time.monotonic(),2.)
+                if sampled is None or stamp<=self.localization_stamp:return
+                self.localization_stamp=stamp;self.localization_at=sampled
             frames=p.navigation_control.frames
             quality=localization_quality(msg.header.frame_id,msg.pose.covariance,
-                frames['position_std_limit'],previous_ready=bool(p.nav_localized),
+                frames['position_std_limit'],previous_ready=bool(getattr(self,'localization_info',{}).get('ready',p.nav_localized)),
                 stop_std_limit=frames.get('position_std_stop_limit',frames['position_std_limit']))
-            self.localization_info=quality;p.nav_localized=quality['ready']
+            self.localization_info=quality
+            # Only the full scan/pose gate may authorize motion; covariance can
+            # revoke it immediately, including while a new global seed settles.
+            if not hasattr(self,'match_frames') or not quality['ready']:
+                p.nav_localized=quality['ready']
 
     def odom(self,msg):
         p=self.panel
@@ -391,63 +463,101 @@ class NavigationBridge:
         yaw=math.atan2(2*(q.w*q.z+q.x*q.y),1-2*(q.y*q.y+q.z*q.z))
         reference=p.navigation_control.frames
         offset=reference['center_offset']
+        linear,angular=msg.twist.twist.linear,msg.twist.twist.angular
+        try:
+            velocity,covariance=shift_body_twist((linear.x,linear.y,linear.z),(angular.x,angular.y,angular.z),
+                                                list(msg.twist.covariance),offset)
+        except ValueError:return
+        linear.x,linear.y,linear.z=velocity;msg.twist.covariance=covariance
         pos.x,pos.y=shift_pose(pos.x,pos.y,yaw,offset)
         msg.pose.covariance=shift_planar_covariance(list(msg.pose.covariance),yaw,offset)
         msg.child_frame_id=reference['base_frame']
         with p.lock:
+            previous=getattr(p,'pose',None)
+            if (hasattr(self,'force_global_relocalization') and previous and sampled>p.odom_time and
+                    sampled-p.odom_time<.3 and
+                    (math.hypot(pos.x-previous['x'],pos.y-previous['y'])>.25 or
+                     abs(math.atan2(math.sin(yaw-previous['yaw']),math.cos(yaw-previous['yaw'])))>.4)):
+                self.last_odom_jump=sampled
+                self.force_global_relocalization('局部里程计发生不连续跳变或重置')
             p.pose={'x':pos.x,'y':pos.y,'z':pos.z,'yaw':yaw,'frame':msg.header.frame_id,
                     'reference_offset_xy_m':offset[:2]};p.odom_time=sampled
-        stamp=msg.header.stamp.sec+msg.header.stamp.nanosec*1e-9
-        if self.previous_odom:
-            t,x,y,heading=self.previous_odom;dt=stamp-t
-            if .01<dt<.5:
-                dx,dy=(pos.x-x)/dt,(pos.y-y)/dt
-                msg.twist.twist.linear.x=math.cos(yaw)*dx+math.sin(yaw)*dy
-                msg.twist.twist.linear.y=-math.sin(yaw)*dx+math.cos(yaw)*dy
-                msg.twist.twist.angular.z=math.atan2(math.sin(yaw-heading),math.cos(yaw-heading))/dt
-        self.previous_odom=(stamp,pos.x,pos.y,yaw);self.odom_pub.publish(msg)
+            p.measured_velocity=velocity[:2]
+        self.odom_pub.publish(msg)
 
     def tick(self):
         import rclpy
         p=self.panel;control=p.navigation_control
         if not control.running:return
+        epoch=self.grid_epoch
+        # TF lookup and map file I/O must not hold the state/output lock.
+        ready=self.client.server_is_ready()
+        revision=p.saved_map()[0].get('revision')
+        pose=None;sample=None
+        try:
+            tf=self.tf.lookup_transform('map',control.frames['base_frame'],rclpy.time.Time())
+            sample=sample_monotonic_time(tf.header.stamp,self.node.get_clock().now().nanoseconds,time.monotonic(),1.)
+            pos,q=tf.transform.translation,tf.transform.rotation
+            if sample is not None and all(math.isfinite(v) for v in (pos.x,pos.y,q.x,q.y,q.z,q.w)):
+                pose={'x':pos.x,'y':pos.y,'yaw':math.atan2(2*(q.w*q.z+q.x*q.y),1-2*(q.y*q.y+q.z*q.z)),'frame':'map',
+                      'reference_offset_xy_m':control.frames['center_offset'][:2]}
+        except Exception:
+            pass
         with p.lock:
-            p.nav_server_ready=self.client.server_is_ready()
-            try:
-                tf=self.tf.lookup_transform('map',control.frames['base_frame'],rclpy.time.Time())
-                sample=sample_monotonic_time(tf.header.stamp,self.node.get_clock().now().nanoseconds,time.monotonic(),1.)
-                pos,q=tf.transform.translation,tf.transform.rotation
-                if sample is None or not all(math.isfinite(v) for v in (pos.x,pos.y,q.x,q.y,q.z,q.w)):return
-                p.map_pose={'x':pos.x,'y':pos.y,'yaw':math.atan2(2*(q.w*q.z+q.x*q.y),1-2*(q.y*q.y+q.z*q.z)),'frame':'map',
-                            'reference_offset_xy_m':control.frames['center_offset'][:2]}
-                p.map_pose_time=sample
-            except Exception:p.map_pose_time=0.
+            if not control.running or epoch!=self.grid_epoch:return
+            p.nav_server_ready=ready
+            if pose is not None:p.map_pose,p.map_pose_time=pose,sample
+            else:p.map_pose_time=0.
+            self.recovery_tick(revision=revision)
 
     def output(self):
-        while not self.done.wait(.05):
+        previous=time.monotonic()
+        while not self.done.wait(.02):
             p=self.panel
             try:
-                if time.monotonic()-self.serial_checked>.3:
-                    state=self.request('/api/state');self.serial_ready=state['connected'] and not state['error']
-                    self.serial_checked=time.monotonic()
+                loop_at=time.monotonic()
                 with p.lock:
-                    active=p.nav_status in ('sending','active','canceling') and p.navigation_control.running
+                    locked_at=time.monotonic()
+                    active=(p.nav_status in ('sending','active','canceling','recovering') and
+                            p.navigation_control.running)
                     stamp,values=p.commands.get('auto',(0.,(0.,0.,0.)))
+                    recovering=bool(self.task and self.task.state=='recovering' and p.nav_status=='recovering')
+                    settling=bool(self.task and self.task.state in ('settling','recovery_stopping') and p.nav_status=='recovering')
                     moving=(active and p.nav_status=='active' and not p.nav_hold and not p.switching and
-                            not p.navigation_reason() and time.monotonic()-stamp<.2)
-                    vx,vy=values[:2] if moving else (0.,0.)
+                            not p.navigation_reason())
+                    recovery_allowed=(recovering or settling) and not p.switching and not p.navigation_reason()
+                    # A missing planner command requests certified smooth braking;
+                    # missing sensors/localization/authority still cut output now.
+                    target=(self.recovery_velocity if recovery_allowed and not settling else
+                            values[:2] if moving and time.monotonic()-stamp<.2 else (0.,0.))
+                    # Sample after acquiring the state lock: callback updates may
+                    # be newer than a timestamp captured at the top of this loop.
+                    now=time.monotonic();dt=now-previous;previous=now
+                    vx,vy=self.checked_velocity(target,now,dt,moving or recovery_allowed)
                     vx,vy=limit_translation(vx,vy,p.navigation_control.max_speed)
+                checked_at=time.monotonic()
                 with self.io_lock:
+                    io_at=time.monotonic()
                     if self.lease and active:
+                        vx,vy=self.final_velocity()
+                        if vx==0. and vy==0.:
+                            # A sent stop is also a measured time boundary for
+                            # the next preview; restart must use the real interval.
+                            self.smoother.sample_time=time.monotonic()
+                        final_at=time.monotonic()
                         self.seq+=1
                         self.request('/api/navigation/command',{'lease':self.lease,'seq':self.seq,'forward':vx,'left':vy})
+                        if hasattr(self,'record_output_timing'):
+                            self.record_output_timing((loop_at,locked_at,now,checked_at,io_at,final_at,time.monotonic()))
                     elif self.lease:self.release()
             except Exception as exc:
                 self.serial_ready=False;self.serial_checked=time.monotonic()
                 with p.lock:
-                    if p.nav_status in ('sending','active'):
+                    if p.nav_status in ('sending','active','recovering'):
                         p.cancel_navigation();p.nav_message='导航已停止：下位机断连或已被手动接管';p.nav_hold=True
                 self.release()
 
     def close(self):
-        self.done.set();self.thread.join(1);self.release()
+        self.done.set()
+        with self.grid_condition:self.grid_condition.notify_all()
+        self.thread.join(1);self.grid_thread.join(1);self.status_thread.join(1);self.global_locator.close();self.release()

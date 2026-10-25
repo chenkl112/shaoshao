@@ -1,0 +1,2 @@
+# Install in the ROS Python environment (or a venv with --system-site-packages).
+small-gicp==1.0.1

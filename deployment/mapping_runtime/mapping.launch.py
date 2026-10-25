@@ -1,6 +1,7 @@
 from pathlib import Path
 import yaml
 from launch import LaunchDescription
+from launch.actions import ExecuteProcess
 from launch_ros.actions import Node
 
 def generate_launch_description():
@@ -16,5 +17,6 @@ def generate_launch_description():
         'vehicleLength':.7,'vehicleWidth':.7}],remappings=[('/registered_scan','/cloud_registered')]),
       Node(package='tf2_ros',executable='static_transform_publisher',name='mapping_map_odom',arguments=['--frame-id','map','--child-frame-id','odom','--qx','0','--qw','1']),
       Node(package='fast_lio',executable='static_map_projector',output='screen',parameters=[{'resolution':float(resolution)}]),
+      ExecuteProcess(cmd=['python3',str(root/'record_localization.py'),'--config',str(root/'mapping_runtime/fast_lio.yaml')],output='screen'),
     ]
     return LaunchDescription(nodes)

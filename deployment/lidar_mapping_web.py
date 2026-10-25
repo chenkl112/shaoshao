@@ -30,7 +30,7 @@ def grid_metadata(msg,filename):
 
 def main():
     import rclpy
-    from rclpy.executors import ExternalShutdownException
+    from rclpy.executors import ExternalShutdownException,MultiThreadedExecutor
     from rclpy.qos import qos_profile_sensor_data,QoSProfile,DurabilityPolicy,ReliabilityPolicy
     from sensor_msgs.msg import PointCloud2
     from livox_ros_driver2.msg import CustomMsg
@@ -110,7 +110,8 @@ def main():
             image=encode_grid(msg)
             if image is None:return
             filename='live-grid-'+str(time.time_ns())+'.png'
-            target=maps_dir/filename;target.write_bytes(image)
+            target=maps_dir/filename
+            partial=target.with_suffix('.png.tmp');partial.write_bytes(image);partial.replace(target)
             metadata=grid_metadata(msg,filename)
             tmp=maps_dir/'site.yaml.tmp';tmp.write_text(yaml.safe_dump(metadata,sort_keys=False));tmp.replace(maps_dir/'site.yaml')
             for old in sorted(maps_dir.glob('live-grid-*.png'))[:-8]:old.unlink(missing_ok=True)
@@ -139,8 +140,10 @@ def main():
         def do_GET(self):
             if urlparse(self.path).path=='/':self.reply(200,page,'text/html; charset=utf-8')
             else:super().do_GET()
+    executor=MultiThreadedExecutor(num_threads=4)
+    executor.add_node(node)
     def spin_ros():
-        try:rclpy.spin(node)
+        try:executor.spin()
         except ExternalShutdownException:pass
     spin=threading.Thread(target=spin_ros,daemon=True);spin.start()
     http=ThreadingHTTPServer((a.bind,a.port),Handler);http.daemon_threads=True
@@ -151,5 +154,5 @@ def main():
     try:http.serve_forever(poll_interval=.2)
     except KeyboardInterrupt:pass
     finally:
-        http.server_close();panel.close();rclpy.shutdown();spin.join(timeout=3);node.destroy_node()
+        http.server_close();panel.close();rclpy.shutdown();spin.join(timeout=3);executor.shutdown(timeout_sec=3);node.destroy_node()
 if __name__=='__main__':main()

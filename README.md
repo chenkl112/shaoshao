@@ -1,86 +1,65 @@
-# 哨哨：麦轮车 + yaw 云台 + MID360 导航与 Web 面板
+# 哨哨导航
 
-2026-10-18 车端同步版使用 Ubuntu 24.04 / ROS 2 Jazzy 和 Navcar UART1 V1 二进制串口协议。
-当前串口配置与控制入口见 [Navcar 接入](web_panel/Navcar接入.md)，车端安装、更新、建图与导航按 [中文实车部署步骤](deployment/README.md) 执行。
-遇到窄过道或错误码 208，先看 [窄通道排障](web_panel/窄通道排障.md)。新建地图的静态点云和二维栅格默认精度为 5 cm；旧地图需要重新建图才能获得新的观测精度。
-下文标为“原通用方案”的 Humble 与 JSONL 入口作为参考保留，不与当前车端入口混用。
+## 简介
 
-基于 SCURM 火锅战队 24 赛季哨兵导航，适配目标为 i7-12800HX、麦轮底盘与安装在 yaw 云台上的 MID360。网页提供实时点云、车辆位置、yaw 状态，以及 **建图 / 导航 / 待机** 三个模式按钮。
+面向麦轮底盘、yaw 云台和 MID360 的导航工程，使用 Ubuntu 24.04 / ROS 2 Jazzy。网页提供实时点云、建图、导航和待机；支持窄道减速居中、受困退让、保留原目标重规划，以及使用保存的建图点云进行搬车后全局重定位。
 
-## 从这里开始
+导航只输出平移，由下位机负责底盘与 yaw 闭环。二维地图用于定位确认、规划和碰撞检查；三维点云与关键帧用于全局位置检索和配准。
 
-- [当前车端中文部署指南](deployment/README.md)：Ubuntu 24.04 / Jazzy、Navcar 串口、世界朝向 yaw、建图与导航、更新和回退。
-- [原通用方案详细指南](web_panel/README.md)：Humble、JSONL、编码器 TF 和模拟验收，仅适用于该套接口。
-- [待测参数模板](web_panel/robot.example.yaml)：未知值保留 null/待测，实车必填项未填完不会生成可启动配置。
-- [底盘与 yaw 硬件接口](web_panel/硬件接口.md)：ROS 接口、参考串口协议、编码器标定、下位机职责与麦轮公式。
-- [给底盘负责人的串口对接约定](web_panel/串口对接约定.md)：已选 JSONL 协议、双向报文、单位、频率和分工。
-- [原项目说明](README_原项目.md)：上游比赛/仿真环境与相关项目来源。
+## 部署启动
 
-## 无硬件先看网页
+先安装 ROS 2 Jazzy、Livox-SDK2 和 Jazzy 版 `livox_ros_driver2`。首次配置、串口与雷达网络设置见 [完整部署指南](deployment/README.md)。车端目录统一使用 `~/ccc`，地图保存在 `~/scurm_maps`。
+
+首次获取源码：
 
 ```bash
-python web_panel/server.py --demo --port 8080
+mkdir -p ~/ccc
+git clone https://github.com/chenkl112/shaoshao.git ~/ccc/shaoshao
 ```
 
-打开终端打印的链接。演示使用合成点云，不连接车辆。
-
-## 当前实车路径
-
-MID360 安装在 yaw 云台上。Navcar 的 yaw 目标相对 MCU 启动航向，由下位机保持世界朝向；回传的是目标值，不能证明云台已经锁到位。
-当前上位机用真实雷达 IMU 位姿定位，导航只输出平移，通过 8081 的串口服务下发；车体采用覆盖任意朝向的包围圆。
-这条链不依赖伪造的底盘朝向或关节 TF，也不能据此使用一个随雷达朝向转动的矩形代替实际车体。
-
-在已按部署指南恢复脚本和编译的车端，分别运行：
+已有工程时，先保存建图、进入待机并退出旧服务，备份车端配置和部署脚本，再更新：
 
 ```bash
-# 终端一：串口与手动移动页，前台保持运行
+cd ~/ccc/shaoshao
+git pull --ff-only origin master
+```
+
+安装依赖、复制部署脚本并编译：
+
+```bash
+sudo apt update
+sudo apt install -y build-essential cmake python3-dev python3-venv \
+  python3-colcon-common-extensions python3-yaml python3-serial \
+  python3-numpy python3-scipy python3-pil libeigen3-dev libpcl-dev \
+  ros-jazzy-navigation2 ros-jazzy-nav2-bringup ros-jazzy-nav2-smac-planner \
+  ros-jazzy-pointcloud-to-laserscan ros-jazzy-pcl-ros \
+  ros-jazzy-pcl-conversions ros-jazzy-tf2-geometry-msgs
+
+cd ~/ccc/shaoshao
+cp -a deployment/. ~/ccc/
+cp -n web_panel/serial.navcar.example.yaml web_panel/serial.navcar.yaml
+/usr/bin/python3 -m venv --system-site-packages ~/ccc/localization-venv
+~/ccc/localization-venv/bin/pip install -r web_panel/requirements-localization.txt
+bash ~/ccc/build_mapping.sh
+```
+
+编译前核对 `web_panel/robot.yaml` 的车辆尺寸、安装参数，以及 `web_panel/serial.navcar.yaml` 的实际串口；保留已有标定。驱动默认从 `~/my_test_ws/install` 或旧安装目录加载；安装在别处时，在构建和启动终端设置 `SCURM_LIVOX_PREFIX` 为实际 `install` 路径。
+
+编译成功后，两个终端分别运行：
+
+```bash
+# 终端一：8081 底盘控制，保持前台运行
+source ~/ccc/ros_env.sh
 bash ~/ccc/start_move_web.sh
+```
+
+```bash
 # 终端二：雷达与 8080 网页，默认待机
 bash ~/ccc/start_mapping.sh
 ```
 
-网页点击“开始建图”，结束后“停止建图并保存”；点击“导航”，定位就绪后先预览路径，再点击“前往目标”。
-8081 手动操作会撤销导航控制权。首次运行需要填写实际串口、核对雷达网络和实测几何；详见当前车端指南。
+打开各终端打印的链接，使用车载电脑实际局域网 IP，保留各自的 token。在 8081 启用控制并确认底盘反馈正常，然后在 8080 操作：
 
-## 原通用方案的实车路径
+**开始建图 → 停止建图并保存 → 导航 → 等待定位就绪 → 路径预览 → 前往目标。**
 
-当前控制默认只平移，yaw 电机保持相对底盘固定的关节角。Web 新增“小陀螺”开关，默认关闭，仅在手动/建图模式启用；起始角速度为逆时针 0.5 rad/s，可设置正负方向。网页心跳中断、进入待机、切换模式或 yaw/雷达/定位异常会关闭小陀螺，需要重新手动开启。导航不执行旋转或最终朝向对齐。
-
-建议 Ubuntu 22.04 + ROS 2 Humble。先按详细指南安装 ROS、Livox-SDK2 和依赖，再在车上执行：
-
-```bash
-cp web_panel/robot.example.yaml web_panel/robot.yaml
-python3 web_panel/preflight.py --offline --config web_panel/robot.yaml
-# 填写实测几何、yaw 参考/目标、IP、串口和波特率后：
-python3 web_panel/configure.py --config web_panel/robot.yaml --maps-dir "$HOME/scurm_maps"
-# 按详细指南重新 colcon 编译，并 source 工作区后：
-python3 web_panel/bringup.py
-```
-
-本版使用 **相对底盘的固定 yaw 关节角闭环**，读取实际编码器角发布动态 TF。实际需求已确认为“云台保持世界方向”，该控制方式尚未实现，不能仅修改配置启用。锁角闭环由下位机实现，上位机提供目标、反馈检查和底盘速度门控。
-
-底盘由另一位负责人实现；你这边只负责上位机和串口接口。双方采用 `serial_jsonl_v1`，轮径、减速比、四轮 PID 等留给下位机。车体尺寸暂未测量时，可以先按对接约定使用 `serial.example.yaml` 单独联调串口。
-
-## 新增内容
-
-- Web 点云查看与三个模式按钮，局域网令牌接入。
-- 模式进程管理、离开建图自动保存 PCD 与二维地图、命令/传感器/yaw 超时门控。
-- `base_link → yaw_link → imu_link` 实测安装链，按真实 yaw 反馈发布 TF。
-- 参考串口桥与模拟硬件入口；已有 ROS 驱动可按统一接口接入。
-- 中文待测配置、实测参数生成、一键基础链路启动、只读链路检查。
-- 实车低速 DWB/footprint 初始配置，FAST-LIO 按点云时间查询安装 TF，ICP 输出正确的初始 IMU 位姿。
-
-## 验证与尚未完成的实车事项
-
-本地可执行测试：
-
-```bash
-cd web_panel
-python -m unittest discover -v
-```
-
-已在隔离 Ubuntu 22.04 / ROS 2 Humble 容器编译所需 9 个 ROS 包，并用合成 MID360/IMU 与模拟底盘验证建图、地图保存、ICP 重定位、Nav2 到点、yaw 异常阻断速度及待机。另已检查浏览器点云和三个按钮，详情见 [验收状态](web_panel/验收状态.md) 与 [复现方法](web_panel/validation/README.md)。
-
-本次没有连接你的车辆和传感器。上位机车载版本、几何、实际串口连接、MID360 网络、定位精度和实际行驶仍待验收；下位机按已选协议实现和验证电机闭环由底盘负责人负责。待测参数不代表已标定。
-
-上游项目来源与致谢见原项目说明；本次交付的修改以当前目录和增量补丁为准，重新从上游克隆不会自动获得新增功能。
+完整地图包括 `site.pcd`、`site.yaml`、其引用图像，以及完成保存的 `keyframes/manifest.json` 和 `index.npz`。旧稀疏地图应重新采集，不能靠修改分辨率或填白未知区恢复观测。导航期间操作 8081 会取消导航控制权；异常日志见 `~/ccc/web.log`、`mapping.log` 和 `navigation.log`。

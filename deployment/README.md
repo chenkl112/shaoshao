@@ -1,5 +1,38 @@
 # 哨哨实车部署：Ubuntu 24.04 / ROS 2 Jazzy / Navcar
 
+## 导航恢复与平顺输出依赖
+
+导航新增 SciPy/Pillow 依赖，用于完整车体的局部制动空间检查和独立扫描匹配校验：
+
+```bash
+sudo apt install python3-scipy python3-pil ros-jazzy-nav2-smac-planner
+```
+
+恢复行为会保留原目标并显示“脱困中/重定位中”。取消、手动接管、地图切换仍撤销原任务。
+正常输出采用合加速度 0.25 m/s²、jerk 0.6 m/s³ 的平顺目标，保留 20% 合速度余量；故障停车立即切零。
+按用户要求，Navcar 导航取消额外轮廓余量（`footprint_padding=0`），输出检查使用实测本体外接半径。
+窄道提前 0.7 m 检查净空、平顺减速至约 0.08 m/s，并在检测到双侧障碍时低速修正到通道中间。
+软膨胀代价引导居中，实际车体与墙体/未知区的扫掠碰撞仍禁止；近边界使用精确方格几何检查。
+局部控制代价图使用 1 cm 或更细栅格，保存地图和全局代价图保留真实分辨率。
+Web 导航入口采用 4 个 ROS 执行线程与独立回调组，里程计/速度不再与扫描匹配、地图可视化串行等待。
+TF 查询、地图文件读取移出共享状态锁，MCU 状态查询独立于运动输出；不放宽原有超时门槛。
+FAST-LIO 新增滤波速度与当前帧协方差输出，更新后必须重新编译 FAST-LIO。
+变更先按 [sentry_planning 场景验证](../validation/sentry_sim/README.md) 检查，再做实车低速验收。
+自动重定位优先使用当前所选建图目录的 `site.pcd`：完整关键帧索引提供全局候选，small_gicp 做三维配准；没有关键帧目录的旧图使用二维全地图候选后再由 PCD 配准验证。没有 PCD 的地图保留二维搜索。已有但不完整、损坏或哈希不匹配的索引会拒绝定位，不会自动降级。
+两次独立搜索一致后给 AMCL 提供初值，再检查至少三个新扫描和一秒稳定；清除并等待新鲜的全局/局部代价图后才续行。AMCL 始终独占 `map → navcar_odom`，原目标保留。正常跟踪的位姿变化限制不阻止经过确认的全局跳变。
+
+点云定位新增 Python 绑定依赖，安装到 ROS 使用的同一 Python 环境。车端可使用系统包可见的虚拟环境，更新后的 `ros_env.sh` 会自动启用它：
+
+```bash
+sudo apt install python3-venv python3-scipy python3-pil
+python3 -m venv --system-site-packages ~/ccc/localization-venv
+~/ccc/localization-venv/bin/pip install -r ~/ccc/shaoshao/web_panel/requirements-localization.txt
+```
+
+更新时同时复制 `record_localization.py`、`mapping_runtime/mapping.launch.py`、`start_lidar_mapping.py`、`stop_lidar_mapping.py` 和 `ros_env.sh` 到部署目录，并更新仓库 `web_panel/` 文件。新建图每移动 0.25 m 或转动 10° 记录传感器坐标系关键帧；停止保存时先保存 PCD，再剔除距静态地图超过 0.1 m 的点并保存绑定 PCD SHA256 的索引。索引保存失败会明确提示并保留建图进程，不报告完整保存成功。
+
+三维配准使用 5 cm 体素、重叠率至少 80%、全局搜索归一化误差不超过 0.05（比 HW 已知位置附近纠偏的 0.30 更严格），并拒绝信息矩阵退化或多个可信地点。检索保留前 40 个环描述候选、至多 12 个不同地点供配准与歧义检查，避免窄道出口可见结构变化时漏掉正确位置。旧稀疏地图、损坏图片和静态结构不足仍需重新采集；不能通过降低匹配门槛或把未知区域填白解决。上传数据的离线验证与仿真结果见 `output/kidnap-relocalization-20261025/report.md`（工作区产物，不属于实车验收）。
+
 ## 启动环境路径修正（2026-10-22）
 
 当前有效 Livox 安装为 `~/my_test_ws/install`；旧的 `~/Zzj_slam/ws/out/install-livox` 已移走。所有车端启动入口统一加载 `~/ccc/ros_env.sh`。安装本目录脚本时也须复制 `ros_env.sh`。该脚本优先使用 `SCURM_LIVOX_PREFIX`，再检查当前与旧安装目录，并通过 `mapping_install/local_setup.bash` 加载建图包，避免生成的 setup.bash 引用已删除的旧驱动。以下旧安装路径示例属于原部署记录。
@@ -7,7 +40,7 @@
 
 ## 当前栅格设置（2026-10-20）
 
-按用户要求，静态点云导出、二维建图、全局和局部代价地图统一为 **0.025 m（2.5 cm）**。下面此前的 1 cm 设置属于历史记录。静态确认仍使用 5 cm 证据网格，确认后在 2.5 cm 网格保留实测点，保留去顶和动态过滤。已有地图不改写分辨率；新建图生效。导航接受 2.5 cm 或更细的真实地图。定位标准差门控和车体参数不随栅格修改。
+静态点云导出、二维建图采用 **0.025 m（2.5 cm）**，全局代价图使用真实地图分辨率。2026-10-25 为窄道通行将局部控制栅格细化到 1 cm 或更细。静态确认仍使用 5 cm 证据网格，确认后在 2.5 cm 网格保留实测点，保留去顶和动态过滤。已有地图不改写分辨率；新建图生效。导航接受 2.5 cm 或更细的真实地图。定位标准差门控和车体参数不随栅格修改。
 
 
 适用车辆：麦轮底盘，MID360 安装在 yaw 云台上；下位机通过 Navcar UART1 V1 保持启动世界航向，
@@ -20,7 +53,7 @@ ACK 或目标回显不能作为实际姿态和实际运动的测量值。
 
 ## 1. 已经能运行的车：更新这次修正
 
-这次修改了 C++，只复制 Python 或重启网页不会生效。新地图统一使用 1 cm 静态体素与二维投影，
+这次修改了 C++，只复制 Python 或重启网页不会生效。新地图统一使用 2.5 cm 静态体素与二维投影，
 并修正灰色未知区域的导出阈值；旧地图和个人配置不会自动转换。
 
 先在 8080 点击“待机”，在 8081 点击“停止”。如果服务在终端前台运行，在原终端 Ctrl+C 退出。
@@ -83,8 +116,8 @@ bash "$HOME/ccc/build_mapping.sh"
 ```
 
 编译必须成功再启动。按第 5 节启动服务，在 8080 重新创建并保存地图；
-不要把旧 `site.yaml` 的 `resolution` 改为 0.01，这会缩放地图的实际尺寸。
-不要将旧稀疏 PCD 重采样成 1 cm 后当作恢复了丢失的观测。
+不要把旧 `site.yaml` 的 `resolution` 改为 0.025，这会缩放地图的实际尺寸。
+不要将旧稀疏 PCD 重采样成更细体素后当作恢复了丢失的观测。
 
 ## 2. 新电脑：系统、源码和驱动
 
@@ -104,17 +137,15 @@ git clone https://github.com/chenkl112/shaoshao.git "$HOME/ccc/shaoshao"
 已有源码目录时保留个人配置，再获取所需版本，不要覆盖克隆到一个已有工程里。
 先安装 Livox-SDK2 和 Jazzy 版 `livox_ros_driver2`，编译方法见
 [Livox 官方驱动说明](https://github.com/Livox-SDK/livox_ros_driver2)。
-当前车端脚本的驱动安装目录固定为 `~/Zzj_slam/ws/out/install-livox/`，应确保存在：
+部署入口自动查找 `~/my_test_ws/install` 和旧的 `~/Zzj_slam/ws/out/install-livox`。若驱动安装在别处，在构建和启动终端先设置实际路径，例如：
 
 ```bash
-test -f "$HOME/Zzj_slam/ws/out/install-livox/setup.bash"
-source /opt/ros/jazzy/setup.bash
-source "$HOME/Zzj_slam/ws/out/install-livox/setup.bash"
+export SCURM_LIVOX_PREFIX=/实际驱动工作区/install
+source ~/ccc/ros_env.sh
 ros2 pkg prefix livox_ros_driver2
 ```
 
-如果现有驱动安装在别处，需统一修改 `deployment/` 启动和构建脚本中的路径；
-单独在当前终端 source 另一个目录不会修改后台子进程的启动配置。
+`SCURM_LIVOX_PREFIX` 会传入后台子进程；无需再修改每个启动脚本中的路径。首次安装先按第 3 节复制部署脚本，使 `~/ccc/ros_env.sh` 可用。
 
 ## 3. 恢复目录、网络与待测参数
 
@@ -147,7 +178,7 @@ cp -n web_panel/robot.navcar.example.yaml web_panel/robot.yaml
 当前雷达坐标导航读取 `robot` 的外接半径（或长宽）、光心高度和 `yaw` 的安装位置/角度，不使用旧配置里的
 `yaw.reference`、编码器符号或编码器零位来伪造实际姿态。
 新的 `robot.navcar.example.yaml` 专门用于这条入口，旧 `robot.example.yaml` 属于 JSONL 通用入口。
-65 cm 通道联调使用已标定的中心参考点与统一 1 cm 细图配置，完整步骤见 [65 cm 通道联调](../web_panel/60cm通道联调.md)。
+65 cm 通道联调使用已标定的中心参考点、2.5 cm 保存地图与 1 cm 局部控制栅格，完整步骤见 [65 cm 通道联调](../web_panel/60cm通道联调.md)。
 最新实测已修正：正八边形对边距为 550 mm，联调通道宽 650 mm；已含轮子和突出物；雷达底面及 yaw 安装面离地 280 mm，
 水平偏心为 14.18 mm。旧的 29 cm 外接半径、32 cm 雷达高度、31 cm yaw 高度和 1 cm 偏心不再作为当前实车参数。
 MID360 官方尺寸图的点云原点距底面 47 mm，因此 `lidar_height_m` 应为 `0.280 + 0.047 = 0.327 m`，
@@ -197,9 +228,7 @@ python3 web_panel/navcar_bridge.py --no-ros
 
 ```bash
 bash ~/ccc/build_mapping.sh
-source /opt/ros/jazzy/setup.bash
-source "$HOME/Zzj_slam/ws/out/install-livox/setup.bash"
-source "$HOME/ccc/mapping_install/setup.bash"
+source ~/ccc/ros_env.sh
 ros2 pkg prefix fast_lio
 ros2 pkg prefix terrain_analysis_ext
 python3 -m unittest discover -s "$HOME/ccc/shaoshao/web_panel" -p 'test*.py' -q
@@ -235,7 +264,7 @@ bash ~/ccc/start_mapping.sh
 1. 在网页点击“开始建图”，保持地面与障碍得到足够观测；新地图创建在 `~/scurm_maps/`。
 2. 通过 8081 低速移动，导航链不依赖四轮编码器里程计；相邻观测需要有重叠。
 3. 静态导出需要同一位置获得跨多个扫描、至少约 1.5 秒的持续观测。新版本体素更细，经过狭窄区域时应慢行、停留检查。
-4. 点击“停止建图并保存”，等待保存成功；确认当前目录有非空 `site.pcd`、`site.yaml` 和 YAML 指向的 PNG。
+4. 点击“停止建图并保存”，等待保存成功；确认当前目录有非空 `site.pcd`、`site.yaml`、YAML 指向的 PNG，以及完成的 `keyframes/manifest.json` 与 `index.npz`。
 5. 灰色为未知，不代表空地；应补充观测，不能把未扫到的区域填白。
 
 当前地图目录记录在 `~/ccc/current_mapping_dir`。建图运行时检查：
@@ -246,19 +275,19 @@ ros2 param get /static_map_projector resolution
 ros2 topic echo /projected_map --once --field info
 ```
 
-两项分辨率和消息中的 `resolution` 都应为 0.01，并要求新建的 1 cm 地图。
+两项分辨率和消息中的 `resolution` 都应为 0.025；导航局部控制栅格单独细化到 0.01 或更细。
 当前配置全局生效，旧 `narrow_passage` 字段可删除，其值不再控制分辨率或速度。
 内部 LIO 匹配体素仍是 0.15，与新的静态导出精度用途不同。
 
 导航时：
 
-1. 保持车辆在建图结束位置附近；点击“导航”，等待定位和导航就绪。
+1. 将车辆放在已建图且有可识别静态结构的区域；点击“导航”，等待全局匹配与定位确认。匹配不唯一时保持停车。
 2. 网页选一个附近、留有整车空间的目标，先查看路径预览。
 3. 预览成功再点击“前往目标”；导航向量速度上限读取 `navigation.max_speed_mps`，全局最高 0.5 m/s，可配置更低值。只平移，不做最后朝向对齐。
 4. “取消导航”停止该任务；“待机”停止定位与规划，保留雷达和网页。
 5. 8081 任意手动方向/停止/yaw 设置会撤销导航控制权。导航完成前不要在另一个页面修改控制目标。
 
-先验初始位置来自 `last_pose.json`，移动车辆后不能把旧位置当作准确定位。
+`last_pose.json` 仅提供启动参考，移动车辆后不能把旧位置当作准确定位；点云后端仍须完成独立全局搜索和多帧确认。
 实际 yaw/底盘测量缺失时，碰撞模型继续使用整车包围圆；两侧各留十多厘米的通道不保证可过，
 先按 [窄通道排障](../web_panel/窄通道排障.md) 检查代价图和近场障碍。
 

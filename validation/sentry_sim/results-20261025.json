@@ -1,0 +1,587 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "name": "smooth80",
+      "exit_code": 0,
+      "case": "smooth",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "4de92f0f7e18b0947f91ce8cc7e80a0546c7b6ae135e9da562998d3d2f44df52",
+        "web_panel/navigation_recovery.py": "359ca6a0bf990b02fa371236090dd83f797f45febf5dfc3b7dd60b4c226ce38c",
+        "web_panel/navcar_navigation.py": "ee02f851457672b7c67b1592f87c4e293c0072727b2cab2110f1a14a957a5fa5",
+        "web_panel/server.py": "290cc1f902196b68358d94a3848197c44f028ff8f884e01001b4078d3b646e63",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/run.py": "fb6da6e9684d32d83384cfe59fe6969f36fe422df44a9915abd551be30023d55"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.9192960456048462,
+        -2.0146096112907377,
+        1.258160305240323e-21
+      ],
+      "recovery_states": [
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": false,
+      "elapsed_s": 27.8258829920087,
+      "min_physical_clearance_m": 0.08773696464997482,
+      "safety_stops": [],
+      "passage": {
+        "max_center_offset_m": 0.013944357427719378,
+        "max_body_speed_mps": 0.17455033582585128,
+        "min_physical_clearance_m": 0.08839764257228055
+      },
+      "motion": {
+        "max_speed_mps": 0.32267050990613355,
+        "max_acceleration_mps2": 0.25019801855509566,
+        "max_jerk_mps3": 0.6172184479798539,
+        "normal_max_acceleration_mps2": 0.25019801855509566,
+        "normal_max_jerk_mps3": 0.6172184479798539
+      },
+      "uninterrupted_motion": true
+    },
+    {
+      "name": "narrow75",
+      "exit_code": 0,
+      "case": "narrow",
+      "width_m": 0.75,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "4de92f0f7e18b0947f91ce8cc7e80a0546c7b6ae135e9da562998d3d2f44df52",
+        "web_panel/navigation_recovery.py": "359ca6a0bf990b02fa371236090dd83f797f45febf5dfc3b7dd60b4c226ce38c",
+        "web_panel/navcar_navigation.py": "ee02f851457672b7c67b1592f87c4e293c0072727b2cab2110f1a14a957a5fa5",
+        "web_panel/server.py": "290cc1f902196b68358d94a3848197c44f028ff8f884e01001b4078d3b646e63",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/run.py": "fb6da6e9684d32d83384cfe59fe6969f36fe422df44a9915abd551be30023d55"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.940832240920933,
+        -2.0097491563257166,
+        -3.085425243161028e-22
+      ],
+      "recovery_states": [
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": false,
+      "elapsed_s": 36.74318538297666,
+      "min_physical_clearance_m": 0.06693380049049602,
+      "safety_stops": [],
+      "passage": {
+        "max_center_offset_m": 0.010214509815616779,
+        "max_body_speed_mps": 0.11002654155025737,
+        "min_physical_clearance_m": 0.06712749018438324
+      },
+      "motion": {
+        "max_speed_mps": 0.3156152920145651,
+        "max_acceleration_mps2": 0.25012909438531106,
+        "max_jerk_mps3": 0.6143604434510431,
+        "normal_max_acceleration_mps2": 0.25012909438531106,
+        "normal_max_jerk_mps3": 0.6143604434510431
+      },
+      "uninterrupted_motion": true
+    },
+    {
+      "name": "narrow65",
+      "exit_code": 0,
+      "case": "narrow",
+      "width_m": 0.65,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "4de92f0f7e18b0947f91ce8cc7e80a0546c7b6ae135e9da562998d3d2f44df52",
+        "web_panel/navigation_recovery.py": "359ca6a0bf990b02fa371236090dd83f797f45febf5dfc3b7dd60b4c226ce38c",
+        "web_panel/navcar_navigation.py": "ee02f851457672b7c67b1592f87c4e293c0072727b2cab2110f1a14a957a5fa5",
+        "web_panel/server.py": "290cc1f902196b68358d94a3848197c44f028ff8f884e01001b4078d3b646e63",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/run.py": "fb6da6e9684d32d83384cfe59fe6969f36fe422df44a9915abd551be30023d55"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.9500819472040063,
+        -2.0097536955665096,
+        1.643125806976931e-22
+      ],
+      "recovery_states": [
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": false,
+      "elapsed_s": 47.27897422196111,
+      "min_physical_clearance_m": 0.017027956249138443,
+      "safety_stops": [],
+      "passage": {
+        "max_center_offset_m": 0.010314043750861757,
+        "max_body_speed_mps": 0.07999763378330163,
+        "min_physical_clearance_m": 0.017027956249138443
+      },
+      "motion": {
+        "max_speed_mps": 0.2874658979499378,
+        "max_acceleration_mps2": 0.25004482929835903,
+        "max_jerk_mps3": 0.6182380036298365,
+        "normal_max_acceleration_mps2": 0.25004482929835903,
+        "normal_max_jerk_mps3": 0.6182380036298365
+      },
+      "uninterrupted_motion": true
+    },
+    {
+      "name": "narrow65-offset",
+      "exit_code": 0,
+      "case": "narrow",
+      "width_m": 0.65,
+      "start_offset_m": 0.04,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "4de92f0f7e18b0947f91ce8cc7e80a0546c7b6ae135e9da562998d3d2f44df52",
+        "web_panel/navigation_recovery.py": "359ca6a0bf990b02fa371236090dd83f797f45febf5dfc3b7dd60b4c226ce38c",
+        "web_panel/navcar_navigation.py": "ee02f851457672b7c67b1592f87c4e293c0072727b2cab2110f1a14a957a5fa5",
+        "web_panel/server.py": "290cc1f902196b68358d94a3848197c44f028ff8f884e01001b4078d3b646e63",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/run.py": "fb6da6e9684d32d83384cfe59fe6969f36fe422df44a9915abd551be30023d55"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.929543395204486,
+        -2.009844825445361,
+        -8.807457351347917e-22
+      ],
+      "recovery_states": [
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": false,
+      "elapsed_s": 48.930614210956264,
+      "min_physical_clearance_m": 0.016851188655088167,
+      "safety_stops": [],
+      "passage": {
+        "max_center_offset_m": 0.010490811344912032,
+        "max_body_speed_mps": 0.07999865734556377,
+        "min_physical_clearance_m": 0.016851188655088167
+      },
+      "motion": {
+        "max_speed_mps": 0.28716360340236247,
+        "max_acceleration_mps2": 0.25005740778548535,
+        "max_jerk_mps3": 0.6114064511223882,
+        "normal_max_acceleration_mps2": 0.25005740778548535,
+        "normal_max_jerk_mps3": 0.6114064511223882
+      },
+      "uninterrupted_motion": true
+    },
+    {
+      "name": "reject58",
+      "exit_code": 0,
+      "case": "reject",
+      "width_m": 0.58,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "4de92f0f7e18b0947f91ce8cc7e80a0546c7b6ae135e9da562998d3d2f44df52",
+        "web_panel/navigation_recovery.py": "359ca6a0bf990b02fa371236090dd83f797f45febf5dfc3b7dd60b4c226ce38c",
+        "web_panel/navcar_navigation.py": "ee02f851457672b7c67b1592f87c4e293c0072727b2cab2110f1a14a957a5fa5",
+        "web_panel/server.py": "290cc1f902196b68358d94a3848197c44f028ff8f884e01001b4078d3b646e63",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/run.py": "fb6da6e9684d32d83384cfe59fe6969f36fe422df44a9915abd551be30023d55"
+      },
+      "status": "recovering",
+      "final_pose": [
+        0.0,
+        -2.0,
+        0.0
+      ],
+      "recovery_states": [
+        "running",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 2.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 2.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": false,
+      "elapsed_s": 12.007392560015433,
+      "min_physical_clearance_m": 0.7435432293500235,
+      "safety_stops": [],
+      "motion": {
+        "max_speed_mps": 0.0,
+        "max_acceleration_mps2": 0.0,
+        "max_jerk_mps3": 0.0,
+        "normal_max_acceleration_mps2": 0.0,
+        "normal_max_jerk_mps3": 0.0
+      },
+      "uninterrupted_motion": true
+    },
+    {
+      "name": "stuck80",
+      "exit_code": 0,
+      "case": "stuck",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "4de92f0f7e18b0947f91ce8cc7e80a0546c7b6ae135e9da562998d3d2f44df52",
+        "web_panel/navigation_recovery.py": "359ca6a0bf990b02fa371236090dd83f797f45febf5dfc3b7dd60b4c226ce38c",
+        "web_panel/navcar_navigation.py": "ee02f851457672b7c67b1592f87c4e293c0072727b2cab2110f1a14a957a5fa5",
+        "web_panel/server.py": "290cc1f902196b68358d94a3848197c44f028ff8f884e01001b4078d3b646e63",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/run.py": "fb6da6e9684d32d83384cfe59fe6969f36fe422df44a9915abd551be30023d55"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.9195613261195175,
+        -2.009606967050674,
+        -5.134081987497481e-22
+      ],
+      "recovery_states": [
+        "recovering",
+        "recovery_stopping",
+        "running",
+        "settling",
+        "stuck_pausing",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": true,
+      "elapsed_s": 42.954709149023984,
+      "min_physical_clearance_m": 0.0870584927773359,
+      "safety_stops": [
+        {
+          "time": 304525.275277225,
+          "reason": "final_permission",
+          "status": "canceling",
+          "motion": "permission:canceling",
+          "odom_age": 0.013519962027203292,
+          "grid_age": 0.22060517000500113,
+          "localization_age": 0.3732934099971317,
+          "scan_age": 0.17375049000838771
+        }
+      ],
+      "passage": {
+        "max_center_offset_m": 0.015283507222664028,
+        "max_body_speed_mps": 0.16806721395809862,
+        "min_physical_clearance_m": 0.0870584927773359
+      },
+      "motion": {
+        "max_speed_mps": 0.343522736296565,
+        "max_acceleration_mps2": 7.781255623165082,
+        "max_jerk_mps3": 340.3711704921416,
+        "normal_max_acceleration_mps2": 0.2505985962528488,
+        "normal_max_jerk_mps3": 0.6094907347029704
+      },
+      "uninterrupted_motion": false
+    },
+    {
+      "name": "localization80",
+      "exit_code": 0,
+      "case": "localization",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "4de92f0f7e18b0947f91ce8cc7e80a0546c7b6ae135e9da562998d3d2f44df52",
+        "web_panel/navigation_recovery.py": "359ca6a0bf990b02fa371236090dd83f797f45febf5dfc3b7dd60b4c226ce38c",
+        "web_panel/navcar_navigation.py": "ee02f851457672b7c67b1592f87c4e293c0072727b2cab2110f1a14a957a5fa5",
+        "web_panel/server.py": "290cc1f902196b68358d94a3848197c44f028ff8f884e01001b4078d3b646e63",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/run.py": "fb6da6e9684d32d83384cfe59fe6969f36fe422df44a9915abd551be30023d55"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.9258342172269582,
+        -1.9956624740477868,
+        8.498833775744379e-22
+      ],
+      "recovery_states": [
+        "relocalizing",
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": true,
+      "elapsed_s": 31.704645168036222,
+      "min_physical_clearance_m": 0.09120075548884221,
+      "safety_stops": [
+        {
+          "time": 304570.100552831,
+          "reason": "final_permission",
+          "status": "active",
+          "motion": "braking_space",
+          "odom_age": 0.024738422012887895,
+          "grid_age": 0.05190001201117411,
+          "localization_age": 0.16530887404223904,
+          "scan_age": 0.16530842002248392
+        }
+      ],
+      "passage": {
+        "max_center_offset_m": 0.007607500194951822,
+        "max_body_speed_mps": 0.17446748791977268,
+        "min_physical_clearance_m": 0.09473449980504811
+      },
+      "motion": {
+        "max_speed_mps": 0.3197433531739807,
+        "max_acceleration_mps2": 5.426900897682357,
+        "max_jerk_mps3": 234.7957850102873,
+        "normal_max_acceleration_mps2": 0.25002845843485555,
+        "normal_max_jerk_mps3": 0.6267404104898792
+      },
+      "uninterrupted_motion": false
+    },
+    {
+      "name": "cancel80",
+      "exit_code": 0,
+      "case": "cancel",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.0,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "4de92f0f7e18b0947f91ce8cc7e80a0546c7b6ae135e9da562998d3d2f44df52",
+        "web_panel/navigation_recovery.py": "359ca6a0bf990b02fa371236090dd83f797f45febf5dfc3b7dd60b4c226ce38c",
+        "web_panel/navcar_navigation.py": "ee02f851457672b7c67b1592f87c4e293c0072727b2cab2110f1a14a957a5fa5",
+        "web_panel/server.py": "290cc1f902196b68358d94a3848197c44f028ff8f884e01001b4078d3b646e63",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/run.py": "fb6da6e9684d32d83384cfe59fe6969f36fe422df44a9915abd551be30023d55"
+      },
+      "status": "canceled",
+      "final_pose": [
+        0.2148084191043497,
+        -2.0,
+        0.0
+      ],
+      "recovery_states": [
+        "canceled",
+        "running",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": true,
+      "elapsed_s": 5.153562610968947,
+      "min_physical_clearance_m": 0.5835490237517461,
+      "safety_stops": [
+        {
+          "time": 304606.804095031,
+          "reason": "final_permission",
+          "status": "canceling",
+          "motion": "permission:canceling",
+          "odom_age": 0.00888261798536405,
+          "grid_age": 0.18203295196872205,
+          "localization_age": 0.08885719499085099,
+          "scan_age": 0.08886750496458262
+        }
+      ],
+      "motion": {
+        "max_speed_mps": 0.2505519511710152,
+        "max_acceleration_mps2": 12.197518679263773,
+        "max_jerk_mps3": 598.9044764929853,
+        "normal_max_acceleration_mps2": 0.25003439816742956,
+        "normal_max_jerk_mps3": 0.6129825592588511
+      },
+      "uninterrupted_motion": false
+    },
+    {
+      "name": "slow-status80",
+      "exit_code": 0,
+      "case": "smooth",
+      "width_m": 0.8,
+      "start_offset_m": 0.0,
+      "state_delay_s": 0.25,
+      "upstream_commit": "b9349d2ada3fe0299ccae9d1e483d5f3b79b1cc8",
+      "simulator": "Gazebo Harmonic, original room.world wall collisions",
+      "sensor_adapter": "Analytic LaserScan + synthetic local odometry; no FAST-LIO or MID360 validation",
+      "passed": true,
+      "source_sha256": {
+        "web_panel/navigation_runtime.py": "4de92f0f7e18b0947f91ce8cc7e80a0546c7b6ae135e9da562998d3d2f44df52",
+        "web_panel/navigation_recovery.py": "359ca6a0bf990b02fa371236090dd83f797f45febf5dfc3b7dd60b4c226ce38c",
+        "web_panel/navcar_navigation.py": "ee02f851457672b7c67b1592f87c4e293c0072727b2cab2110f1a14a957a5fa5",
+        "web_panel/server.py": "290cc1f902196b68358d94a3848197c44f028ff8f884e01001b4078d3b646e63",
+        "deployment/lidar_mapping_web.py": "b27de3ea5b5e61d3d6dc5f9f4252ec26e911f27dc900cd508e593f586cfda4d3",
+        "validation/sentry_sim/scene.py": "60518de0f1d9df7fceb10fd1ddfe8064fd4582b68610ef320692823fef8a2e83",
+        "validation/sentry_sim/run.py": "fb6da6e9684d32d83384cfe59fe6969f36fe422df44a9915abd551be30023d55"
+      },
+      "status": "succeeded",
+      "final_pose": [
+        3.942876897371961,
+        -2.0129667235623496,
+        -2.4168879637202086e-22
+      ],
+      "recovery_states": [
+        "running",
+        "settling",
+        "succeeded",
+        "waiting"
+      ],
+      "original_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "final_goal": {
+        "x": 4.0,
+        "y": -2.0,
+        "yaw": 0.0,
+        "frame": "map"
+      },
+      "injected": false,
+      "elapsed_s": 27.51203871902544,
+      "min_physical_clearance_m": 0.08922616246478454,
+      "safety_stops": [],
+      "passage": {
+        "max_center_offset_m": 0.013115837535215391,
+        "max_body_speed_mps": 0.18057980243496013,
+        "min_physical_clearance_m": 0.08922616246478454
+      },
+      "motion": {
+        "max_speed_mps": 0.3371762444499342,
+        "max_acceleration_mps2": 0.2502949472867299,
+        "max_jerk_mps3": 0.6261710145303706,
+        "normal_max_acceleration_mps2": 0.2502949472867299,
+        "normal_max_jerk_mps3": 0.6261710145303706
+      },
+      "uninterrupted_motion": true
+    }
+  ]
+}

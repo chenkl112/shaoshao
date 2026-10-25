@@ -219,7 +219,7 @@ function drawNavigationOverlay(){
    }
   }
  }
- const nav=lastState?.navigation,active=['sending','active','canceling'].includes(nav?.status);
+ const nav=lastState?.navigation,active=['sending','active','canceling','recovering'].includes(nav?.status);
  const plan=matchingPlan(),path=active?nav.path:plan?.status==='ready'?plan.path:[];
  if(path?.length){
   mapCtx.strokeStyle='#168de2';mapCtx.lineWidth=3;mapCtx.lineJoin='round';mapCtx.beginPath();
@@ -244,7 +244,7 @@ function drawMap(){
    if(!localized){mapCtx.fillStyle='#f3aa52';mapCtx.font='12px system-ui';mapCtx.fillText('位置待确认',x+16,y+18)}
   }
   const active=lastState?.navigation;
-  if(active?.goal&&['sending','active','canceling'].includes(active.status))goalMarker(active.goal,'#f48c70','导航目标');
+  if(active?.goal&&['sending','active','canceling','recovering'].includes(active.status))goalMarker(active.goal,'#f48c70','导航目标');
   if(selectedGoal)goalMarker(selectedGoal,'#f2d36e','选定位置');
  }
 }
@@ -278,7 +278,7 @@ async function previewGoal(){
  finally{if(request===planRequest){navigationControls();drawMap()}}
 }
 function navigationControls(){
- const nav=lastState?.navigation,busy=['sending','active','canceling'].includes(nav?.status);
+ const nav=lastState?.navigation,busy=['sending','active','canceling','recovering'].includes(nav?.status);
  const plan=matchingPlan();
  $('selectedGoal').textContent=selectedGoal?'目标：'+selectedGoal.x.toFixed(2)+', '+selectedGoal.y.toFixed(2)+' m':'未选择目标 · 请单击地图';
  $('goGoal').disabled=!connected||!!lastState?.preview||!nav?.ready||!selectedGoal||!mapImage||plan?.status!=='ready'||!!planError||goalRequest||busy||requesting;
@@ -353,7 +353,7 @@ mapCanvas.addEventListener('contextmenu',e=>{
  e.preventDefault();
  selectedGoal=null;++planRequest;planError='';navigationControls();drawMap();
  const status=lastState?.navigation?.status;
- if(['sending','active','canceling'].includes(status)&&!goalRequest)navigationRequest('/api/navigation/cancel',{});
+ if(['sending','active','canceling','recovering'].includes(status)&&!goalRequest)navigationRequest('/api/navigation/cancel',{});
 });
 mapCanvas.onpointerdown=e=>{if(e.button!==0)return;mapDrag={startX:e.clientX,startY:e.clientY,x:e.clientX,y:e.clientY,moved:false};mapCanvas.setPointerCapture(e.pointerId)};
 mapCanvas.onpointermove=e=>{

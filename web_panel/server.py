@@ -86,6 +86,7 @@ class Panel:
         self.cloud_time = 0.0
         self.odom_time = 0.0
         self.pose = None
+        self.measured_velocity = None
         self.commands = {}
         self.bridge = None
         self.closed = False
@@ -255,7 +256,7 @@ class Panel:
             return '等待 Nav2 导航服务就绪'
         now = time.monotonic()
         if not self.nav_localized or not self.map_pose or now-self.map_pose_time > 1.:
-            return '等待地图定位成功，请将车辆放回建图起点附近'
+            return '正在匹配建图地图，等待位置和朝向确认'
         if not self.yaw_guard.status()['ready']:
             return 'yaw 尚未锁定'
         if not self.cloud_time or now-self.cloud_time > 1. or not self.odom_time or now-self.odom_time > 1.:
@@ -271,6 +272,7 @@ class Panel:
                 'localized':bool(self.nav_localized and self.map_pose and self.map_pose_time and time.monotonic()-self.map_pose_time<=1.),
                 'localization':getattr(self.bridge,'localization_info',None),
                 'message': self.nav_message, 'goal': self.nav_goal,
+                'recovery':self.bridge.recovery_status() if hasattr(self.bridge,'recovery_status') else {'state':'idle'},
                 'plan': self.nav_plan, 'path': self.nav_path,
                 'distance_remaining': self.nav_remaining,
                 'pose': self.map_pose if self.map_pose_time and time.monotonic()-self.map_pose_time <= 1. else None}
@@ -346,17 +348,20 @@ class Panel:
         self.nav_plan={'status':'idle','message':'选点后自动规划路径','goal':None,'path':[]}
         self.nav_path=[]
 
-    def send_navigation_goal(self, x, y, revision):
+    def send_navigation_goal(self, x, y, revision, *, resume=False):
         self.navigation_target(x,y,revision)
         with self.lock:
             reason = self.navigation_reason()
             if reason:
                 raise RuntimeError(reason)
-            if self.nav_status in ('sending', 'active', 'canceling'):
+            if self.nav_status in ('sending', 'active', 'canceling') or (self.nav_status=='recovering' and not resume):
                 raise RuntimeError('已有导航任务，请先取消或等待完成')
             self.nav_serial += 1
             serial = self.nav_serial
-            self.nav_goal = {'x': float(x), 'y': float(y), 'yaw': self.map_pose['yaw'], 'frame': 'map'}
+            if not resume:
+                self.nav_goal = {'x': float(x), 'y': float(y), 'yaw': self.map_pose['yaw'], 'frame': 'map'}
+            if not resume and hasattr(self.bridge,'begin_task'):
+                self.bridge.begin_task(self.nav_goal,revision)
             self.plan_serial+=1
             self.nav_path=[]
             planned=self.nav_plan.get('goal')
@@ -379,6 +384,8 @@ class Panel:
                 handle = future.result()
                 if not handle.accepted:
                     if serial == self.nav_serial:
+                        if hasattr(self.bridge,'action_result') and self.bridge.action_result(6,0,'导航服务尚未接受任务'):
+                            return
                         self.nav_status, self.nav_message = 'rejected', '导航目标被拒绝，请检查 Nav2 状态'
                         self.nav_hold = True
                     return
@@ -415,6 +422,10 @@ class Panel:
                 return
             try:
                 response = future.result();status = response.status
+                result=getattr(response,'result',None)
+                if hasattr(self.bridge,'action_result') and self.bridge.action_result(
+                        status,getattr(result,'error_code',0),getattr(result,'error_msg','')):
+                    return
                 self.nav_status, self.nav_message = {
                     4: ('succeeded', '已到达目标'), 5: ('canceled', '导航已取消'),
                 }.get(status, ('failed', '导航失败，无法到达目标，请检查路径和定位'))
@@ -444,8 +455,15 @@ class Panel:
             except Exception:
                 self.nav_message = '取消通信失败，已停止输出，请切换待机'
 
-    def cancel_navigation(self):
+    def cancel_navigation(self, *, automatic=False):
         with self.lock:
+            if not automatic and hasattr(self.bridge,'cancel_task'):
+                self.bridge.cancel_task()
+            if self.nav_status=='recovering':
+                self.nav_serial+=1
+                self.nav_status,self.nav_message,self.nav_hold='canceled','导航已取消',True
+                self.commands.pop('auto',None)
+                return
             if self.nav_status not in ('sending', 'active', 'canceling'):
                 return
             if self.nav_status == 'canceling':

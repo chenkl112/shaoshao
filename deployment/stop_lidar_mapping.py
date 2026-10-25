@@ -42,6 +42,16 @@ def main():
         if result is None or not result.success:raise RuntimeError('保存失败，建图仍在运行：'+(result.message if result else '无响应'))
         if not pcd.is_file() or pcd.stat().st_size==0 or pcd.stat().st_mtime_ns==previous:
             raise RuntimeError('PCD 文件未成功更新，建图仍在运行')
+        # A recorder directory means this session promises a map-bound index.
+        # Never label that session complete with an unfinished index.
+        if (maps/'keyframes').is_dir():
+            index=node.create_client(Trigger,'/finalize_localization_index')
+            if not index.wait_for_service(timeout_sec=5):raise RuntimeError('点云已保存，但关键帧保存服务未就绪；建图仍在运行')
+            future=index.call_async(Trigger.Request());rclpy.spin_until_future_complete(node,future,timeout_sec=30)
+            if not future.done():raise RuntimeError('点云已保存，但关键帧索引保存超时；建图仍在运行')
+            result=future.result()
+            if result is None or not result.success:
+                raise RuntimeError('点云已保存，但全局定位索引未完成；建图仍在运行：'+(result.message if result else '无响应'))
     finally:node.destroy_node();rclpy.shutdown()
     # The launch parent forwards SIGINT to its driver/LIO/terrain children.
     # The web server belongs to a separate group and keeps serving saved maps.

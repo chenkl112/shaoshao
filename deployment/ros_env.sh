@@ -21,3 +21,6 @@ if [[ -f "$HOME/ccc/mapping_install/local_setup.bash" ]]; then
   source "$HOME/ccc/mapping_install/local_setup.bash" || return $?
 fi
 unset scurm_livox_candidate scurm_livox_found
+if [[ -f "$HOME/ccc/localization-venv/bin/activate" ]]; then
+  source "$HOME/ccc/localization-venv/bin/activate" || return $?
+fi

@@ -55,3 +55,16 @@ def shift_planar_covariance(covariance,yaw,offset):
     c=[covariance[i*6:i*6+6] for i in range(6)]
     left=[[sum(j[i][k]*c[k][v] for k in range(6)) for v in range(6)] for i in range(6)]
     return [sum(left[i][k]*j[v][k] for k in range(6)) for i in range(6) for v in range(6)]
+
+
+def shift_body_twist(linear,angular,covariance,offset):
+    """Translate a measured body twist to a rigidly attached reference point."""
+    if len(covariance)!=36 or not all(math.isfinite(v) for v in (*linear,*angular,*offset,*covariance)):
+        raise ValueError('Invalid measured odometry twist')
+    x,y,z=offset;wx,wy,wz=angular
+    velocity=(linear[0]+wy*z-wz*y,linear[1]+wz*x-wx*z,linear[2]+wx*y-wy*x)
+    j=[[float(i==k) for k in range(6)] for i in range(6)]
+    j[0][4]=z;j[0][5]=-y;j[1][3]=-z;j[1][5]=x;j[2][3]=y;j[2][4]=-x
+    c=[covariance[i*6:i*6+6] for i in range(6)]
+    left=[[sum(j[i][k]*c[k][v] for k in range(6)) for v in range(6)] for i in range(6)]
+    return velocity,[sum(left[i][k]*j[v][k] for k in range(6)) for i in range(6) for v in range(6)]

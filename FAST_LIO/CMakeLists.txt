@@ -57,7 +57,9 @@ find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(visualization_msgs REQUIRED)
-find_package(pcl_ros REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(PCL REQUIRED COMPONENTS common io filters kdtree)
 find_package(pcl_conversions REQUIRED)
 find_package(livox_ros_driver2 REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
@@ -71,14 +73,14 @@ set(dependencies
   std_msgs
   std_srvs
   visualization_msgs
-  pcl_ros
+  tf2_ros
+  tf2_geometry_msgs
   pcl_conversions
   livox_ros_driver2
 )
 
 # Thirdparty libraries
 find_package(Eigen3 REQUIRED)
-find_package(PCL REQUIRED COMPONENTS common io)
 
 message(Eigen: ${EIGEN3_INCLUDE_DIR})
 message(STATUS "PCL: ${PCL_INCLUDE_DIRS}")

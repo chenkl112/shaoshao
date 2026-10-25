@@ -221,7 +221,8 @@ class NavigationTests(unittest.TestCase):
             best=min(observed,key=lambda row:score(row,ctrl['BaseObstacle.scale']))
             self.assertLess(best[0],0.,'legal progress must beat stopping at the inflation boundary')
             self.assertGreater(ctrl['BaseObstacle.scale'],0.)
-            self.assertEqual(ctrl['critics'][0],'BaseObstacle')
+            self.assertEqual(ctrl['critics'][0],'ObstacleFootprint')
+            self.assertIn('BaseObstacle',ctrl['critics'])
             self.assertEqual(params['amcl']['ros__parameters']['initial_pose']['x'],1.)
             cost=params['global_costmap']['global_costmap']['ros__parameters']
             self.assertEqual(cost['resolution'],.025)
@@ -241,7 +242,7 @@ class NavigationTests(unittest.TestCase):
             params=yaml.safe_load((build_navigation_config(root,maps)/'nav2.yaml').read_text())
             measured=params['global_costmap']['global_costmap']['ros__parameters']
             self.assertAlmostEqual(measured['robot_radius'],.297658+.01418+math.hypot(.011,.02329))
-            self.assertEqual(measured['footprint_padding'],.02)
+            self.assertEqual(measured['footprint_padding'],0.)
             self.assertAlmostEqual(params['navigation_scan']['ros__parameters']['min_height'],-.18288)
         config['robot']['width_m']=None
         config['robot'].pop('circumscribed_radius_m')
